@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CRM\LeadController;
 use App\Http\Controllers\CRM\ClientController;
 use App\Http\Controllers\CRM\CompanyController;
+use App\Http\Controllers\CRM\ContactController;
 use App\Http\Controllers\CRM\QuotationController;
 use App\Http\Controllers\CRM\ContractController;
 
@@ -92,9 +93,10 @@ Route::prefix('v1')->group(function () {
     Route::get('/dashboard/tasks',   [DashboardController::class, 'index']);
 
     // ── CRM ───────────────────────────────────────────────────────────────────
+    Route::apiResource('companies',  CompanyController::class);
+    Route::apiResource('contacts',   ContactController::class);
     Route::apiResource('leads',      LeadController::class);
     Route::apiResource('clients',    ClientController::class);
-    Route::apiResource('companies',  CompanyController::class);
     Route::apiResource('quotations', QuotationController::class);
     Route::apiResource('contracts',  ContractController::class);
 
