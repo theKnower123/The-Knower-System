@@ -24,31 +24,20 @@ class Domain extends Model
     {
         return $this->belongsTo(Client::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
 
     public function project()
     {
         return $this->belongsTo(Project::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
 
     public function sslCertificates()
     {
         return $this->hasMany(SslCertificate::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
+
 
     public function getActivitylogOptions(): LogOptions
     {

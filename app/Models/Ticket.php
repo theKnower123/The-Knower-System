@@ -17,41 +17,26 @@ class Ticket extends Model
     {
         return $this->belongsTo(Client::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
 
     public function project()
     {
         return $this->belongsTo(Project::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
 
     public function assignee()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
 
     public function messages()
     {
         return $this->hasMany(TicketMessage::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
+
 
     public function getActivitylogOptions(): LogOptions
     {

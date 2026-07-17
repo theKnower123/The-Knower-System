@@ -24,11 +24,8 @@ class Payment extends Model
     {
         return $this->belongsTo(Invoice::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
+
 
     public function getActivitylogOptions(): LogOptions
     {

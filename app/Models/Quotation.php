@@ -1,45 +1,50 @@
 <?php
-
 namespace App\Models;
 
+use App\Traits\HasWorkspace;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
-use App\Traits\HasWorkspace;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Enums\QuotationStatus;
 
 class Quotation extends Model
 {
-    protected $fillable = [
-        'client_id', 'quotation_number', 'price', 'currency', 'status', 'valid_until', 'notes',
-    ];
+    use HasWorkspace, SoftDeletes, LogsActivity;
+
+    protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
 
     protected $casts = [
+        'status' => QuotationStatus::class,
+        'issue_date' => 'date',
         'valid_until' => 'date',
-        'price' => 'decimal:2',
+        'subtotal' => 'decimal:2',
+        'tax_amount' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'total_amount' => 'decimal:2',
     ];
 
-    public function client()
-    {
-        return $this->belongsTo(Client::class);
-    
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
-}
 
-    public function contract()
+    public function company(): BelongsTo { return $this->belongsTo(Company::class); }
+    public function contact(): BelongsTo { return $this->belongsTo(Contact::class); }
+    public function lead(): BelongsTo { return $this->belongsTo(Lead::class); }
+    public function creator(): BelongsTo { return $this->belongsTo(User::class, 'created_by'); }
+    public function updater(): BelongsTo { return $this->belongsTo(User::class, 'updated_by'); }
+
+    // Versioning logic specified by the user
+    public function parent(): BelongsTo
     {
-        return $this->hasOne(Contract::class);
-    
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
+        return $this->belongsTo(Quotation::class, 'parent_id');
     }
-}
 
-    public function getActivitylogOptions(): LogOptions
+    public function historyVersions(): HasMany
     {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
+        return $this->hasMany(Quotation::class, 'parent_id');
     }
 }

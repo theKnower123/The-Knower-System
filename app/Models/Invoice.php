@@ -22,31 +22,20 @@ class Invoice extends Model
     {
         return $this->belongsTo(Client::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
 
     public function project()
     {
         return $this->belongsTo(Project::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
 
     public function payments()
     {
         return $this->hasMany(Payment::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
+
 
     public function getActivitylogOptions(): LogOptions
     {

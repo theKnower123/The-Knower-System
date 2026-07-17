@@ -25,11 +25,8 @@ class Attendance extends Model
     {
         return $this->belongsTo(Employee::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
+
 
     public function getActivitylogOptions(): LogOptions
     {

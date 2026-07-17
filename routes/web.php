@@ -43,6 +43,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/leads', function () {
         return Inertia::render('CRM/Leads');
     })->name('leads.index');
+
+    Route::get('/quotations', function () {
+        return Inertia::render('CRM/Quotations');
+    })->name('quotations.index');
 });
 
 require __DIR__.'/auth.php';

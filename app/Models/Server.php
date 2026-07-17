@@ -17,11 +17,8 @@ class Server extends Model
     {
         return $this->hasMany(HostingAccount::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
+
 
     public function getActivitylogOptions(): LogOptions
     {

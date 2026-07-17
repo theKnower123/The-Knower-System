@@ -19,21 +19,14 @@ class File extends Model
     {
         return $this->belongsTo(Project::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
 
     public function uploader()
     {
         return $this->belongsTo(User::class, 'uploaded_by');
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
+
 
     public function getActivitylogOptions(): LogOptions
     {

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Resources\CRM;
 
 use Illuminate\Http\Request;

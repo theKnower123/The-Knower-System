@@ -16,8 +16,8 @@ This document tracks the actual codebase implementation status for The Knower OS
 * ✅ Companies
 * ✅ Contacts
 * ✅ Leads
-* ⏳ Quotations
-* ❌ Contracts
+* ✅ Quotations
+* ⏳ Contracts
 * ❌ Clients
 * ❌ Meetings
 * ❌ Activities

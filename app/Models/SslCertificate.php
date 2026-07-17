@@ -25,11 +25,8 @@ class SslCertificate extends Model
     {
         return $this->belongsTo(Domain::class);
     
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()->logAll()->logOnlyDirty();
-    }
 }
+
 
     public function getActivitylogOptions(): LogOptions
     {
