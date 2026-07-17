@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Knower OS - Integrations Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed-dim": "#e7c427",
+                      "on-secondary-fixed": "#2c0051",
+                      "tertiary-container": "#ffdb3f",
+                      "on-tertiary-fixed": "#221b00",
+                      "background": "#0d1515",
+                      "primary-container": "#00f5ff",
+                      "surface-variant": "#2e3637",
+                      "surface-container-lowest": "#081010",
+                      "inverse-surface": "#dce4e4",
+                      "surface-container-high": "#232b2c",
+                      "primary-fixed-dim": "#00dce5",
+                      "surface-container-highest": "#2e3637",
+                      "secondary-fixed-dim": "#ddb7ff",
+                      "tertiary": "#fff9f0",
+                      "on-tertiary-container": "#736000",
+                      "on-primary-fixed-variant": "#004f53",
+                      "on-primary-fixed": "#002021",
+                      "on-secondary-fixed-variant": "#6900b3",
+                      "on-surface": "#dce4e4",
+                      "on-secondary-container": "#d6a9ff",
+                      "on-primary-container": "#006c71",
+                      "on-error": "#690005",
+                      "outline": "#849495",
+                      "surface-dim": "#0d1515",
+                      "on-tertiary-fixed-variant": "#544600",
+                      "surface": "#0d1515",
+                      "on-secondary": "#490080",
+                      "secondary-container": "#6f00be",
+                      "surface-bright": "#323b3b",
+                      "tertiary-fixed": "#ffe16c",
+                      "primary-fixed": "#63f7ff",
+                      "error": "#ffb4ab",
+                      "error-container": "#93000a",
+                      "on-primary": "#003739",
+                      "secondary-fixed": "#f0dbff",
+                      "inverse-primary": "#00696e",
+                      "surface-tint": "#00dce5",
+                      "on-tertiary": "#3a3000",
+                      "surface-container": "#192121",
+                      "primary": "#e9feff",
+                      "on-error-container": "#ffdad6",
+                      "inverse-on-surface": "#2a3232",
+                      "surface-container-low": "#151d1d",
+                      "outline-variant": "#3a494a",
+                      "secondary": "#ddb7ff",
+                      "on-background": "#dce4e4",
+                      "on-surface-variant": "#b9caca"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gap-lg": "2rem",
+                      "gap-xs": "0.5rem",
+                      "gap-md": "1rem",
+                      "container-max": "1440px",
+                      "base-unit": "4px",
+                      "margin-mobile": "1rem",
+                      "margin-desktop": "2.5rem"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "code-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "label-xs": [
+                              "Inter"
+                      ],
+                      "display-lg-mobile": [
+                              "Inter"
+                      ],
+                      "title-sm": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "code-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-xs": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "title-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "30px",
+                              {
+                                      "lineHeight": "38px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Desktop Only) -->
+<nav class="hidden md:flex bg-obsidian-base dark:bg-obsidian-base docked h-screen left-0 w-64 border-r border-outline-variant flat no shadows flex flex-col py-6 px-4 shrink-0 z-50">
+<div class="mb-8 px-2 flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary text-xl" style="font-variation-settings: 'FILL' 1;">widgets</span>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary leading-tight text-[1.1rem]">The Knower OS</h1>
+<p class="text-label-xs font-label-xs text-on-surface-variant">Enterprise Suite</p>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-xs text-label-xs py-2 px-4 rounded-lg mb-8 hover:bg-primary-container transition-colors duration-200 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span>
+            New Workspace
+        </button>
+<ul class="flex flex-col gap-1 flex-grow">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[1.25rem]">dashboard</span>
+<span class="text-label-xs font-label-xs">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[1.25rem]">group</span>
+<span class="text-label-xs font-label-xs">CRM</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[1.25rem]">tactic</span>
+<span class="text-label-xs font-label-xs">Projects</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[1.25rem]">payments</span>
+<span class="text-label-xs font-label-xs">Finance</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[1.25rem]">monitoring</span>
+<span class="text-label-xs font-label-xs">Analytics</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary-container font-bold border-r-2 border-secondary-container bg-surface-container hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 Active: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-[1.25rem]" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="text-label-xs font-label-xs">Settings</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto pt-6 border-t border-outline-variant">
+<ul class="flex flex-col gap-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[1.25rem]">help</span>
+<span class="text-label-xs font-label-xs">Help</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-surface-container-high hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[1.25rem]">account_circle</span>
+<span class="text-label-xs font-label-xs">User Profile</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-h-screen relative w-full md:w-[calc(100%-16rem)]">
+<!-- TopNavBar -->
+<header class="bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md text-primary dark:text-primary text-headline-md font-headline-md. Labels: text-label-sm font-label-sm docked full-width top-0 border-b border-outline-variant shadow-sm flex justify-between items-center w-full px-margin-desktop h-16 sticky top-0 z-40 transition-all focus:ring-2 focus:ring-primary-container">
+<div class="flex items-center gap-8">
+<!-- Mobile Menu Button -->
+<button class="md:hidden text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="hidden md:flex items-center gap-4 bg-surface-container-high rounded-full px-4 py-1 border border-outline-variant focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-label-xs font-label-xs text-on-surface w-48 placeholder-on-surface-variant" placeholder="Search integrations..." type="text"/>
+</div>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-label-xs font-label-xs text-on-surface-variant hover:text-primary transition-all" href="#">List</a>
+<a class="text-label-xs font-label-xs text-on-surface-variant hover:text-primary transition-all" href="#">Kanban</a>
+<a class="text-label-xs font-label-xs text-primary border-b-2 border-primary pb-2 hover:text-primary transition-all" href="#">Timeline</a>
+</nav>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center gap-2">
+<button class="bg-surface-container-high hover:bg-surface-bright text-on-surface border border-outline-variant px-3 py-1.5 rounded-lg text-label-xs font-label-xs transition-colors">
+                        AI Assistant
+                    </button>
+<button class="bg-primary hover:bg-primary-container text-on-primary px-3 py-1.5 rounded-lg text-label-xs font-label-xs transition-colors font-medium">
+                        New Task
+                    </button>
+</div>
+<div class="flex items-center gap-2 border-l border-outline-variant pl-4 ml-2">
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm">notifications</span>
+</button>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors hidden sm:flex">
+<span class="material-symbols-outlined text-sm">language</span>
+</button>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors hidden sm:flex">
+<span class="material-symbols-outlined text-sm">terminal</span>
+</button>
+<img alt="User Avatar" class="w-8 h-8 rounded-full border border-outline-variant object-cover ml-2" data-alt="A small circular avatar of a professional user in a corporate setting. High-quality corporate modern UI avatar. 80x80 pixels." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_vjCI62WgP3C8tNdvq75G1LfpWE58XcIwQeS7XscW4VMMiz4MHmjaLFlROLgR-xiWgY6dHrV6uVHUkRAhIAF0Cncz7ziHydZVULuCymqHWlA31pgi_hwnWZ7c_MKV8xqR915Tw4Re84C2cbY7OGkqaHnqQQV-lip9n2CMP6ELbTgA910mecjHlv6KKppnYFKx4hnfrq09YxMzDvo-VRQik46p8ifL87_vusCim4R_Adbm-nlgKjcI2FTencD-Ljlms1DjbSX7MZhU"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 p-margin-mobile md:p-margin-desktop overflow-y-auto w-full relative">
+<div class="max-w-container-max mx-auto">
+<!-- Page Header -->
+<div class="mb-gap-lg">
+<h2 class="text-display-lg-mobile md:text-display-lg font-display-lg-mobile md:font-display-lg text-primary mb-2">Integrations Hub</h2>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-2xl">Connect The Knower OS to your existing tools. Enhance your data workflows and operational awareness with seamless enterprise integrations.</p>
+</div>
+<!-- Integrations Grid (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gap-md">
+<!-- GitHub Card - Connected State -->
+<div class="bg-surface-container rounded-xl border border-outline-variant p-6 flex flex-col relative overflow-hidden group hover:border-primary/50 transition-colors duration-300">
+<div class="absolute top-0 right-0 p-4">
+<div class="flex items-center gap-1.5 bg-primary/10 text-primary px-2 py-1 rounded border border-primary/20">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-label-xs font-label-xs font-medium">Connected</span>
+</div>
+</div>
+<div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center mb-4 border border-outline-variant shadow-[0_4px_20px_rgba(0,220,229,0.05)]">
+<span class="material-symbols-outlined text-2xl text-on-surface">code</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface mb-2">GitHub</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-6 flex-grow">Sync repositories, track issues, and monitor CI/CD pipelines directly from your dashboard.</p>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-outline-variant/50">
+<span class="text-label-xs font-label-xs text-on-surface-variant">Last sync: 2m ago</span>
+<button class="text-label-xs font-label-xs font-medium text-secondary hover:text-secondary-fixed transition-colors flex items-center gap-1">
+                                Configure <span class="material-symbols-outlined text-[1rem]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Slack Card - Not Connected -->
+<div class="bg-surface-container rounded-xl border border-outline-variant p-6 flex flex-col relative overflow-hidden group hover:border-primary/50 transition-colors duration-300">
+<div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center mb-4 border border-outline-variant">
+<span class="material-symbols-outlined text-2xl text-on-surface">forum</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface mb-2">Slack</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-6 flex-grow">Send automated alerts, reports, and AI insights directly to your team's channels.</p>
+<div class="mt-auto pt-4 border-t border-outline-variant/50">
+<button class="w-full bg-transparent border border-primary text-primary hover:bg-primary/5 py-2 rounded-lg text-label-xs font-label-xs transition-colors duration-300 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[1rem]">link</span> Connect
+                            </button>
+</div>
+</div>
+<!-- AWS Card - Large Span -->
+<div class="bg-surface-container rounded-xl border border-outline-variant p-6 flex flex-col relative overflow-hidden group hover:border-primary/50 transition-colors duration-300 md:col-span-2 xl:col-span-1">
+<div class="absolute top-0 right-0 p-4">
+<div class="flex items-center gap-1.5 bg-primary/10 text-primary px-2 py-1 rounded border border-primary/20">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-label-xs font-label-xs font-medium">Connected</span>
+</div>
+</div>
+<div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center mb-4 border border-outline-variant shadow-[0_4px_20px_rgba(0,220,229,0.05)]">
+<span class="material-symbols-outlined text-2xl text-on-surface">cloud</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface mb-2">AWS Infrastructure</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-6 flex-grow">Monitor EC2 instances, manage S3 buckets, and view CloudWatch metrics within the OS.</p>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-outline-variant/50">
+<div class="flex items-center gap-3">
+<span class="text-label-xs font-label-xs text-on-surface-variant">3 Active Regions</span>
+<span class="text-label-xs font-label-xs text-on-surface-variant border-l border-outline-variant pl-3">24 Instances</span>
+</div>
+<button class="text-label-xs font-label-xs font-medium text-secondary hover:text-secondary-fixed transition-colors flex items-center gap-1">
+                                Configure <span class="material-symbols-outlined text-[1rem]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- OpenAI Card - AI Emphasis -->
+<div class="bg-surface-container rounded-xl border border-secondary/30 p-6 flex flex-col relative overflow-hidden group hover:border-secondary transition-colors duration-300 relative">
+<!-- Subtle gradient glow -->
+<div class="absolute -top-24 -right-24 w-48 h-48 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute top-0 right-0 p-4">
+<div class="flex items-center gap-1.5 bg-secondary/10 text-secondary-fixed-dim px-2 py-1 rounded border border-secondary/20">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed-dim animate-pulse"></span>
+<span class="text-label-xs font-label-xs font-medium">Active</span>
+</div>
+</div>
+<div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center mb-4 border border-secondary/40 shadow-[0_4px_20px_rgba(111,0,190,0.1)]">
+<span class="material-symbols-outlined text-2xl text-secondary-fixed-dim">psychology</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface mb-2">OpenAI Services</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-6 flex-grow">Power your AI Assistant, generate insights, and automate data parsing using GPT models.</p>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-outline-variant/50">
+<span class="text-label-xs font-label-xs text-on-surface-variant">Model: GPT-4o</span>
+<button class="text-label-xs font-label-xs font-medium text-secondary hover:text-secondary-fixed transition-colors flex items-center gap-1">
+                                Manage Keys <span class="material-symbols-outlined text-[1rem]">key</span>
+</button>
+</div>
+</div>
+<!-- Stripe Card -->
+<div class="bg-surface-container rounded-xl border border-outline-variant p-6 flex flex-col relative overflow-hidden group hover:border-primary/50 transition-colors duration-300">
+<div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center mb-4 border border-outline-variant">
+<span class="material-symbols-outlined text-2xl text-on-surface">payments</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface mb-2">Stripe</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-6 flex-grow">Import transaction data, monitor MRR, and manage subscriptions directly from Finance.</p>
+<div class="mt-auto pt-4 border-t border-outline-variant/50">
+<button class="w-full bg-transparent border border-primary text-primary hover:bg-primary/5 py-2 rounded-lg text-label-xs font-label-xs transition-colors duration-300 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[1rem]">link</span> Connect
+                            </button>
+</div>
+</div>
+<!-- DataBricks Card -->
+<div class="bg-surface-container rounded-xl border border-outline-variant p-6 flex flex-col relative overflow-hidden group hover:border-primary/50 transition-colors duration-300">
+<div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center mb-4 border border-outline-variant">
+<span class="material-symbols-outlined text-2xl text-on-surface">database</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface mb-2">Databricks</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-6 flex-grow">Connect your lakehouse for advanced analytics, machine learning pipelines, and massive data processing.</p>
+<div class="mt-auto pt-4 border-t border-outline-variant/50">
+<button class="w-full bg-transparent border border-primary text-primary hover:bg-primary/5 py-2 rounded-lg text-label-xs font-label-xs transition-colors duration-300 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[1rem]">link</span> Connect
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-obsidian-base dark:bg-obsidian-base text-success-emerald dark:text-success-emerald text-label-sm font-label-sm docked full-width bottom-0 border-t border-outline-variant flat flex justify-between items-center w-full px-margin-desktop py-2 h-8 z-40 mt-auto shrink-0">
+<div class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                The Knower OS v2.4.0 • System Status: Operational
+            </div>
+<nav class="flex items-center gap-4">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Server Health</a>
+</nav>
+</footer>
+</div>
+</body></html>

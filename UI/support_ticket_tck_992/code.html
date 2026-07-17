@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Support Ticket Detail - The Knower OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#004d44",
+                      "inverse-surface": "#dae2fd",
+                      "surface-variant": "#2d3449",
+                      "surface-container-high": "#222a3d",
+                      "error": "#ffb4ab",
+                      "background": "#0b1326",
+                      "outline-variant": "#3a494a",
+                      "on-secondary-fixed-variant": "#005047",
+                      "surface-tint": "#00dce5",
+                      "tertiary": "#fff8fd",
+                      "warning-amber": "#F59E0B",
+                      "surface-container-low": "#131b2e",
+                      "success-emerald": "#10B981",
+                      "on-surface-variant": "#b9caca",
+                      "error-rose": "#F43F5E",
+                      "on-error": "#690005",
+                      "secondary-fixed": "#62fae3",
+                      "surface-dim": "#0b1326",
+                      "surface-container-lowest": "#060e20",
+                      "surface": "#0b1326",
+                      "secondary-fixed-dim": "#3cddc7",
+                      "on-secondary-fixed": "#00201c",
+                      "on-secondary": "#003731",
+                      "inverse-on-surface": "#283044",
+                      "primary-fixed-dim": "#00dce5",
+                      "inverse-primary": "#00696e",
+                      "ai-purple": "#A855F7",
+                      "secondary-container": "#03c6b2",
+                      "surface-container-highest": "#2d3449",
+                      "tertiary-container": "#edd4ff",
+                      "on-primary-container": "#006c71",
+                      "obsidian-elevated": "#1E293B",
+                      "primary": "#e9feff",
+                      "on-surface": "#dae2fd",
+                      "on-tertiary-fixed-variant": "#6900b3",
+                      "on-tertiary": "#490080",
+                      "secondary": "#44e2cd",
+                      "tertiary-fixed-dim": "#ddb7ff",
+                      "obsidian-surface": "#0F172A",
+                      "on-primary": "#003739",
+                      "info-cyan": "#06B6D4",
+                      "on-primary-fixed-variant": "#004f53",
+                      "obsidian-base": "#020617",
+                      "outline": "#849495",
+                      "on-tertiary-fixed": "#2c0051",
+                      "error-container": "#93000a",
+                      "surface-bright": "#31394d",
+                      "on-primary-fixed": "#002021",
+                      "tertiary-fixed": "#f0dbff",
+                      "on-error-container": "#ffdad6",
+                      "surface-container": "#171f33",
+                      "on-background": "#dae2fd",
+                      "primary-container": "#00f5ff",
+                      "primary-fixed": "#63f7ff",
+                      "on-tertiary-container": "#872fd5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1440px",
+                      "margin-desktop": "64px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: #020617; /* obsidian-base */
+            color: #dae2fd; /* on-surface */
+        }
+        /* Custom Scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2d3449;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md flex h-screen overflow-hidden bg-obsidian-base dark:bg-obsidian-base text-on-surface">
+<!-- SideNavBar (Suppressed based on Semantic Shell Mandate as this is a detail/task-focused screen, but wait, usually detail screens might keep global nav or suppress it. Let's suppress it to focus on the ticket, or keep it minimal. The prompt says "A Support Ticket Detail page... Features a dual-pane layout...". It implies a focused view. We will suppress the main SideNavBar to prioritize the dual-pane canvas, or maybe keep it collapsed. Let's keep the SideNavBar as per JSON but make it a standard layout.) -->
+<!-- Re-evaluating: The prompt asks for a "Support Ticket Detail page". The "Destination Rule" says exclude if Task-Focused/Linear. However, in enterprise apps like Linear/Vercel, ticket details often still have the side nav. Let's include the SideNavBar as it's a core shell component, but focus the canvas on the dual-pane. Actually, the rule says "Automatic Suppression: You MUST exclude the navigation shell if the page intent is: ... Task-Focused: Any sub-page featuring a 'Close' or 'Back' action". Let's suppress the global nav to focus purely on the dual-pane ticket view. -->
+<!-- TopNavBar for Context -->
+<header class="flex justify-between items-center w-full px-margin-desktop h-16 sticky top-0 z-40 bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md text-primary dark:text-primary shadow-sm border-b border-outline-variant absolute w-full top-0">
+<div class="flex items-center gap-4">
+<button class="p-2 rounded hover:bg-obsidian-elevated transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="text-headline-md font-headline-md font-black text-primary">The Knower OS</div>
+<div class="h-6 w-px bg-outline-variant mx-2"></div>
+<div class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-2">
+<span>Tickets</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary">TCK-8492</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-4 py-2 bg-obsidian-base border border-outline-variant rounded-DEFAULT text-label-sm font-label-sm text-on-surface hover:bg-obsidian-elevated transition-colors duration-200 flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="check_circle">check_circle</span>
+                Resolve Ticket
+            </button>
+<button class="p-2 rounded hover:bg-obsidian-elevated transition-colors duration-200 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex mt-16 h-[calc(100vh-4rem)]">
+<!-- Center Pane: Chat/Thread -->
+<div class="flex-1 flex flex-col border-r border-outline-variant bg-obsidian-base">
+<!-- Ticket Header -->
+<div class="p-6 border-b border-outline-variant bg-obsidian-surface">
+<h1 class="text-headline-md font-headline-md mb-2">API Rate Limit Exceeded on Core Endpoints</h1>
+<div class="flex items-center gap-3">
+<span class="px-2 py-1 rounded-full bg-error-rose/10 text-error-rose text-label-sm font-label-sm border border-error-rose/20">Critical</span>
+<span class="px-2 py-1 rounded-full bg-obsidian-elevated text-on-surface text-label-sm font-label-sm border border-outline-variant">Bug Report</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                        Opened 2 hours ago
+                    </span>
+</div>
+</div>
+<!-- Thread -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<!-- Customer Message -->
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-obsidian-elevated border border-outline-variant flex items-center justify-center shrink-0 overflow-hidden">
+<img alt="Customer Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a software engineer in a modern office setting. High contrast, sharp focus, corporate aesthetic, subtle blue lighting accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBQS1XoGVHRpissjliN1FNv3UzLT3HHKijkH7x9jrwDa9jPh-n78zFgTc5JJzf5XvnsQFmVhe3JeNA9dbaxntrFmq5e0kb41KezIv4DJVmY3pkiYSunKtMdlXdUInFu72NuZreJdU1yIWXvoUUhRuFSdg5yET05Cyr2trb35imBk4fS-kpHAf9-ceRDxBkcRjzU3v61gn1n059o65_Yd3eV33lIDrCgtQ8883KCn5WMQpz8A_XAFIBaJbKCFu1rgbipJeSAdA_XQJN"/>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex items-baseline gap-2">
+<span class="font-label-md text-label-md text-on-surface">Alex Chen</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Customer • 10:42 AM</span>
+</div>
+<div class="p-4 rounded-lg bg-obsidian-surface border border-outline-variant text-body-md font-body-md text-on-surface-variant">
+<p>Hi team,</p>
+<p class="mt-2">We are suddenly hitting 429 Too Many Requests errors on the `/v2/analytics/query` endpoint. Our usage patterns haven't changed, but our production dashboards are currently failing to load. Could you investigate?</p>
+<p class="mt-2">RequestId: `req_892nf82n9f2`</p>
+</div>
+</div>
+</div>
+<!-- Internal Note -->
+<div class="flex gap-4 ml-8">
+<div class="w-10 h-10 rounded-full bg-warning-amber/20 border border-warning-amber/50 flex items-center justify-center shrink-0 text-warning-amber">
+<span class="material-symbols-outlined" data-icon="lock">lock</span>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex items-baseline gap-2">
+<span class="font-label-md text-label-md text-warning-amber">System Auto-Triage</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Internal Note • 10:43 AM</span>
+</div>
+<div class="p-4 rounded-lg bg-warning-amber/5 border border-warning-amber/20 text-body-md font-body-md text-on-surface-variant">
+<p>Correlated with ongoing incident INC-204 (Rate limiting Redis cluster degradation). Paging on-call engineer.</p>
+</div>
+</div>
+</div>
+<!-- Agent Reply -->
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container border border-primary-container flex items-center justify-center shrink-0 text-on-primary-container font-label-md">
+                        JD
+                    </div>
+<div class="flex-1 space-y-2">
+<div class="flex items-baseline gap-2">
+<span class="font-label-md text-label-md text-primary">Jane Doe</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Support Engineer • 10:55 AM</span>
+</div>
+<div class="p-4 rounded-lg bg-obsidian-elevated border border-outline-variant text-body-md font-body-md text-on-surface">
+<p>Hi Alex,</p>
+<p class="mt-2">Thanks for reaching out. We are currently experiencing degraded performance on our rate-limiting tier affecting the Analytics API. Our engineering team is actively mitigating this right now.</p>
+<p class="mt-2">I've linked this ticket to the main incident report, and I will update you as soon as we see recovery. Apologies for the disruption to your dashboards.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Reply Editor -->
+<div class="p-6 bg-obsidian-surface border-t border-outline-variant">
+<div class="border border-outline-variant rounded-lg bg-obsidian-base overflow-hidden focus-within:border-primary-container focus-within:ring-1 focus-within:ring-primary-container transition-all">
+<!-- Format Bar -->
+<div class="flex items-center gap-2 p-2 border-b border-outline-variant bg-obsidian-surface/50">
+<button class="p-1.5 rounded hover:bg-obsidian-elevated text-on-surface-variant"><span class="material-symbols-outlined text-[18px]" data-icon="format_bold">format_bold</span></button>
+<button class="p-1.5 rounded hover:bg-obsidian-elevated text-on-surface-variant"><span class="material-symbols-outlined text-[18px]" data-icon="format_italic">format_italic</span></button>
+<button class="p-1.5 rounded hover:bg-obsidian-elevated text-on-surface-variant"><span class="material-symbols-outlined text-[18px]" data-icon="link">link</span></button>
+<div class="w-px h-4 bg-outline-variant mx-1"></div>
+<button class="p-1.5 rounded hover:bg-obsidian-elevated text-on-surface-variant"><span class="material-symbols-outlined text-[18px]" data-icon="attach_file">attach_file</span></button>
+<button class="p-1.5 rounded hover:bg-obsidian-elevated text-on-surface-variant flex items-center gap-1 text-ai-purple">
+<span class="material-symbols-outlined text-[18px]" data-icon="auto_awesome">auto_awesome</span>
+<span class="text-label-sm font-label-sm">AI Draft</span>
+</button>
+</div>
+<!-- Text Area -->
+<textarea class="w-full h-32 p-4 bg-transparent border-none focus:ring-0 text-body-md font-body-md text-on-surface resize-none placeholder-on-surface-variant" placeholder="Type your reply here... Use / for macros."></textarea>
+<!-- Action Bar -->
+<div class="flex items-center justify-between p-3 bg-obsidian-surface/50 border-t border-outline-variant">
+<div class="flex items-center gap-3">
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="rounded border-outline-variant bg-obsidian-base text-primary-container focus:ring-primary-container focus:ring-offset-obsidian-surface" type="checkbox"/>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Internal Note</span>
+</label>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-4 py-2 bg-obsidian-base border border-outline-variant rounded text-label-sm font-label-sm text-on-surface hover:bg-obsidian-elevated transition-colors">Save Draft</button>
+<button class="px-4 py-2 bg-primary-container text-obsidian-base rounded font-label-md text-label-md hover:bg-primary transition-colors flex items-center gap-2">
+                                Send Reply
+                                <span class="material-symbols-outlined text-[16px]" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Pane: Sidebar Details -->
+<div class="w-80 bg-obsidian-surface flex flex-col overflow-y-auto border-l border-outline-variant shrink-0">
+<!-- Customer Card -->
+<div class="p-6 border-b border-outline-variant">
+<h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-4">Customer Details</h3>
+<div class="flex items-center gap-3 mb-4">
+<div class="w-12 h-12 rounded bg-obsidian-elevated border border-outline-variant flex items-center justify-center overflow-hidden">
+<img alt="Company Logo" class="w-full h-full object-cover" data-alt="A minimalist tech company logo featuring a sleek geometric shape in a dark blue and teal gradient, set against a dark obsidian background, sharp edges, modern corporate identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXg1mWv7mYSYR2RGWSdsAkvkkk3L9P36B3c7KwRfIoqSbqXojPUynEDhH3tdRNcPlY7K12mSh4nrQX7lE8lrl_IwvOmRmDMl0UY5UJp4eH_-YH-dtlNaJLti2Jtc-OzTRVnM4AVjeMvzvvuto83-I9Sm26ceEj08vSVNn4y8gKjXgtAyiQVlkwoUNqdAWrPfpnV1lLb8_02zMXL_m9RdymeYMujyQSFA8NRVaMwn4F-HK2_yd3ZMWoJ923Fbt7EYNACyTJmLGuzZBz"/>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-[16px]">Acme Corp</div>
+<div class="text-label-sm font-label-sm text-primary">Enterprise Tier</div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Contact</span>
+<span class="text-on-surface">Alex Chen</span>
+</div>
+<div class="flex justify-between items-center text-body-sm font-body-sm">
+<span class="text-on-surface-variant">Email</span>
+<span class="text-on-surface">alex@acme.co</span>
+</div>
+<div class="flex justify-between items-center text-body-sm font-body-sm">
+<span class="text-on-surface-variant">ARR</span>
+<span class="text-on-surface">$120,000</span>
+</div>
+</div>
+<button class="mt-4 w-full py-2 border border-outline-variant rounded text-label-sm font-label-sm text-on-surface hover:bg-obsidian-elevated transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="open_in_new">open_in_new</span>
+                    View CRM Profile
+                </button>
+</div>
+<!-- SLA & Properties -->
+<div class="p-6 border-b border-outline-variant">
+<h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-4">Ticket Properties</h3>
+<div class="mb-4 p-3 rounded-lg bg-error-rose/10 border border-error-rose/30 flex items-start gap-3">
+<span class="material-symbols-outlined text-error-rose" data-icon="warning">warning</span>
+<div>
+<div class="text-label-sm font-label-sm text-error-rose mb-1">SLA Breach Warning</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">First response required in 5 mins</div>
+</div>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block text-label-sm font-label-sm text-on-surface-variant mb-1">Assignee</label>
+<div class="flex items-center justify-between p-2 rounded bg-obsidian-base border border-outline-variant cursor-pointer hover:border-primary-container transition-colors">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary-container text-obsidian-base flex items-center justify-center text-[10px] font-bold">JD</div>
+<span class="text-body-sm font-body-sm">Jane Doe</span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div>
+<label class="block text-label-sm font-label-sm text-on-surface-variant mb-1">Status</label>
+<div class="flex items-center justify-between p-2 rounded bg-obsidian-base border border-outline-variant cursor-pointer hover:border-primary-container transition-colors">
+<span class="text-body-sm font-body-sm text-warning-amber flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-warning-amber"></span>
+                                In Progress
+                            </span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div>
+<label class="block text-label-sm font-label-sm text-on-surface-variant mb-1">Tags</label>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 rounded bg-obsidian-elevated text-label-sm font-label-sm border border-outline-variant flex items-center gap-1">api <span class="material-symbols-outlined text-[12px] cursor-pointer" data-icon="close">close</span></span>
+<span class="px-2 py-1 rounded bg-obsidian-elevated text-label-sm font-label-sm border border-outline-variant flex items-center gap-1">incident-linked <span class="material-symbols-outlined text-[12px] cursor-pointer" data-icon="close">close</span></span>
+<button class="px-2 py-1 rounded bg-obsidian-base text-label-sm font-label-sm border border-dashed border-outline-variant text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="add">add</span> Tag
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Insights -->
+<div class="p-6">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-label-sm font-label-sm text-ai-purple uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="auto_awesome">auto_awesome</span>
+                        AI Insights
+                    </h3>
+</div>
+<div class="p-4 rounded-lg bg-obsidian-elevated border border-outline-variant relative overflow-hidden">
+<!-- Subtle AI background glow -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-ai-purple/20 blur-3xl rounded-full"></div>
+<ul class="space-y-3 relative z-10 text-body-sm font-body-sm text-on-surface-variant">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-ai-purple shrink-0 mt-0.5" data-icon="check">check</span>
+<span>High probability link to ongoing INC-204 based on error codes.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[16px] text-ai-purple shrink-0 mt-0.5" data-icon="check">check</span>
+<span>Customer sentiment is <strong>frustrated</strong>. Recommend expedited response.</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+</body></html>

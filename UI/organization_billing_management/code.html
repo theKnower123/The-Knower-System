@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Organization &amp; Billing - The Knower OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#2c0051",
+                        "on-tertiary": "#490080",
+                        "error-container": "#93000a",
+                        "secondary": "#44e2cd",
+                        "surface-container-high": "#222a3d",
+                        "secondary-fixed-dim": "#3cddc7",
+                        "outline-variant": "#3a494a",
+                        "on-secondary-fixed": "#00201c",
+                        "obsidian-surface": "#0F172A",
+                        "outline": "#849495",
+                        "surface-container-low": "#131b2e",
+                        "primary-container": "#00f5ff",
+                        "tertiary-fixed": "#f0dbff",
+                        "inverse-on-surface": "#283044",
+                        "on-primary-container": "#006c71",
+                        "success-emerald": "#10B981",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "primary-fixed": "#63f7ff",
+                        "error": "#ffb4ab",
+                        "inverse-primary": "#00696e",
+                        "on-primary-fixed-variant": "#004f53",
+                        "tertiary-container": "#edd4ff",
+                        "ai-purple": "#A855F7",
+                        "surface": "#0b1326",
+                        "on-background": "#dae2fd",
+                        "on-primary": "#003739",
+                        "on-tertiary-container": "#872fd5",
+                        "obsidian-elevated": "#1E293B",
+                        "surface-tint": "#00dce5",
+                        "surface-container-highest": "#2d3449",
+                        "surface-container": "#171f33",
+                        "primary-fixed-dim": "#00dce5",
+                        "surface-container-lowest": "#060e20",
+                        "surface-dim": "#0b1326",
+                        "secondary-container": "#03c6b2",
+                        "background": "#0b1326",
+                        "warning-amber": "#F59E0B",
+                        "surface-variant": "#2d3449",
+                        "obsidian-base": "#020617",
+                        "primary": "#e9feff",
+                        "on-surface-variant": "#b9caca",
+                        "on-secondary-fixed-variant": "#005047",
+                        "surface-bright": "#31394d",
+                        "on-tertiary-fixed-variant": "#6900b3",
+                        "inverse-surface": "#dae2fd",
+                        "on-primary-fixed": "#002021",
+                        "tertiary-fixed-dim": "#ddb7ff",
+                        "on-surface": "#dae2fd",
+                        "on-secondary-container": "#004d44",
+                        "on-secondary": "#003731",
+                        "error-rose": "#F43F5E",
+                        "secondary-fixed": "#62fae3",
+                        "info-cyan": "#06B6D4",
+                        "tertiary": "#fff8fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "margin-mobile": "16px",
+                        "container-max": "1440px",
+                        "base": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.obsidian-base'); color: theme('colors.on-surface'); }
+        .glass-panel { background-color: theme('colors.obsidian-surface'); border: 1px solid theme('colors.outline-variant'); border-radius: theme('borderRadius.xl'); }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (from JSON) -->
+<aside class="hidden md:flex bg-obsidian-base dark:bg-obsidian-base docked h-screen w-64 border-r border-outline-variant flex-col py-6 px-4">
+<div class="mb-8 px-2 flex items-center space-x-3">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="domain" data-weight="fill" style="font-variation-settings: 'FILL' 1;">domain</span>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary leading-none">The Knower OS</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Enterprise Suite</p>
+</div>
+</div>
+<button class="mb-6 w-full py-2 px-4 rounded-lg bg-obsidian-elevated text-primary text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 border border-outline-variant flex items-center justify-center space-x-2">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+<span>New Workspace</span>
+</button>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3 text-on-surface-variant group-hover:text-primary" data-icon="dashboard">dashboard</span>
+<span class="text-label-md font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3 text-on-surface-variant group-hover:text-primary" data-icon="group">group</span>
+<span class="text-label-md font-label-md">CRM</span>
+</a>
+<a class="flex items-center px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3 text-on-surface-variant group-hover:text-primary" data-icon="tactic">tactic</span>
+<span class="text-label-md font-label-md">Projects</span>
+</a>
+<a class="flex items-center px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3 text-on-surface-variant group-hover:text-primary" data-icon="payments">payments</span>
+<span class="text-label-md font-label-md">Finance</span>
+</a>
+<a class="flex items-center px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3 text-on-surface-variant group-hover:text-primary" data-icon="monitoring">monitoring</span>
+<span class="text-label-md font-label-md">Analytics</span>
+</a>
+<a class="flex items-center px-3 py-2 rounded-lg text-secondary-container font-bold border-r-2 border-secondary-container bg-obsidian-elevated transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3 text-secondary-container" data-icon="settings">settings</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-4 border-t border-outline-variant space-y-1">
+<a class="flex items-center px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3 text-on-surface-variant group-hover:text-primary" data-icon="help">help</span>
+<span class="text-label-md font-label-md">Help</span>
+</a>
+<a class="flex items-center px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined mr-3 text-on-surface-variant group-hover:text-primary" data-icon="account_circle">account_circle</span>
+<span class="text-label-md font-label-md">User Profile</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col relative h-screen overflow-y-auto bg-obsidian-base">
+<!-- TopNavBar (from JSON, simplified context for internal page) -->
+<header class="flex justify-between items-center w-full px-margin-desktop h-16 sticky top-0 z-40 bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md shadow-sm border-b border-outline-variant">
+<div class="flex items-center space-x-6">
+<h2 class="text-headline-md font-headline-md font-bold text-primary">Settings</h2>
+<nav class="hidden md:flex space-x-4">
+<a class="text-on-surface-variant hover:text-primary transition-all text-label-sm font-label-sm py-5" href="#">General</a>
+<a class="text-on-surface-variant hover:text-primary transition-all text-label-sm font-label-sm py-5" href="#">Team</a>
+<a class="text-primary border-b-2 border-primary pb-2 pt-5 text-label-sm font-label-sm" href="#">Billing &amp; Org</a>
+</nav>
+</div>
+<div class="flex items-center space-x-4">
+<div class="flex space-x-2 text-on-surface-variant">
+<button class="hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span></button>
+</div>
+<img class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A small, professional user avatar featuring a realistic rendering of a person in a minimalist corporate environment, dark mode aesthetic with subtle cyan lighting highlights, 64x64 resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABbHdRIErHiZPcsVXT7f6xYf573Gi6FctTUF27Pq3sUvx7vPFUDFkUfoC9lDbJR5QQ3jsXXSWIW-pxuW4H4TPK-c1G4wly-7CjoATHS7qws0vVyg0FZkLobwfrOrHksz1qRM0a7WSuah1Pq7SP_gc3occRk6j0TvhYdzKN6Fq9q9-TuhmfEKyLpGwlGF3taa_26HcjFYp2hZs2Dre3B8zDVeMss0883foAukhveZOeVASmnIvQhG3PVkKEnhVJj2sHiMj1MSWt1kWP"/>
+</div>
+</header>
+<!-- Canvas -->
+<div class="flex-1 p-margin-mobile md:p-margin-desktop max-w-container-max mx-auto w-full space-y-8">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-headline-lg font-headline-lg text-primary">Organization &amp; Billing</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Manage your enterprise subscription, usage metrics, and invoices.</p>
+</div>
+<button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-lg text-label-md font-label-md hover:bg-secondary-container transition-colors">Manage Payment Methods</button>
+</div>
+<!-- Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Plan Details (Col span 1) -->
+<div class="glass-panel p-6 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center mb-4">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Current Plan</span>
+<span class="bg-ai-purple/10 text-ai-purple px-2 py-1 rounded text-label-sm font-label-sm border border-ai-purple/20">Enterprise</span>
+</div>
+<h3 class="text-display-lg font-display-lg text-primary mb-1">$4,999<span class="text-headline-md font-headline-md text-on-surface-variant">/mo</span></h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-6">Billed annually on Nov 14, 2024</p>
+<ul class="space-y-3 mb-6">
+<li class="flex items-start text-body-sm font-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-success-emerald mr-2 text-[18px]" data-icon="check">check</span> Unlimited Team Members
+                            </li>
+<li class="flex items-start text-body-sm font-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-success-emerald mr-2 text-[18px]" data-icon="check">check</span> Dedicated Success Manager
+                            </li>
+<li class="flex items-start text-body-sm font-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-success-emerald mr-2 text-[18px]" data-icon="check">check</span> Custom AI Models
+                            </li>
+</ul>
+</div>
+<button class="w-full border border-outline-variant text-primary px-4 py-2 rounded-lg text-label-md font-label-md hover:bg-obsidian-elevated transition-colors">Change Plan</button>
+</div>
+<!-- Usage Meters (Col span 2) -->
+<div class="lg:col-span-2 glass-panel p-6 flex flex-col gap-6">
+<div class="flex justify-between items-center pb-4 border-b border-outline-variant">
+<h3 class="text-headline-md font-headline-md text-primary">Current Cycle Usage</h3>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Resets in 12 days</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- AI Tokens -->
+<div>
+<div class="flex justify-between items-center mb-2">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-ai-purple text-[20px]" data-icon="neurology">neurology</span>
+<span class="text-label-md font-label-md text-primary">AI Compute Tokens</span>
+</div>
+<span class="text-label-sm font-label-sm text-warning-amber">85%</span>
+</div>
+<div class="w-full bg-obsidian-base rounded-full h-2 mb-2 border border-outline-variant overflow-hidden">
+<div class="bg-gradient-to-r from-ai-purple to-warning-amber h-2 rounded-full" style="width: 85%"></div>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant text-right">8.5M / 10M tokens used</p>
+</div>
+<!-- Storage -->
+<div>
+<div class="flex justify-between items-center mb-2">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-info-cyan text-[20px]" data-icon="database">database</span>
+<span class="text-label-md font-label-md text-primary">Secure Storage</span>
+</div>
+<span class="text-label-sm font-label-sm text-success-emerald">42%</span>
+</div>
+<div class="w-full bg-obsidian-base rounded-full h-2 mb-2 border border-outline-variant overflow-hidden">
+<div class="bg-info-cyan h-2 rounded-full" style="width: 42%"></div>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant text-right">2.1TB / 5TB used</p>
+</div>
+</div>
+<div class="mt-auto bg-obsidian-base p-4 rounded-lg border border-outline-variant flex items-start space-x-3">
+<span class="material-symbols-outlined text-warning-amber mt-0.5" data-icon="warning">warning</span>
+<div>
+<p class="text-label-md font-label-md text-primary">AI Token usage is high</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">You are approaching your monthly limit. Consider purchasing an add-on pack to avoid throttling.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Invoices Table -->
+<div class="glass-panel overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<h3 class="text-headline-md font-headline-md text-primary">Invoice History</h3>
+<button class="text-label-sm font-label-sm text-info-cyan hover:text-primary transition-colors flex items-center">
+<span class="material-symbols-outlined text-[16px] mr-1" data-icon="download">download</span> Download All
+                    </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant bg-obsidian-elevated/50">
+<th class="py-3 px-6 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Invoice Number</th>
+<th class="py-3 px-6 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Date</th>
+<th class="py-3 px-6 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Amount</th>
+<th class="py-3 px-6 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="py-3 px-6 text-right text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Action</th>
+</tr>
+</thead>
+<tbody class="text-body-sm font-body-sm text-primary divide-y divide-outline-variant">
+<tr class="hover:bg-obsidian-elevated/30 transition-colors">
+<td class="py-4 px-6 font-mono text-label-sm font-label-sm">INV-2023-11-001</td>
+<td class="py-4 px-6 text-on-surface-variant">Nov 14, 2023</td>
+<td class="py-4 px-6">$4,999.00</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-success-emerald/10 text-success-emerald border border-success-emerald/20 uppercase">Paid</span>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[20px]" data-icon="download">download</span></button>
+</td>
+</tr>
+<tr class="hover:bg-obsidian-elevated/30 transition-colors">
+<td class="py-4 px-6 font-mono text-label-sm font-label-sm">INV-2023-10-042</td>
+<td class="py-4 px-6 text-on-surface-variant">Oct 14, 2023</td>
+<td class="py-4 px-6">$4,999.00</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-success-emerald/10 text-success-emerald border border-success-emerald/20 uppercase">Paid</span>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[20px]" data-icon="download">download</span></button>
+</td>
+</tr>
+<tr class="hover:bg-obsidian-elevated/30 transition-colors">
+<td class="py-4 px-6 font-mono text-label-sm font-label-sm">INV-2023-09-088</td>
+<td class="py-4 px-6 text-on-surface-variant">Sep 14, 2023</td>
+<td class="py-4 px-6">$4,999.00</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-success-emerald/10 text-success-emerald border border-success-emerald/20 uppercase">Paid</span>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-[20px]" data-icon="download">download</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Footer (from JSON) -->
+<footer class="flex justify-between items-center w-full px-margin-desktop py-2 h-8 bg-obsidian-base dark:bg-obsidian-base border-t border-outline-variant flat mt-auto">
+<div class="text-label-sm font-label-sm text-on-surface-variant">
+                The Knower OS v2.4.0 • System Status: Operational
+            </div>
+<div class="flex space-x-4">
+<a class="text-on-surface-variant hover:text-primary text-label-sm font-label-sm transition-colors" href="#">Privacy</a>
+<a class="text-on-surface-variant hover:text-primary text-label-sm font-label-sm transition-colors" href="#">API Docs</a>
+<a class="text-on-surface-variant hover:text-primary text-label-sm font-label-sm transition-colors" href="#">Server Health</a>
+</div>
+</footer>
+</main>
+</body></html>

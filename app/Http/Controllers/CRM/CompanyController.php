@@ -3,80 +3,77 @@
 namespace App\Http\Controllers\CRM;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CRM\StoreCompanyRequest;
+use App\Http\Requests\CRM\UpdateCompanyRequest;
+use App\Http\Resources\CRM\CompanyResource;
 use App\Models\Company;
-use Illuminate\Http\Request;
+use App\Services\CRM\CompanyService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class CompanyController extends Controller
 {
-    public function index()
+    protected CompanyService $companyService;
+
+    public function __construct(CompanyService $companyService)
     {
-        $companies = Company::withCount('clients')->latest()->get();
+        $this->companyService = $companyService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Company::class);
+
+        $companys = $this->companyService->getAll();
+        
+        // Load relations if needed
 
         return response()->json([
             'success' => true,
-            'message' => 'Companies retrieved successfully.',
-            'data' => $companies
+            'message' => 'Companys retrieved successfully.',
+            'data' => CompanyResource::collection($companys)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreCompanyRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'company_name' => 'required|string|max:255',
-            'industry' => 'nullable|string|max:255',
-            'website' => 'nullable|url|max:255',
-            'tax_number' => 'nullable|string|max:100',
-            'address' => 'nullable|string',
-            'city' => 'nullable|string|max:100',
-            'country' => 'nullable|string|max:100',
-            'notes' => 'nullable|string',
-        ]);
-
-        $company = Company::create($validated);
+        $company = $this->companyService->create($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Company created successfully.',
-            'data' => $company
+            'data' => new CompanyResource($company)
         ], 201);
     }
 
-    public function show(Company $company)
+    public function show(Company $company): JsonResponse
     {
+        Gate::authorize('view', $company);
         $company->load('clients');
 
         return response()->json([
             'success' => true,
             'message' => 'Company retrieved successfully.',
-            'data' => $company
+            'data' => new CompanyResource($company)
         ]);
     }
 
-    public function update(Request $request, Company $company)
+    public function update(UpdateCompanyRequest $request, Company $company): JsonResponse
     {
-        $validated = $request->validate([
-            'company_name' => 'sometimes|required|string|max:255',
-            'industry' => 'nullable|string|max:255',
-            'website' => 'nullable|url|max:255',
-            'tax_number' => 'nullable|string|max:100',
-            'address' => 'nullable|string',
-            'city' => 'nullable|string|max:100',
-            'country' => 'nullable|string|max:100',
-            'notes' => 'nullable|string',
-        ]);
-
-        $company->update($validated);
+        $company = $this->companyService->update($company, $request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Company updated successfully.',
-            'data' => $company
+            'data' => new CompanyResource($company)
         ]);
     }
 
-    public function destroy(Company $company)
+    public function destroy(Company $company): JsonResponse
     {
-        $company->delete();
+        Gate::authorize('delete', $company);
+
+        $this->companyService->delete($company);
 
         return response()->json([
             'success' => true,

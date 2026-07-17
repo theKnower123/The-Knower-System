@@ -3,81 +3,77 @@
 namespace App\Http\Controllers\Hosting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Hosting\StoreDomainRequest;
+use App\Http\Requests\Hosting\UpdateDomainRequest;
+use App\Http\Resources\Hosting\DomainResource;
 use App\Models\Domain;
-use Illuminate\Http\Request;
+use App\Services\Hosting\DomainService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class DomainController extends Controller
 {
-    public function index()
+    protected DomainService $domainService;
+
+    public function __construct(DomainService $domainService)
     {
-        $domains = Domain::with(['client', 'project', 'sslCertificates'])->latest('id')->get();
+        $this->domainService = $domainService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Domain::class);
+
+        $domains = $this->domainService->getAll();
+        
+        // Load relations if needed
+        $domains->load(['client', 'project', 'sslCertificates']);
 
         return response()->json([
             'success' => true,
             'message' => 'Domains retrieved successfully.',
-            'data' => $domains
+            'data' => DomainResource::collection($domains)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreDomainRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'client_id' => 'nullable|exists:clients,id',
-            'project_id' => 'nullable|exists:projects,id',
-            'domain' => 'required|string|unique:domains,domain|max:255',
-            'registrar' => 'nullable|string|max:100',
-            'expiry_date' => 'nullable|date',
-            'auto_renew' => 'nullable|boolean',
-            'status' => 'nullable|in:active,expired,transferred,pending',
-        ]);
-
-        $domain = Domain::create($validated);
+        $domain = $this->domainService->create($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Domain created successfully.',
-            'data' => $domain
+            'data' => new DomainResource($domain)
         ], 201);
     }
 
-    public function show($id)
+    public function show(Domain $domain): JsonResponse
     {
-        $domain = Domain::with(['client', 'project', 'sslCertificates'])->findOrFail($id);
+        Gate::authorize('view', $domain);
 
         return response()->json([
             'success' => true,
             'message' => 'Domain retrieved successfully.',
-            'data' => $domain
+            'data' => new DomainResource($domain)
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateDomainRequest $request, Domain $domain): JsonResponse
     {
-        $domain = Domain::findOrFail($id);
-
-        $validated = $request->validate([
-            'client_id' => 'nullable|exists:clients,id',
-            'project_id' => 'nullable|exists:projects,id',
-            'domain' => 'sometimes|required|string|max:255|unique:domains,domain,' . $domain->id,
-            'registrar' => 'nullable|string|max:100',
-            'expiry_date' => 'nullable|date',
-            'auto_renew' => 'nullable|boolean',
-            'status' => 'sometimes|required|in:active,expired,transferred,pending',
-        ]);
-
-        $domain->update($validated);
+        $domain = $this->domainService->update($domain, $request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Domain updated successfully.',
-            'data' => $domain
+            'data' => new DomainResource($domain)
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(Domain $domain): JsonResponse
     {
-        $domain = Domain::findOrFail($id);
-        $domain->delete();
+        Gate::authorize('delete', $domain);
+
+        $this->domainService->delete($domain);
 
         return response()->json([
             'success' => true,

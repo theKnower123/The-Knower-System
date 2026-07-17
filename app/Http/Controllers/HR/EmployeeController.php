@@ -3,80 +3,82 @@
 namespace App\Http\Controllers\HR;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\StoreEmployeeRequest;
+use App\Http\Requests\HR\UpdateEmployeeRequest;
+use App\Http\Resources\HR\EmployeeResource;
 use App\Models\Employee;
-use Illuminate\Http\Request;
+use App\Services\HR\EmployeeService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class EmployeeController extends Controller
 {
-    public function index()
+    protected EmployeeService $employeeService;
+
+    public function __construct(EmployeeService $employeeService)
     {
-        $employees = Employee::with('user')->latest()->get();
+        $this->employeeService = $employeeService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Employee::class);
+
+        $employees = $this->employeeService->getAll();
+        
+        // Load relations if needed
+        $employees->load('user');
 
         return response()->json([
             'success' => true,
             'message' => 'Employees retrieved successfully.',
-            'data' => $employees
+            'data' => EmployeeResource::collection($employees)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreEmployeeRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id|unique:employees,user_id',
-            'department' => 'nullable|string|max:100',
-            'position' => 'nullable|string|max:100',
-            'salary' => 'nullable|numeric|min:0',
-            'hire_date' => 'nullable|date',
-            'status' => 'nullable|in:active,inactive,on_leave,terminated',
-        ]);
-
-        $employee = Employee::create($validated);
+        $employee = $this->employeeService->create($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Employee record created successfully.',
-            'data' => $employee
+            'message' => 'Employee created successfully.',
+            'data' => new EmployeeResource($employee)
         ], 201);
     }
 
-    public function show(Employee $employee)
+    public function show(Employee $employee): JsonResponse
     {
+        Gate::authorize('view', $employee);
         $employee->load(['user', 'attendances', 'leaves']);
 
         return response()->json([
             'success' => true,
             'message' => 'Employee retrieved successfully.',
-            'data' => $employee
+            'data' => new EmployeeResource($employee)
         ]);
     }
 
-    public function update(Request $request, Employee $employee)
+    public function update(UpdateEmployeeRequest $request, Employee $employee): JsonResponse
     {
-        $validated = $request->validate([
-            'user_id' => 'sometimes|required|exists:users,id|unique:employees,user_id,' . $employee->id,
-            'department' => 'nullable|string|max:100',
-            'position' => 'nullable|string|max:100',
-            'salary' => 'nullable|numeric|min:0',
-            'hire_date' => 'nullable|date',
-            'status' => 'sometimes|required|in:active,inactive,on_leave,terminated',
-        ]);
-
-        $employee->update($validated);
+        $employee = $this->employeeService->update($employee, $request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Employee record updated successfully.',
-            'data' => $employee
+            'message' => 'Employee updated successfully.',
+            'data' => new EmployeeResource($employee)
         ]);
     }
 
-    public function destroy(Employee $employee)
+    public function destroy(Employee $employee): JsonResponse
     {
-        $employee->delete();
+        Gate::authorize('delete', $employee);
+
+        $this->employeeService->delete($employee);
 
         return response()->json([
             'success' => true,
-            'message' => 'Employee record deleted successfully.',
+            'message' => 'Employee deleted successfully.',
             'data' => null
         ]);
     }

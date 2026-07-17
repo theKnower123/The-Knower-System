@@ -3,47 +3,81 @@
 namespace App\Http\Controllers\Projects;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Projects\StoreTaskCommentRequest;
+use App\Http\Requests\Projects\UpdateTaskCommentRequest;
+use App\Http\Resources\Projects\TaskCommentResource;
 use App\Models\TaskComment;
-use Illuminate\Http\Request;
+use App\Services\Projects\TaskCommentService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class TaskCommentController extends Controller
 {
-    public function index()
+    protected TaskCommentService $taskcommentService;
+
+    public function __construct(TaskCommentService $taskcommentService)
     {
-        $comments = TaskComment::with(['task', 'user'])->latest('id')->get();
+        $this->taskcommentService = $taskcommentService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', TaskComment::class);
+
+        $taskcomments = $this->taskcommentService->getAll();
+        
+        // Load relations if needed
+        $taskcomments->load(['task', 'user']);
 
         return response()->json([
             'success' => true,
-            'message' => 'Task comments retrieved successfully.',
-            'data' => $comments
+            'message' => 'TaskComments retrieved successfully.',
+            'data' => TaskCommentResource::collection($taskcomments)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreTaskCommentRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'task_id' => 'required|exists:tasks,id',
-            'comment' => 'required|string',
-        ]);
-
-        $validated['user_id'] = auth()->id() ?? 1; // Fallback to 1 for tests or unauth if necessary
-        $comment = TaskComment::create($validated);
+        $taskcomment = $this->taskcommentService->create($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Comment added successfully.',
-            'data' => $comment->load('user')
+            'message' => 'TaskComment created successfully.',
+            'data' => new TaskCommentResource($taskcomment)
         ], 201);
     }
 
-    public function destroy($id)
+    public function show(TaskComment $taskcomment): JsonResponse
     {
-        $comment = TaskComment::findOrFail($id);
-        $comment->delete();
+        Gate::authorize('view', $taskcomment);
 
         return response()->json([
             'success' => true,
-            'message' => 'Comment deleted successfully.',
+            'message' => 'TaskComment retrieved successfully.',
+            'data' => new TaskCommentResource($taskcomment)
+        ]);
+    }
+
+    public function update(UpdateTaskCommentRequest $request, TaskComment $taskcomment): JsonResponse
+    {
+        $taskcomment = $this->taskcommentService->update($taskcomment, $request->validated());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'TaskComment updated successfully.',
+            'data' => new TaskCommentResource($taskcomment)
+        ]);
+    }
+
+    public function destroy(TaskComment $taskcomment): JsonResponse
+    {
+        Gate::authorize('delete', $taskcomment);
+
+        $this->taskcommentService->delete($taskcomment);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'TaskComment deleted successfully.',
             'data' => null
         ]);
     }

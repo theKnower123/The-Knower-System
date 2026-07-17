@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Business Intelligence - The Knower OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#004d44",
+                    "inverse-surface": "#dae2fd",
+                    "surface-variant": "#2d3449",
+                    "surface-container-high": "#222a3d",
+                    "error": "#ffb4ab",
+                    "background": "#0b1326",
+                    "outline-variant": "#3a494a",
+                    "on-secondary-fixed-variant": "#005047",
+                    "surface-tint": "#00dce5",
+                    "tertiary": "#fff8fd",
+                    "warning-amber": "#F59E0B",
+                    "surface-container-low": "#131b2e",
+                    "success-emerald": "#10B981",
+                    "on-surface-variant": "#b9caca",
+                    "error-rose": "#F43F5E",
+                    "on-error": "#690005",
+                    "secondary-fixed": "#62fae3",
+                    "surface-dim": "#0b1326",
+                    "surface-container-lowest": "#060e20",
+                    "surface": "#0b1326",
+                    "secondary-fixed-dim": "#3cddc7",
+                    "on-secondary-fixed": "#00201c",
+                    "on-secondary": "#003731",
+                    "inverse-on-surface": "#283044",
+                    "primary-fixed-dim": "#00dce5",
+                    "inverse-primary": "#00696e",
+                    "ai-purple": "#A855F7",
+                    "secondary-container": "#03c6b2",
+                    "surface-container-highest": "#2d3449",
+                    "tertiary-container": "#edd4ff",
+                    "on-primary-container": "#006c71",
+                    "obsidian-elevated": "#1E293B",
+                    "primary": "#e9feff",
+                    "on-surface": "#dae2fd",
+                    "on-tertiary-fixed-variant": "#6900b3",
+                    "on-tertiary": "#490080",
+                    "secondary": "#44e2cd",
+                    "tertiary-fixed-dim": "#ddb7ff",
+                    "obsidian-surface": "#0F172A",
+                    "on-primary": "#003739",
+                    "info-cyan": "#06B6D4",
+                    "on-primary-fixed-variant": "#004f53",
+                    "obsidian-base": "#020617",
+                    "outline": "#849495",
+                    "on-tertiary-fixed": "#2c0051",
+                    "error-container": "#93000a",
+                    "surface-bright": "#31394d",
+                    "on-primary-fixed": "#002021",
+                    "tertiary-fixed": "#f0dbff",
+                    "on-error-container": "#ffdad6",
+                    "surface-container": "#171f33",
+                    "on-background": "#dae2fd",
+                    "primary-container": "#00f5ff",
+                    "primary-fixed": "#63f7ff",
+                    "on-tertiary-container": "#872fd5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "1440px",
+                    "margin-desktop": "64px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "label-md": ["JetBrains Mono"],
+                    "body-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-sm": ["JetBrains Mono"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                    "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                    "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                    "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                    "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                    "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                    "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                    "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                    "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { background-color: #020617; color: #dae2fd; }
+        .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid #1E293B; }
+        .glass-panel-hover:hover { background: rgba(30, 41, 59, 0.8); border-color: #3a494a; }
+        
+        /* Custom scrollbar for dark mode */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2d3449; }
+
+        .ai-gradient-text { background: linear-gradient(to right, #00f5ff, #A855F7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .ai-gradient-border { position: relative; }
+        .ai-gradient-border::before { content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; background: linear-gradient(to right, #00f5ff, #A855F7); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-obsidian-base dark:bg-obsidian-base text-on-surface font-body-md min-h-screen flex selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-screen left-0 w-64 bg-obsidian-base dark:bg-obsidian-base border-r border-outline-variant py-6 px-4 shrink-0 z-50 sticky top-0">
+<!-- Header -->
+<div class="mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-obsidian-elevated flex items-center justify-center border border-outline-variant shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A minimalist, highly polished 3D geometric logo rendered in obsidian and bright cyan. The design features sharp, intersecting planes suggesting a 'K' shape, illuminated by a single, soft overhead studio light. The background is a pure, dark obsidian environment to match a premium tech dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfGSxpvolz58mUJs1FTYHCkqbtcAZ1WRlUjMQnzqqFk-e4FtoPLFJczyBSmquskS4K_YGv_y9UfOfU_if8IgFfubbiV_-eq7Lh_nyL0frM3t1tOWjAY3uufPiXw6Gp0GFpk2gL1vtg0wjOWUAdNDQu5Zn8XxqqQ6YYmSPqdmuMVQp1AFFy16GZiN8os8qlnXrQeQtoEAp0QqL0_jZGVlRV0Aq7TodiQrextnafAraEZRusIuFWBTHgPECFhJLl-wuERaTL69qMJwPh"/>
+</div>
+<div class="flex-1 min-w-0">
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary truncate">The Knower OS</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant truncate">Enterprise Suite</p>
+</div>
+</div>
+<!-- CTA -->
+<button class="w-full mb-6 bg-primary-container hover:bg-primary text-on-primary-container font-label-md text-label-md py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200 shadow-[0_0_15px_rgba(0,245,255,0.15)]">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">add</span>
+            New Workspace
+        </button>
+<!-- Navigation -->
+<nav class="flex-1 space-y-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">group</span>
+                CRM
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">tactic</span>
+                Projects
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+                Finance
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary-container font-bold border-r-2 border-secondary-container bg-obsidian-elevated/50 text-label-md font-label-md scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">monitoring</span>
+                Analytics
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+                Settings
+            </a>
+</nav>
+<!-- Footer Navigation -->
+<div class="pt-4 mt-4 border-t border-outline-variant space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+                Help
+            </a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">account_circle</span>
+                User Profile
+            </a>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col min-h-screen min-w-0">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky top-0 z-40 bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md shadow-sm border-b border-outline-variant shrink-0">
+<!-- Mobile Brand (Hidden on Desktop) -->
+<div class="flex md:hidden items-center gap-2">
+<div class="w-8 h-8 rounded bg-obsidian-elevated flex items-center justify-center border border-outline-variant shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A minimalist, highly polished 3D geometric logo rendered in obsidian and bright cyan. The design features sharp, intersecting planes suggesting a 'K' shape, illuminated by a single, soft overhead studio light. The background is a pure, dark obsidian environment to match a premium tech dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBvcXFjYNfveGDf-gO7b2VnGpf_tsPWltB74e1oHajBJVWkjcaixOJwXj6rO9TLP_rq2o_XwC7j4_CRALU0g_qG_YwAtyTwREPR9-n-AgiITZWZ6-N5t_WDXyH7CK5uF2GIgKx3LftVqWXaqA-nflyOZ9E3MCmAS_JVPDJ3mpcy9n_GubQwCTHEJgfgh-FXThOXXeOPam50Mi4yw9cqJETjoABfgga45pJQnqziOMcuIbnX6EzuG9eyBuU8BlJS9kUpTxP58EQFDtF"/>
+</div>
+<span class="text-headline-md font-headline-md font-black text-primary">The Knower OS</span>
+</div>
+<!-- Search Bar (Left aligned per JSON) -->
+<div class="hidden md:flex flex-1 max-w-md relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary-container transition-colors">search</span>
+<input class="w-full bg-obsidian-base border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-label-sm font-label-sm text-primary placeholder-on-surface-variant focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Search analytics, reports..." type="text"/>
+<div class="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+<kbd class="hidden lg:inline-flex items-center justify-center px-1.5 py-0.5 rounded border border-outline-variant bg-obsidian-elevated text-on-surface-variant text-[10px] font-label-sm">⌘</kbd>
+<kbd class="hidden lg:inline-flex items-center justify-center px-1.5 py-0.5 rounded border border-outline-variant bg-obsidian-elevated text-on-surface-variant text-[10px] font-label-sm">K</kbd>
+</div>
+</div>
+<!-- Navigation Links (Center/Right) -->
+<nav class="hidden md:flex items-center gap-6 mx-8">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">List</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Kanban</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Timeline</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-4 shrink-0">
+<!-- Icon Actions -->
+<div class="hidden md:flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-obsidian-elevated rounded-lg transition-all focus:ring-2 focus:ring-primary-container outline-none">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-obsidian-elevated rounded-lg transition-all focus:ring-2 focus:ring-primary-container outline-none">
+<span class="material-symbols-outlined text-[20px]">language</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-obsidian-elevated rounded-lg transition-all focus:ring-2 focus:ring-primary-container outline-none">
+<span class="material-symbols-outlined text-[20px]">terminal</span>
+</button>
+</div>
+<div class="h-6 w-px bg-outline-variant mx-1 hidden md:block"></div>
+<!-- Primary/Secondary Actions -->
+<button class="hidden md:flex items-center gap-2 px-3 py-1.5 border border-outline-variant rounded-lg text-label-sm font-label-sm text-on-surface hover:bg-obsidian-elevated transition-all focus:ring-2 focus:ring-primary-container outline-none">
+<span class="material-symbols-outlined text-[16px]">add</span>
+                    New Task
+                </button>
+<button class="ai-gradient-border flex items-center gap-2 px-4 py-1.5 bg-obsidian-base rounded-lg text-label-sm font-label-sm text-primary hover:bg-obsidian-elevated transition-all focus:ring-2 focus:ring-primary-container outline-none shadow-[0_0_10px_rgba(168,85,247,0.15)] hover:shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+<span class="material-symbols-outlined text-[16px] text-ai-purple">auto_awesome</span>
+                    AI Assistant
+                </button>
+<!-- Profile Avatar -->
+<button class="w-8 h-8 rounded-full border border-outline-variant overflow-hidden focus:ring-2 focus:ring-primary-container outline-none ml-2">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a corporate user, neutral expression, subtle rim lighting, set against a dark, minimalist abstract background consistent with a high-end enterprise application dark mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLV5z6O6xrven91BIQta-jGsJPWkeXgD6ZCOBQRMnKEahLeKcBsIq6eT33QZktDdZAZtwTbvY0QtreMG5urtoS72bUT_1nRG1vBxLJJKBybtg61hAEV8PfWIgSYve5psN5CeJbs8x45bwx3sITsKn0AmV4cZC93jt39BAlMPC6Kq2SyV-2-MdmVFBV1kKi0_UGKQBAwp92vveX11Z2xQBdnPqfRohFmOWBcY_HDobvweuXj_sgBTgENXkd8RL-zLbbvwoTL0F06RFq"/>
+</button>
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden p-2 text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-margin-mobile md:p-margin-desktop overflow-y-auto w-full max-w-container-max mx-auto space-y-gutter">
+<!-- Dashboard Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+<div>
+<h2 class="text-headline-lg-mobile md:text-display-lg font-headline-lg-mobile md:font-display-lg text-primary mb-2">Business Intelligence</h2>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-2xl">Real-time analytical overview of organizational performance, revenue streams, and AI-driven predictive insights.</p>
+</div>
+<div class="flex gap-3 shrink-0">
+<div class="glass-panel rounded-lg flex items-center p-1">
+<button class="px-3 py-1.5 rounded-md bg-obsidian-elevated text-primary text-label-sm font-label-sm shadow-sm">30 Days</button>
+<button class="px-3 py-1.5 rounded-md text-on-surface-variant hover:text-primary text-label-sm font-label-sm transition-colors">90 Days</button>
+<button class="px-3 py-1.5 rounded-md text-on-surface-variant hover:text-primary text-label-sm font-label-sm transition-colors">YTD</button>
+</div>
+</div>
+</div>
+<!-- Top KPIs Bento -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- KPI 1 -->
+<div class="glass-panel rounded-xl p-5 flex flex-col justify-between relative overflow-hidden glass-panel-hover transition-all">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-success-emerald/10 rounded-full blur-2xl"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Total Revenue</span>
+<span class="material-symbols-outlined text-success-emerald text-[20px]">trending_up</span>
+</div>
+<div>
+<div class="text-headline-lg font-headline-lg text-primary mb-1">$4.2M</div>
+<div class="flex items-center gap-2 text-label-sm font-label-sm">
+<span class="text-success-emerald bg-success-emerald/10 px-1.5 py-0.5 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">arrow_upward</span> 12.5%
+                            </span>
+<span class="text-outline-variant">vs last period</span>
+</div>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="glass-panel rounded-xl p-5 flex flex-col justify-between relative overflow-hidden glass-panel-hover transition-all">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-info-cyan/10 rounded-full blur-2xl"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Active Projects</span>
+<span class="material-symbols-outlined text-info-cyan text-[20px]">tactic</span>
+</div>
+<div>
+<div class="text-headline-lg font-headline-lg text-primary mb-1">142</div>
+<div class="flex items-center gap-2 text-label-sm font-label-sm">
+<span class="text-info-cyan bg-info-cyan/10 px-1.5 py-0.5 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">arrow_upward</span> 4.2%
+                            </span>
+<span class="text-outline-variant">vs last period</span>
+</div>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="glass-panel rounded-xl p-5 flex flex-col justify-between relative overflow-hidden glass-panel-hover transition-all">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-ai-purple/10 rounded-full blur-2xl"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Client Acquisition</span>
+<span class="material-symbols-outlined text-ai-purple text-[20px]">group_add</span>
+</div>
+<div>
+<div class="text-headline-lg font-headline-lg text-primary mb-1">89</div>
+<div class="flex items-center gap-2 text-label-sm font-label-sm">
+<span class="text-ai-purple bg-ai-purple/10 px-1.5 py-0.5 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">arrow_upward</span> 22.1%
+                            </span>
+<span class="text-outline-variant">AI Optimized</span>
+</div>
+</div>
+</div>
+<!-- KPI 4 -->
+<div class="glass-panel rounded-xl p-5 flex flex-col justify-between relative overflow-hidden glass-panel-hover transition-all border-l-2 border-l-warning-amber">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-warning-amber/10 rounded-full blur-2xl"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Churn Risk</span>
+<span class="material-symbols-outlined text-warning-amber text-[20px]">warning</span>
+</div>
+<div>
+<div class="text-headline-lg font-headline-lg text-primary mb-1">2.4%</div>
+<div class="flex items-center gap-2 text-label-sm font-label-sm">
+<span class="text-warning-amber bg-warning-amber/10 px-1.5 py-0.5 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">arrow_downward</span> -0.5%
+                            </span>
+<span class="text-outline-variant">Requires attention</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Charts Area -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Large Chart: Revenue Breakdown -->
+<div class="lg:col-span-2 glass-panel rounded-xl flex flex-col h-[400px]">
+<div class="p-5 border-b border-outline-variant flex justify-between items-center">
+<h3 class="text-body-lg font-body-lg text-primary font-medium">Revenue Breakdown by Department</h3>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<div class="flex-1 p-5 relative overflow-hidden flex items-end gap-2">
+<!-- Abstract Chart Representation (Bar) -->
+<div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(#3a494a 1px, transparent 1px); background-size: 20px 20px;"></div>
+<!-- Y-Axis labels -->
+<div class="absolute left-5 top-5 bottom-8 flex flex-col justify-between text-[10px] font-label-sm text-outline-variant">
+<span>$1.5M</span><span>$1.0M</span><span>$0.5M</span><span>$0</span>
+</div>
+<!-- Grid lines -->
+<div class="absolute left-14 right-5 top-7 border-t border-outline-variant/30"></div>
+<div class="absolute left-14 right-5 top-[38%] border-t border-outline-variant/30"></div>
+<div class="absolute left-14 right-5 top-[68%] border-t border-outline-variant/30"></div>
+<div class="absolute left-14 right-5 bottom-8 border-t border-outline-variant/60"></div>
+<!-- Bars -->
+<div class="flex-1 flex items-end justify-around h-full pt-4 pb-8 pl-10 z-10">
+<div class="w-12 bg-primary-container/80 hover:bg-primary-container rounded-t-sm h-[80%] transition-all relative group cursor-pointer">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-obsidian-elevated text-primary text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 border border-outline-variant">$1.2M</div>
+</div>
+<div class="w-12 bg-secondary-container/80 hover:bg-secondary-container rounded-t-sm h-[60%] transition-all relative group cursor-pointer">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-obsidian-elevated text-primary text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 border border-outline-variant">$0.9M</div>
+</div>
+<div class="w-12 bg-info-cyan/80 hover:bg-info-cyan rounded-t-sm h-[40%] transition-all relative group cursor-pointer">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-obsidian-elevated text-primary text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 border border-outline-variant">$0.6M</div>
+</div>
+<div class="w-12 bg-success-emerald/80 hover:bg-success-emerald rounded-t-sm h-[75%] transition-all relative group cursor-pointer">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-obsidian-elevated text-primary text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 border border-outline-variant">$1.1M</div>
+</div>
+<div class="w-12 bg-warning-amber/80 hover:bg-warning-amber rounded-t-sm h-[30%] transition-all relative group cursor-pointer">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-obsidian-elevated text-primary text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 border border-outline-variant">$0.4M</div>
+</div>
+</div>
+<!-- X-Axis labels -->
+<div class="absolute bottom-2 left-14 right-5 flex justify-around text-[10px] font-label-sm text-outline-variant">
+<span class="w-12 text-center">Engineering</span>
+<span class="w-12 text-center">Marketing</span>
+<span class="w-12 text-center">Sales</span>
+<span class="w-12 text-center">Product</span>
+<span class="w-12 text-center">Support</span>
+</div>
+</div>
+</div>
+<!-- AI Growth Predictions -->
+<div class="glass-panel rounded-xl flex flex-col h-[400px] border border-ai-purple/30 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-ai-purple/10 blur-3xl rounded-full"></div>
+<div class="p-5 border-b border-outline-variant/50 flex justify-between items-center z-10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-ai-purple">auto_awesome</span>
+<h3 class="text-body-lg font-body-lg text-primary font-medium">AI Growth Predictions</h3>
+</div>
+</div>
+<div class="flex-1 p-5 flex flex-col gap-4 z-10 overflow-y-auto">
+<div class="bg-obsidian-elevated/50 p-4 rounded-lg border border-outline-variant/50">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-success-emerald"></span>
+<h4 class="text-label-md font-label-md text-primary">Q3 Revenue Surge</h4>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-3">Model predicts a 15% increase in enterprise tier upgrades based on current usage metrics and market trends.</p>
+<div class="flex items-center justify-between text-[10px] font-label-sm">
+<span class="text-outline-variant">Confidence Score</span>
+<span class="text-success-emerald">92%</span>
+</div>
+<div class="w-full bg-obsidian-base h-1 mt-1 rounded-full overflow-hidden">
+<div class="bg-success-emerald h-full w-[92%]"></div>
+</div>
+</div>
+<div class="bg-obsidian-elevated/50 p-4 rounded-lg border border-outline-variant/50">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-warning-amber"></span>
+<h4 class="text-label-md font-label-md text-primary">Resource Bottleneck</h4>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-3">Anticipated engineering capacity constraint by mid-November. Recommend scaling backend team.</p>
+<div class="flex items-center justify-between text-[10px] font-label-sm">
+<span class="text-outline-variant">Confidence Score</span>
+<span class="text-warning-amber">78%</span>
+</div>
+<div class="w-full bg-obsidian-base h-1 mt-1 rounded-full overflow-hidden">
+<div class="bg-warning-amber h-full w-[78%]"></div>
+</div>
+</div>
+<button class="mt-auto w-full py-2 border border-ai-purple/50 rounded-lg text-label-sm font-label-sm text-ai-purple hover:bg-ai-purple/10 transition-colors">
+                            Generate Full AI Report
+                        </button>
+</div>
+</div>
+</div>
+<!-- Bottom Row: Client Trends & Export Center -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter pb-8">
+<!-- Client Acquisition Trends -->
+<div class="lg:col-span-2 glass-panel rounded-xl p-5 flex flex-col h-[350px]">
+<h3 class="text-body-lg font-body-lg text-primary font-medium mb-4">Client Acquisition Velocity</h3>
+<div class="flex-1 relative w-full rounded border border-outline-variant/30 overflow-hidden bg-obsidian-base/50 flex items-center justify-center">
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: linear-gradient(#3a494a 1px, transparent 1px), linear-gradient(90deg, #3a494a 1px, transparent 1px); background-size: 40px 40px;"></div>
+<!-- Simulated Line Chart -->
+<svg class="w-full h-full p-4" preserveaspectratio="none" viewbox="0 0 800 200">
+<path d="M0,180 C100,160 200,190 300,120 C400,50 500,140 600,80 C700,20 800,40 800,40" fill="none" stroke="#00f5ff" stroke-width="3" vector-effect="non-scaling-stroke"></path>
+<path d="M0,180 C100,160 200,190 300,120 C400,50 500,140 600,80 C700,20 800,40 800,40 L800,200 L0,200 Z" fill="url(#cyan-gradient)" opacity="0.2"></path>
+<defs>
+<lineargradient id="cyan-gradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#00f5ff"></stop>
+<stop offset="100%" stop-color="transparent"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+</div>
+<!-- Export Center -->
+<div class="glass-panel rounded-xl p-5 flex flex-col h-[350px]">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-on-surface-variant">download</span>
+<h3 class="text-body-lg font-body-lg text-primary font-medium">Export Center</h3>
+</div>
+<div class="flex-1 flex flex-col gap-3">
+<div class="p-3 border border-outline-variant rounded-lg hover:border-primary-container transition-colors group cursor-pointer bg-obsidian-elevated/30">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error-rose text-[24px]">picture_as_pdf</span>
+<div>
+<h4 class="text-label-sm font-label-sm text-primary">Executive Summary</h4>
+<p class="text-[10px] text-outline-variant font-label-sm">PDF • 2.4 MB</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">download</span>
+</div>
+</div>
+<div class="p-3 border border-outline-variant rounded-lg hover:border-primary-container transition-colors group cursor-pointer bg-obsidian-elevated/30">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-success-emerald text-[24px]">csv</span>
+<div>
+<h4 class="text-label-sm font-label-sm text-primary">Raw Data Metrics</h4>
+<p class="text-[10px] text-outline-variant font-label-sm">CSV • 14.1 MB</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">download</span>
+</div>
+</div>
+<div class="p-3 border border-outline-variant rounded-lg hover:border-primary-container transition-colors group cursor-pointer bg-obsidian-elevated/30 opacity-50">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-ai-purple text-[24px]">slideshow</span>
+<div>
+<h4 class="text-label-sm font-label-sm text-primary">Pitch Deck Generation</h4>
+<p class="text-[10px] text-outline-variant font-label-sm flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-ai-purple">auto_awesome</span> Processing...</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant animate-spin">refresh</span>
+</div>
+</div>
+</div>
+<button class="mt-4 w-full py-2 bg-primary-container text-on-primary-container font-label-sm text-label-sm rounded-lg hover:bg-primary transition-colors font-medium">
+                        Custom Export Build
+                    </button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-2 h-8 bg-obsidian-base dark:bg-obsidian-base border-t border-outline-variant shrink-0 mt-auto">
+<div class="text-label-sm font-label-sm text-on-surface-variant">The Knower OS v2.4.0 • <span class="text-success-emerald dark:text-success-emerald">System Status: Operational</span></div>
+<div class="hidden md:flex gap-4">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Server Health</a>
+</div>
+</footer>
+</div>
+</body></html>

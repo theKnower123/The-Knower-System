@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Knower OS - Infrastructure Monitoring</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#e7c427",
+                        "on-secondary-fixed": "#2c0051",
+                        "tertiary-container": "#ffdb3f",
+                        "on-tertiary-fixed": "#221b00",
+                        "background": "#0d1515",
+                        "primary-container": "#00f5ff",
+                        "surface-variant": "#2e3637",
+                        "surface-container-lowest": "#081010",
+                        "inverse-surface": "#dce4e4",
+                        "surface-container-high": "#232b2c",
+                        "primary-fixed-dim": "#00dce5",
+                        "surface-container-highest": "#2e3637",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "tertiary": "#fff9f0",
+                        "on-tertiary-container": "#736000",
+                        "on-primary-fixed-variant": "#004f53",
+                        "on-primary-fixed": "#002021",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-surface": "#dce4e4",
+                        "on-secondary-container": "#d6a9ff",
+                        "on-primary-container": "#006c71",
+                        "on-error": "#690005",
+                        "outline": "#849495",
+                        "surface-dim": "#0d1515",
+                        "on-tertiary-fixed-variant": "#544600",
+                        "surface": "#0d1515",
+                        "on-secondary": "#490080",
+                        "secondary-container": "#6f00be",
+                        "surface-bright": "#323b3b",
+                        "tertiary-fixed": "#ffe16c",
+                        "primary-fixed": "#63f7ff",
+                        "error": "#ffb4ab",
+                        "error-container": "#93000a",
+                        "on-primary": "#003739",
+                        "secondary-fixed": "#f0dbff",
+                        "inverse-primary": "#00696e",
+                        "surface-tint": "#00dce5",
+                        "on-tertiary": "#3a3000",
+                        "surface-container": "#192121",
+                        "primary": "#e9feff",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#2a3232",
+                        "surface-container-low": "#151d1d",
+                        "outline-variant": "#3a494a",
+                        "secondary": "#ddb7ff",
+                        "on-background": "#dce4e4",
+                        "on-surface-variant": "#b9caca"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gap-lg": "2rem",
+                        "gap-xs": "0.5rem",
+                        "gap-md": "1rem",
+                        "container-max": "1440px",
+                        "base-unit": "4px",
+                        "margin-mobile": "1rem",
+                        "margin-desktop": "2.5rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "code-sm": ["JetBrains Mono"],
+                        "label-xs": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "code-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-xs": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "title-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Fallback mapping for injected styles that might miss config */
+        .bg-obsidian-base { background-color: #081010; } /* surface-container-lowest */
+        .bg-obsidian-surface { background-color: #192121; } /* surface-container */
+        .bg-obsidian-elevated { background-color: #232b2c; } /* surface-container-high */
+        .text-success-emerald { color: #00f5ff; } /* mapped to primary-container for vibe */
+        
+        /* Glassmorphism helpers */
+        .glass-panel {
+            background-color: rgba(25, 33, 33, 0.6); /* surface-container */
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-table-header {
+            background-color: rgba(35, 43, 44, 0.8);
+            backdrop-filter: blur(8px);
+        }
+
+        /* Sparkline animation */
+        @keyframes drawLine {
+            to { stroke-dashoffset: 0; }
+        }
+        .sparkline-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawLine 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background flex h-screen overflow-hidden font-body-md text-body-md">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-obsidian-base dark:bg-obsidian-base text-secondary-container dark:text-secondary-container docked h-screen left-0 w-64 border-r border-outline-variant flat no shadows flex flex-col h-full py-6 px-4 hidden md:flex shrink-0">
+<!-- Header -->
+<div class="flex items-center gap-xs mb-gap-lg px-2">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center shrink-0">
+<img alt="Organization Workspace Logo" class="w-full h-full object-cover rounded" data-alt="A clean, minimalist 3D rendering of an abstract geometric logo shape representing an organization workspace, rendered in vibrant cyan and dark slate tones, professional high-end corporate lighting, 8k resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA21ylCG7QPpJUNYt28-K50gHrtItEg6MG3TK5C2Pbc-NFB_v5yy90FphWJ_uHmU88oCEIsouwlxNWYtHcdzYnVx3POtTQkiCzefFdW6klyGBYv7FgkAY1Bc90V9oknO6SN5SsFMmR-tNRF0ljy2CGxYmco1vvVkF_rl17craaMxt6WCMp1Q9sTLQSYgU765YRWA0Ku3YQ7pR6ywh1_NffrTaB2-itOGbWvcjSPhUB4U2G37H4n55vJeDYBjjchOq6BxYFDp26_1T9D"/>
+</div>
+<div>
+<div class="text-headline-md font-headline-md font-bold text-primary dark:text-primary leading-none text-lg">The Knower OS</div>
+<div class="text-label-xs font-label-xs text-on-surface-variant">Enterprise Suite</div>
+</div>
+</div>
+<!-- Main Tabs -->
+<div class="flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-xs px-3 py-2 rounded text-secondary-container font-bold border-r-2 border-secondary-container hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 Active: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-label-md font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-xs px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-label-md font-label-md">CRM</span>
+</a>
+<a class="flex items-center gap-xs px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">tactic</span>
+<span class="text-label-md font-label-md">Projects</span>
+</a>
+<a class="flex items-center gap-xs px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="text-label-md font-label-md">Finance</span>
+</a>
+<a class="flex items-center gap-xs px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="text-label-md font-label-md">Analytics</span>
+</a>
+<a class="flex items-center gap-xs px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</div>
+<!-- Footer Actions -->
+<div class="mt-auto flex flex-col gap-xs pt-4 border-t border-outline-variant">
+<button class="w-full bg-primary-container text-on-primary-container py-2 rounded-lg text-label-xs font-label-xs font-bold hover:bg-primary transition-colors mb-2">New Workspace</button>
+<a class="flex items-center gap-xs px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-label-md font-label-md">Help</span>
+</a>
+<a class="flex items-center gap-xs px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-label-md font-label-md">User Profile</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md text-primary dark:text-primary docked full-width top-0 border-b border-outline-variant shadow-sm flex justify-between items-center w-full px-margin-desktop h-16 sticky top-0 z-40">
+<div class="flex items-center gap-md">
+<div class="md:hidden text-headline-md font-headline-md font-black text-primary">The Knower OS</div>
+<!-- Search on left -->
+<div class="hidden md:flex items-center bg-surface-container-high rounded-full px-3 py-1 border border-outline-variant focus-within:ring-2 focus-within:ring-primary-container focus-within:border-transparent transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-label-sm font-label-sm text-on-surface w-48 placeholder-on-surface-variant" placeholder="Search infrastructure..." type="text"/>
+</div>
+</div>
+<!-- Navigation Links (Centered-ish) -->
+<nav class="hidden md:flex items-center gap-md">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">List</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Kanban</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Timeline</a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-sm md:gap-md">
+<button class="hidden lg:flex items-center gap-1 text-label-sm font-label-sm text-primary hover:text-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+                    AI Assistant
+                </button>
+<button class="hidden md:block bg-transparent border border-primary-container text-primary-container px-3 py-1 rounded text-label-sm font-label-sm hover:bg-primary-container/10 transition-colors focus:ring-2 focus:ring-primary-container">
+                    New Task
+                </button>
+<div class="flex items-center gap-1">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-all rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-all rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined">language</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-all rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined">terminal</span>
+</button>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant ml-2 shrink-0">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A professional, high-contrast, minimalist portrait of a user avatar suitable for an enterprise software interface, dramatic side lighting against a pure dark background, hyper-realistic, 8k resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyJBEzs2-tjU92Aggb3DwZ-6wPSyV42A2GyOpxGZBaixP1EKd8MvOOkbObpfs33h4O4sVtJFs9hWiWJtuoC3YVcQSIh5i58KOD57AdKy0mxR7Yr0M8zT0Wm6lL5Ga8ykQTpYI_L3BrQH7LW7lGu-2tX1-sXpneKqTVDP0oXp9KRJT2HJ3D7KxTZGF0z-7tK5LxpwDNkNESe80a9Pl5I2SRqE_hZBcEi9oh274SGijEy5vkj4_SRsWLVld7JF_jPgdH3Hb3T0PFxfJc"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="flex-1 overflow-y-auto p-margin-mobile md:p-margin-desktop flex flex-col gap-lg pb-12">
+<div class="flex justify-between items-end mb-2">
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-on-surface tracking-tight">Infrastructure Health</h1>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Real-time telemtry and systemic overview.</p>
+</div>
+<div class="hidden md:flex items-center gap-2 text-label-xs font-label-xs text-primary bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">fiber_manual_record</span>
+                    Live Sync
+                </div>
+</div>
+<!-- Top Row: Gauges & Uptime Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- CPU Gauge -->
+<div class="glass-panel rounded-xl p-6 flex flex-col items-center justify-center relative group">
+<div class="absolute top-4 left-4 text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">memory</span> CPU Load
+                    </div>
+<div class="w-32 h-32 relative mt-4">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-variant" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-primary-container drop-shadow-[0_0_8px_rgba(0,245,255,0.4)]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="68, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-title-sm font-title-sm text-on-surface font-bold">68%</span>
+</div>
+</div>
+<div class="mt-4 text-center">
+<div class="text-label-xs font-label-xs text-on-surface-variant">Cluster Alpha-1</div>
+</div>
+</div>
+<!-- Memory Gauge -->
+<div class="glass-panel rounded-xl p-6 flex flex-col items-center justify-center relative group">
+<div class="absolute top-4 left-4 text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">storage</span> Memory
+                    </div>
+<div class="w-32 h-32 relative mt-4">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-variant" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-secondary-container drop-shadow-[0_0_8px_rgba(111,0,190,0.4)]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="82, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-title-sm font-title-sm text-on-surface font-bold">82%</span>
+</div>
+</div>
+<div class="mt-4 text-center">
+<div class="text-label-xs font-label-xs text-on-surface-variant">128GB / 156GB</div>
+</div>
+</div>
+<!-- Uptime Grid -->
+<div class="glass-panel rounded-xl p-6 flex flex-col h-full">
+<div class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1 mb-4">
+<span class="material-symbols-outlined text-sm">grid_on</span> Server Uptime (90 Days)
+                    </div>
+<div class="flex-1 flex items-center justify-center">
+<!-- Simulate a dense grid of uptime blocks -->
+<div class="grid grid-cols-[repeat(15,minmax(0,1fr))] gap-1 w-full max-w-[280px]">
+<!-- Generating dummy grid items, styling variations to show status -->
+<script>
+                                for(let i=0; i<75; i++) {
+                                    let statusClass = "bg-primary-container/80"; // mostly good
+                                    if(i === 12 || i === 45) statusClass = "bg-error-container"; // error
+                                    if(i === 33 || i === 68) statusClass = "bg-tertiary-fixed-dim"; // warning
+                                    document.write(`<div class="w-full aspect-square rounded-[2px] ${statusClass} hover:ring-1 hover:ring-on-surface transition-all cursor-crosshair"></div>`);
+                                }
+                            </script>
+</div>
+</div>
+<div class="mt-4 flex justify-between text-label-xs font-label-xs text-on-surface-variant">
+<span>90 Days Ago</span>
+<span>99.98% Uptime</span>
+<span>Today</span>
+</div>
+</div>
+</div>
+<!-- Middle Row: Database Health Sparkline -->
+<div class="glass-panel rounded-xl p-6 w-full relative overflow-hidden">
+<div class="flex justify-between items-center mb-6 relative z-10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">database</span>
+<h2 class="text-title-sm font-title-sm text-on-surface">Database Throughput</h2>
+</div>
+<div class="text-primary-container font-code-sm text-code-sm font-bold bg-primary-container/10 px-2 py-1 rounded">
+                        4,291 qps
+                    </div>
+</div>
+<div class="h-32 w-full relative z-10">
+<!-- Sparkline SVG -->
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 1000 100">
+<defs>
+<lineargradient id="sparklineGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#00f5ff" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#00f5ff" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Area fill -->
+<path d="M0,80 Q50,60 100,75 T200,40 T300,60 T400,20 T500,50 T600,10 T700,40 T800,25 T900,55 T1000,15 L1000,100 L0,100 Z" fill="url(#sparklineGrad)"></path>
+<!-- Line path -->
+<path class="sparkline-path" d="M0,80 Q50,60 100,75 T200,40 T300,60 T400,20 T500,50 T600,10 T700,40 T800,25 T900,55 T1000,15" fill="none" stroke="#00f5ff" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Background decorative mesh/grid -->
+<div class="absolute inset-0 z-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, #dce4e4 1px, transparent 0); background-size: 24px 24px;"></div>
+</div>
+<!-- Bottom Row: System Errors Table -->
+<div class="glass-panel rounded-xl overflow-hidden flex flex-col">
+<div class="p-6 border-b border-outline-variant/30 flex justify-between items-center bg-surface-container-high/50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error">warning</span>
+<h2 class="text-title-sm font-title-sm text-on-surface">Recent System Errors</h2>
+</div>
+<button class="text-label-sm font-label-sm text-on-surface-variant hover:text-on-surface flex items-center gap-1 transition-colors">
+                        View Logs <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="glass-table-header sticky top-0 z-20">
+<tr>
+<th class="p-4 text-label-xs font-label-xs text-on-surface-variant uppercase tracking-wider font-semibold">Timestamp</th>
+<th class="p-4 text-label-xs font-label-xs text-on-surface-variant uppercase tracking-wider font-semibold">Service</th>
+<th class="p-4 text-label-xs font-label-xs text-on-surface-variant uppercase tracking-wider font-semibold">Error Code</th>
+<th class="p-4 text-label-xs font-label-xs text-on-surface-variant uppercase tracking-wider font-semibold">Message</th>
+<th class="p-4 text-label-xs font-label-xs text-on-surface-variant uppercase tracking-wider font-semibold text-right">Action</th>
+</tr>
+</thead>
+<tbody class="font-code-sm text-code-sm text-on-surface">
+<tr class="border-b border-outline-variant/20 hover:bg-surface-container-high/40 transition-colors">
+<td class="p-4 text-on-surface-variant">10:42:01 UTC</td>
+<td class="p-4"><span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-error"></span> auth-service</span></td>
+<td class="p-4 text-error">ERR_CONN_TIMEOUT</td>
+<td class="p-4 truncate max-w-xs">Failed to connect to Redis cache node 3.</td>
+<td class="p-4 text-right"><button class="text-primary hover:text-primary-fixed underline text-label-xs">Trace</button></td>
+</tr>
+<tr class="border-b border-outline-variant/20 hover:bg-surface-container-high/40 transition-colors bg-surface-container-low/20">
+<td class="p-4 text-on-surface-variant">09:15:33 UTC</td>
+<td class="p-4"><span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span> payment-api</span></td>
+<td class="p-4 text-tertiary-fixed-dim">WARN_RATE_LIMIT</td>
+<td class="p-4 truncate max-w-xs">Gateway IP exceeded threshold (10k/min).</td>
+<td class="p-4 text-right"><button class="text-primary hover:text-primary-fixed underline text-label-xs">Trace</button></td>
+</tr>
+<tr class="border-b border-outline-variant/20 hover:bg-surface-container-high/40 transition-colors">
+<td class="p-4 text-on-surface-variant">08:01:12 UTC</td>
+<td class="p-4"><span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-error"></span> ingestion-worker</span></td>
+<td class="p-4 text-error">FATAL_OOM</td>
+<td class="p-4 truncate max-w-xs">Worker pod evicted due to memory pressure.</td>
+<td class="p-4 text-right"><button class="text-primary hover:text-primary-fixed underline text-label-xs">Trace</button></td>
+</tr>
+<tr class="hover:bg-surface-container-high/40 transition-colors bg-surface-container-low/20">
+<td class="p-4 text-on-surface-variant">07:45:00 UTC</td>
+<td class="p-4"><span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-secondary-container"></span> db-replica-2</span></td>
+<td class="p-4 text-secondary-container">SYNC_LAG_HIGH</td>
+<td class="p-4 truncate max-w-xs">Replication lag exceeded 5000ms threshold.</td>
+<td class="p-4 text-right"><button class="text-primary hover:text-primary-fixed underline text-label-xs">Trace</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Footer (Shared Component) -->
+<footer class="bg-obsidian-base dark:bg-obsidian-base text-success-emerald dark:text-success-emerald docked full-width bottom-0 border-t border-outline-variant flat flex justify-between items-center w-full px-margin-desktop py-2 h-8 mt-auto shrink-0 z-40 bg-surface-container-lowest">
+<div class="text-label-sm font-label-sm text-on-surface-variant">
+                The Knower OS v2.4.0 • <span class="text-primary-container">System Status: Operational</span>
+</div>
+<div class="flex gap-md">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Server Health</a>
+</div>
+</footer>
+</main>
+</body></html>

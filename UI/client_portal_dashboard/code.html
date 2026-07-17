@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Knower OS - Client Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#004d44",
+                        "inverse-surface": "#dae2fd",
+                        "surface-variant": "#2d3449",
+                        "surface-container-high": "#222a3d",
+                        "error": "#ffb4ab",
+                        "background": "#0b1326",
+                        "outline-variant": "#3a494a",
+                        "on-secondary-fixed-variant": "#005047",
+                        "surface-tint": "#00dce5",
+                        "tertiary": "#fff8fd",
+                        "warning-amber": "#F59E0B",
+                        "surface-container-low": "#131b2e",
+                        "success-emerald": "#10B981",
+                        "on-surface-variant": "#b9caca",
+                        "error-rose": "#F43F5E",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#62fae3",
+                        "surface-dim": "#0b1326",
+                        "surface-container-lowest": "#060e20",
+                        "surface": "#0b1326",
+                        "secondary-fixed-dim": "#3cddc7",
+                        "on-secondary-fixed": "#00201c",
+                        "on-secondary": "#003731",
+                        "inverse-on-surface": "#283044",
+                        "primary-fixed-dim": "#00dce5",
+                        "inverse-primary": "#00696e",
+                        "ai-purple": "#A855F7",
+                        "secondary-container": "#03c6b2",
+                        "surface-container-highest": "#2d3449",
+                        "tertiary-container": "#edd4ff",
+                        "on-primary-container": "#006c71",
+                        "obsidian-elevated": "#1E293B",
+                        "primary": "#e9feff",
+                        "on-surface": "#dae2fd",
+                        "on-tertiary-fixed-variant": "#6900b3",
+                        "on-tertiary": "#490080",
+                        "secondary": "#44e2cd",
+                        "tertiary-fixed-dim": "#ddb7ff",
+                        "obsidian-surface": "#0F172A",
+                        "on-primary": "#003739",
+                        "info-cyan": "#06B6D4",
+                        "on-primary-fixed-variant": "#004f53",
+                        "obsidian-base": "#020617",
+                        "outline": "#849495",
+                        "on-tertiary-fixed": "#2c0051",
+                        "error-container": "#93000a",
+                        "surface-bright": "#31394d",
+                        "on-primary-fixed": "#002021",
+                        "tertiary-fixed": "#f0dbff",
+                        "on-error-container": "#ffdad6",
+                        "surface-container": "#171f33",
+                        "on-background": "#dae2fd",
+                        "primary-container": "#00f5ff",
+                        "primary-fixed": "#63f7ff",
+                        "on-tertiary-container": "#872fd5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "margin-desktop": "64px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid #1E293B;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 11px;
+            top: 24px;
+            bottom: 0;
+            width: 2px;
+            background-color: #1E293B;
+            z-index: 0;
+        }
+
+        .timeline-item:last-child .timeline-line {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-obsidian-base text-on-surface font-body-md min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md text-primary dark:text-primary border-b border-outline-variant shadow-sm flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky top-0 z-40 transition-all focus-within:ring-2 focus-within:ring-primary-container">
+<div class="flex items-center gap-6">
+<span class="text-headline-md font-headline-md font-black text-primary">The Knower OS</span>
+<!-- Navigation Links (Hidden on Mobile) -->
+<div class="hidden md:flex items-center gap-6">
+<a class="text-label-sm font-label-sm text-primary border-b-2 border-primary pb-2 transition-all" href="#">Dashboard</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all pb-2" href="#">Projects</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all pb-2" href="#">Invoices</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<!-- Icon Actions -->
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-obsidian-elevated relative group">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-warning-amber rounded-full"></span>
+</button>
+</div>
+<!-- Profile -->
+<div class="h-8 w-8 rounded-full bg-obsidian-elevated border border-outline-variant overflow-hidden cursor-pointer">
+<img alt="User Avatar" class="object-cover w-full h-full" data-alt="A professional headshot of a business client in a dark, moody corporate setting, illuminated by a soft rim light. The overall color palette is cool and minimal, fitting a premium enterprise software interface. The person looks approachable yet serious." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtHSo0wupXu6Dt9g3ATlNRw2MIyU0M0PkRAwAsO39s1T3B7UdC_dpEeXFVSNHIKORj0Sb90k_2MPl9UEgLJVwgTnYJZKh_ogdK2gyPMgdXhnycE6qMAWo73dxBCOAUAOGSDU7FVW3KGeo8_JvXjGQ0xV3u35EGnh3bzx_uU4d2-T5On6dzFrl9OVjzZPioEdARIlJ05U4oA5JwyG_C9Xt7J2nVRewsgn3KFIDGaTEzev4oSI8O8x4F5xTtxywd89qMI1u1rBb9s_sw"/>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 md:py-12 flex flex-col gap-gutter">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4">
+<div>
+<h1 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-primary mb-2">Welcome back, Client</h1>
+<p class="text-body-md font-body-md text-on-surface-variant">Here is an overview of your active engagements and pending items.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-primary-container text-on-primary-container text-label-sm font-label-sm px-4 py-2 rounded-lg hover:bg-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    New Ticket
+                </button>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Left Column (Wider on Desktop) -->
+<div class="md:col-span-8 flex flex-col gap-gutter">
+<!-- Project Progress Card -->
+<section class="glass-panel rounded-xl p-6 relative overflow-hidden group">
+<!-- Subtle ambient glow -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-info-cyan/10 rounded-full blur-[80px] pointer-events-none transition-opacity duration-500 opacity-50 group-hover:opacity-100"></div>
+<div class="flex justify-between items-center mb-6 relative z-10">
+<h2 class="text-headline-md font-headline-md text-primary">Active Project: Alpha Rebrand</h2>
+<span class="bg-success-emerald/10 text-success-emerald text-label-sm font-label-sm px-3 py-1 rounded-full border border-success-emerald/20">On Track</span>
+</div>
+<div class="relative z-10">
+<div class="flex justify-between text-label-sm font-label-sm text-on-surface-variant mb-2">
+<span>Overall Progress</span>
+<span class="text-primary">65%</span>
+</div>
+<div class="h-2 w-full bg-obsidian-base rounded-full overflow-hidden border border-outline-variant">
+<div class="h-full bg-primary-container rounded-full w-[65%] relative">
+<div class="absolute inset-0 bg-white/20 w-full h-full custom-progress-glow"></div>
+</div>
+</div>
+</div>
+<div class="mt-8 relative z-10">
+<h3 class="text-label-md font-label-md text-on-surface-variant mb-4 uppercase tracking-wider">Milestone Timeline</h3>
+<div class="flex flex-col relative pl-2">
+<!-- Timeline Item 1 (Completed) -->
+<div class="timeline-item relative pl-8 pb-6">
+<div class="timeline-line"></div>
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-success-emerald/20 border border-success-emerald flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-success-emerald" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex flex-col">
+<span class="text-body-md font-body-md text-primary">Discovery Phase</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant mt-1">Completed Oct 12</span>
+</div>
+</div>
+<!-- Timeline Item 2 (In Progress) -->
+<div class="timeline-item relative pl-8 pb-6">
+<div class="timeline-line"></div>
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-obsidian-base border-2 border-primary-container flex items-center justify-center z-10">
+<div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
+</div>
+<div class="flex flex-col">
+<span class="text-body-md font-body-md text-primary">Design &amp; Prototyping</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant mt-1">In Progress • Due Nov 05</span>
+</div>
+</div>
+<!-- Timeline Item 3 (Upcoming) -->
+<div class="timeline-item relative pl-8">
+<div class="timeline-line"></div>
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-obsidian-base border border-outline-variant flex items-center justify-center z-10">
+</div>
+<div class="flex flex-col opacity-50">
+<span class="text-body-md font-body-md text-primary">Implementation</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant mt-1">Scheduled Nov 10</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Invoices (Horizontal List) -->
+<section class="glass-panel rounded-xl p-6 flex flex-col">
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Recent Invoices</h2>
+<a class="text-label-sm font-label-sm text-primary hover:underline" href="#">View All</a>
+</div>
+<div class="flex flex-col gap-2">
+<!-- Invoice Item -->
+<div class="flex items-center justify-between p-3 rounded-lg hover:bg-obsidian-elevated transition-colors border border-transparent hover:border-outline-variant group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-obsidian-base border border-outline-variant flex items-center justify-center text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">receipt_long</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm text-primary">INV-2023-089</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Oct 01, 2023</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-body-md font-body-md font-semibold text-primary">$4,500.00</span>
+<span class="bg-warning-amber/10 text-warning-amber text-label-sm font-label-sm px-2 py-1 rounded border border-warning-amber/20 hidden sm:inline-block">Pending</span>
+<button class="text-primary-container hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+</div>
+</div>
+<!-- Invoice Item -->
+<div class="flex items-center justify-between p-3 rounded-lg hover:bg-obsidian-elevated transition-colors border border-transparent hover:border-outline-variant group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-obsidian-base border border-outline-variant flex items-center justify-center text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">receipt_long</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm text-primary">INV-2023-075</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Sep 01, 2023</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-body-md font-body-md font-semibold text-primary">$4,500.00</span>
+<span class="bg-success-emerald/10 text-success-emerald text-label-sm font-label-sm px-2 py-1 rounded border border-success-emerald/20 hidden sm:inline-block">Paid</span>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column (Sidebar-esque on Desktop) -->
+<div class="md:col-span-4 flex flex-col gap-gutter">
+<!-- Quick Actions Grid -->
+<section class="glass-panel rounded-xl p-6">
+<h2 class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-4">Quick Actions</h2>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex flex-col items-center justify-center gap-2 p-4 rounded-lg bg-obsidian-base border border-outline-variant hover:border-primary-container hover:bg-obsidian-elevated transition-all group">
+<span class="material-symbols-outlined text-primary group-hover:text-primary-container transition-colors text-[28px]">payments</span>
+<span class="text-label-sm font-label-sm text-primary">Make Payment</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 rounded-lg bg-obsidian-base border border-outline-variant hover:border-primary-container hover:bg-obsidian-elevated transition-all group">
+<span class="material-symbols-outlined text-primary group-hover:text-primary-container transition-colors text-[28px]">support_agent</span>
+<span class="text-label-sm font-label-sm text-primary">Support</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 rounded-lg bg-obsidian-base border border-outline-variant hover:border-primary-container hover:bg-obsidian-elevated transition-all group col-span-2">
+<span class="material-symbols-outlined text-primary group-hover:text-primary-container transition-colors text-[28px]">folder_open</span>
+<span class="text-label-sm font-label-sm text-primary">Shared Documents</span>
+</button>
+</div>
+</section>
+<!-- Support Tickets / Notifications -->
+<section class="glass-panel rounded-xl p-6 flex-grow">
+<h2 class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-4">Active Support</h2>
+<div class="flex flex-col gap-4">
+<!-- Ticket -->
+<div class="bg-obsidian-base border border-outline-variant rounded-lg p-3">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-sm font-label-sm text-primary font-bold">TCK-992</span>
+<span class="text-[10px] uppercase tracking-widest text-warning-amber bg-warning-amber/10 px-2 py-0.5 rounded">Awaiting Reply</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface line-clamp-2 mb-2">Login issues with the new staging environment credentials.</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Updated 2h ago</p>
+</div>
+<!-- Empty State for Notifications -->
+<div class="mt-4 pt-4 border-t border-outline-variant">
+<h3 class="text-label-sm font-label-sm text-on-surface-variant mb-2">Alerts</h3>
+<div class="flex items-center gap-3 text-on-surface-variant text-body-sm font-body-sm py-2">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                                 No new alerts or renewals.
+                             </div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-obsidian-base dark:bg-obsidian-base border-t border-outline-variant flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-2 h-8 mt-auto">
+<span class="text-label-sm font-label-sm text-on-surface-variant">The Knower OS v2.4.0 • System Status: Operational</span>
+<div class="hidden md:flex gap-4">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Server Health</a>
+</div>
+</footer>
+</body></html>

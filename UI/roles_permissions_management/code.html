@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Roles &amp; Permissions - The Knower OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#e7c427",
+                        "on-secondary-fixed": "#2c0051",
+                        "tertiary-container": "#ffdb3f",
+                        "on-tertiary-fixed": "#221b00",
+                        "background": "#0d1515",
+                        "primary-container": "#00f5ff",
+                        "surface-variant": "#2e3637",
+                        "surface-container-lowest": "#081010",
+                        "inverse-surface": "#dce4e4",
+                        "surface-container-high": "#232b2c",
+                        "primary-fixed-dim": "#00dce5",
+                        "surface-container-highest": "#2e3637",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "tertiary": "#fff9f0",
+                        "on-tertiary-container": "#736000",
+                        "on-primary-fixed-variant": "#004f53",
+                        "on-primary-fixed": "#002021",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-surface": "#dce4e4",
+                        "on-secondary-container": "#d6a9ff",
+                        "on-primary-container": "#006c71",
+                        "on-error": "#690005",
+                        "outline": "#849495",
+                        "surface-dim": "#0d1515",
+                        "on-tertiary-fixed-variant": "#544600",
+                        "surface": "#0d1515",
+                        "on-secondary": "#490080",
+                        "secondary-container": "#6f00be",
+                        "surface-bright": "#323b3b",
+                        "tertiary-fixed": "#ffe16c",
+                        "primary-fixed": "#63f7ff",
+                        "error": "#ffb4ab",
+                        "error-container": "#93000a",
+                        "on-primary": "#003739",
+                        "secondary-fixed": "#f0dbff",
+                        "inverse-primary": "#00696e",
+                        "surface-tint": "#00dce5",
+                        "on-tertiary": "#3a3000",
+                        "surface-container": "#192121",
+                        "primary": "#e9feff",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#2a3232",
+                        "surface-container-low": "#151d1d",
+                        "outline-variant": "#3a494a",
+                        "secondary": "#ddb7ff",
+                        "on-background": "#dce4e4",
+                        "on-surface-variant": "#b9caca",
+                        "obsidian-base": "#020617",
+                        "obsidian-elevated": "#0f172a",
+                        "obsidian-surface": "#1e293b",
+                        "success-emerald": "#10b981"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gap-lg": "2rem",
+                        "gap-xs": "0.5rem",
+                        "gap-md": "1rem",
+                        "container-max": "1440px",
+                        "base-unit": "4px",
+                        "margin-mobile": "1rem",
+                        "margin-desktop": "2.5rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "code-sm": ["JetBrains Mono"],
+                        "label-xs": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "code-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-xs": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "label-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "title-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #020617;
+            color: #dce4e4;
+        }
+        
+        /* Custom scrollbar for matrix */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3a494a;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #849495;
+        }
+        
+        /* Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #00dce5;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #00dce5;
+        }
+        .toggle-checkbox:focus + .toggle-label {
+            box-shadow: 0 0 0 2px rgba(0, 220, 229, 0.4);
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden bg-obsidian-base font-body-md text-body-md text-on-background selection:bg-primary-container/30 selection:text-primary">
+<!-- SideNavBar (Shared Component) -->
+<nav class="hidden md:flex flex-col h-full py-6 px-4 bg-obsidian-base dark:bg-obsidian-base docked h-screen left-0 w-64 border-r border-outline-variant flat no shadows">
+<!-- Header -->
+<div class="flex items-center gap-xs mb-gap-lg px-2">
+<div class="w-10 h-10 rounded-lg bg-obsidian-elevated flex items-center justify-center border border-outline-variant/30 text-primary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A stylized geometric logo symbolizing a complex enterprise suite workspace, rendered in high contrast cyan and purple neon lines against a deep dark background. Sleek, professional, modern tech aesthetic suitable for a high-end application avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJSuUqFRrVpsWLzFhB4d4bhVIj1X4aMk096oSL_GKkh-x86U0ChzxmpO0Tjb2oIAWtbDhoI5ULw1-GgMDgJ_E-DBrLBmgZjzGH4CkvpZBcZ-38XoyyGPO25RjgLpcm6d85pb2xdBbXjtbcdS6HTjlhCkK8QSowDvZ1hbDA-asDWdOd2Pd0CG1c44KDZSpK8dX4_5ZrfEZbkkyD3jzFEwl0DcXowiYe6iUG_3yOJVtEAq0_23F-N7FAepUbMSpx4sYQFzdI5vQPLiSg"/>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary leading-tight text-xl">The Knower OS</h1>
+<p class="text-label-xs font-label-xs text-on-surface-variant">Enterprise Suite</p>
+</div>
+</div>
+<!-- Main Navigation -->
+<div class="flex-1 overflow-y-auto custom-scrollbar space-y-1">
+<a class="flex items-center gap-md px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">dashboard</span>
+<span class="text-label-sm font-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">group</span>
+<span class="text-label-sm font-label-sm">CRM</span>
+</a>
+<a class="flex items-center gap-md px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">tactic</span>
+<span class="text-label-sm font-label-sm">Projects</span>
+</a>
+<a class="flex items-center gap-md px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">payments</span>
+<span class="text-label-sm font-label-sm">Finance</span>
+</a>
+<a class="flex items-center gap-md px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">monitoring</span>
+<span class="text-label-sm font-label-sm">Analytics</span>
+</a>
+<a class="flex items-center gap-md px-3 py-2 rounded-lg bg-obsidian-elevated text-secondary-container font-bold border-r-2 border-secondary-container group scale-95 transition-transform duration-150 relative" href="#">
+<!-- Active indicator glow -->
+<div class="absolute inset-0 bg-secondary-container/5 rounded-lg pointer-events-none"></div>
+<span class="material-symbols-outlined text-[20px] text-secondary-container">settings</span>
+<span class="text-label-sm font-label-sm text-secondary-container">Settings</span>
+</a>
+</div>
+<!-- Spacer -->
+<div class="mt-auto pt-gap-md space-y-3 border-t border-outline-variant/30 mt-4">
+<button class="w-full bg-primary-container text-on-primary-container hover:bg-primary-fixed transition-colors rounded-lg py-2 px-4 flex items-center justify-center gap-xs font-label-sm text-label-sm shadow-[0_0_10px_rgba(0,245,255,0.1)]">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Workspace
+            </button>
+<div class="space-y-1">
+<a class="flex items-center gap-md px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">help</span>
+<span class="text-label-sm font-label-sm">Help</span>
+</a>
+<a class="flex items-center gap-md px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">account_circle</span>
+<span class="text-label-sm font-label-sm">User Profile</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col h-full bg-obsidian-base relative overflow-hidden">
+<!-- Ambient Background Glow -->
+<div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-container/5 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary-container/5 rounded-full blur-[120px] pointer-events-none"></div>
+<!-- TopNavBar (Shared Component) - Mobile Only -->
+<header class="md:hidden flex justify-between items-center w-full px-margin-mobile h-16 sticky top-0 z-40 bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md shadow-sm border-b border-outline-variant">
+<div class="flex items-center gap-xs">
+<span class="text-headline-md font-headline-md font-black text-primary text-xl">The Knower OS</span>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- Page Header -->
+<div class="px-margin-desktop py-gap-md pt-8 shrink-0 flex items-end justify-between border-b border-outline-variant/20 relative z-10">
+<div>
+<nav class="flex items-center gap-2 text-label-xs font-label-xs text-on-surface-variant mb-2">
+<a class="hover:text-primary transition-colors" href="#">Settings</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary-container">Roles &amp; Permissions</span>
+</nav>
+<h2 class="text-display-lg font-display-lg text-primary tracking-tight">Access Control</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-2 max-w-2xl">Manage organizational roles and detailed system permissions. Changes propagate to active sessions immediately.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded-lg border border-primary-container text-primary-container font-label-sm text-label-sm hover:bg-primary-container/10 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">history</span>
+                    Audit Log
+                </button>
+<button class="px-4 py-2 rounded-lg bg-primary-container text-on-primary-container font-label-sm text-label-sm hover:bg-primary-fixed transition-colors shadow-[0_0_15px_rgba(0,245,255,0.15)] flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                    Save Changes
+                </button>
+</div>
+</div>
+<!-- Content Area: Bento Layout -->
+<div class="flex-1 overflow-hidden p-margin-desktop flex gap-gap-md relative z-10">
+<!-- Roles Sidebar (Glassmorphic Panel) -->
+<aside class="w-72 shrink-0 flex flex-col bg-obsidian-surface/60 backdrop-blur-md border border-outline-variant/30 rounded-xl overflow-hidden shadow-lg relative">
+<!-- Inner glow top edge -->
+<div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<div class="p-4 border-b border-outline-variant/30 flex justify-between items-center bg-obsidian-elevated/50">
+<h3 class="font-title-sm text-title-sm text-primary">System Roles</h3>
+<button class="text-primary-container hover:text-primary-fixed transition-colors p-1 rounded hover:bg-primary-container/10">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+</button>
+</div>
+<div class="p-2 space-y-1 overflow-y-auto custom-scrollbar flex-1">
+<!-- Search Roles -->
+<div class="relative mb-3 px-2">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="w-full bg-obsidian-base border border-outline-variant/50 rounded-md py-1.5 pl-9 pr-3 text-sm text-primary focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all placeholder:text-outline/50" placeholder="Filter roles..." type="text"/>
+</div>
+<!-- Role Items -->
+<button class="w-full flex flex-col items-start p-3 rounded-lg bg-primary-container/10 border border-primary-container/30 text-left relative group">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-primary-container font-semibold">Super Administrator</span>
+<span class="material-symbols-outlined text-[16px] text-primary-container">shield_person</span>
+</div>
+<span class="text-label-xs font-label-xs text-on-surface-variant mt-1">Full system access</span>
+<span class="mt-2 text-[10px] uppercase tracking-wider text-outline px-2 py-0.5 rounded bg-obsidian-base border border-outline-variant/50">3 Users</span>
+</button>
+<button class="w-full flex flex-col items-start p-3 rounded-lg hover:bg-obsidian-elevated border border-transparent hover:border-outline-variant/30 text-left transition-colors group">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-primary group-hover:text-primary-container transition-colors">Project Manager</span>
+</div>
+<span class="text-label-xs font-label-xs text-on-surface-variant mt-1">Scope: All Projects</span>
+<span class="mt-2 text-[10px] uppercase tracking-wider text-outline px-2 py-0.5 rounded bg-obsidian-base border border-outline-variant/50 group-hover:border-outline-variant transition-colors">12 Users</span>
+</button>
+<button class="w-full flex flex-col items-start p-3 rounded-lg hover:bg-obsidian-elevated border border-transparent hover:border-outline-variant/30 text-left transition-colors group">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-primary group-hover:text-primary-container transition-colors">Data Engineer</span>
+</div>
+<span class="text-label-xs font-label-xs text-on-surface-variant mt-1">Scope: Analytics &amp; Pipelines</span>
+<span class="mt-2 text-[10px] uppercase tracking-wider text-outline px-2 py-0.5 rounded bg-obsidian-base border border-outline-variant/50 group-hover:border-outline-variant transition-colors">8 Users</span>
+</button>
+<button class="w-full flex flex-col items-start p-3 rounded-lg hover:bg-obsidian-elevated border border-transparent hover:border-outline-variant/30 text-left transition-colors group">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-primary group-hover:text-primary-container transition-colors">Read-Only Viewer</span>
+</div>
+<span class="text-label-xs font-label-xs text-on-surface-variant mt-1">Scope: Global Reports</span>
+<span class="mt-2 text-[10px] uppercase tracking-wider text-outline px-2 py-0.5 rounded bg-obsidian-base border border-outline-variant/50 group-hover:border-outline-variant transition-colors">45 Users</span>
+</button>
+<button class="w-full flex flex-col items-start p-3 rounded-lg hover:bg-obsidian-elevated border border-transparent hover:border-outline-variant/30 text-left transition-colors group">
+<div class="flex items-center justify-between w-full">
+<span class="font-label-sm text-label-sm text-primary group-hover:text-primary-container transition-colors">Finance Auditor</span>
+</div>
+<span class="text-label-xs font-label-xs text-on-surface-variant mt-1">Scope: Billing &amp; Invoices</span>
+<span class="mt-2 text-[10px] uppercase tracking-wider text-outline px-2 py-0.5 rounded bg-obsidian-base border border-outline-variant/50 group-hover:border-outline-variant transition-colors">2 Users</span>
+</button>
+</div>
+</aside>
+<!-- Main Permission Matrix (Data Table) -->
+<div class="flex-1 flex flex-col bg-obsidian-surface/60 backdrop-blur-md border border-outline-variant/30 rounded-xl overflow-hidden shadow-lg relative">
+<!-- Inner glow top edge -->
+<div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent z-20"></div>
+<!-- Matrix Toolbar -->
+<div class="p-4 border-b border-outline-variant/30 flex justify-between items-center bg-obsidian-elevated/80 backdrop-blur-md z-10 shrink-0">
+<div class="flex items-center gap-4">
+<h3 class="font-title-sm text-title-sm text-primary">Permission Matrix</h3>
+<div class="h-4 w-px bg-outline-variant"></div>
+<div class="flex gap-2">
+<button class="text-label-xs font-label-xs px-3 py-1 rounded bg-obsidian-base border border-primary-container/50 text-primary-container hover:bg-primary-container/10 transition-colors">All Modules</button>
+<button class="text-label-xs font-label-xs px-3 py-1 rounded bg-obsidian-base border border-outline-variant text-on-surface-variant hover:text-primary hover:border-outline transition-colors">Finance</button>
+<button class="text-label-xs font-label-xs px-3 py-1 rounded bg-obsidian-base border border-outline-variant text-on-surface-variant hover:text-primary hover:border-outline transition-colors">Projects</button>
+</div>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="w-64 bg-obsidian-base border border-outline-variant/50 rounded-lg py-1.5 pl-9 pr-3 text-sm text-primary focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all placeholder:text-outline/50" placeholder="Search permissions..." type="text"/>
+</div>
+</div>
+<!-- Table Container -->
+<div class="flex-1 overflow-auto custom-scrollbar relative">
+<table class="w-full text-left border-collapse">
+<thead class="sticky top-0 z-10 bg-obsidian-surface/90 backdrop-blur-md border-b border-outline-variant shadow-sm shadow-obsidian-base/50">
+<tr>
+<th class="p-4 font-label-sm text-label-sm text-primary font-semibold min-w-[250px]">Permission Name</th>
+<th class="p-4 font-label-sm text-label-sm text-primary font-semibold text-center w-32 border-l border-outline-variant/20">Admin</th>
+<th class="p-4 font-label-sm text-label-sm text-primary font-semibold text-center w-32 border-l border-outline-variant/20">Manager</th>
+<th class="p-4 font-label-sm text-label-sm text-primary font-semibold text-center w-32 border-l border-outline-variant/20">Engineer</th>
+<th class="p-4 font-label-sm text-label-sm text-primary font-semibold text-center w-32 border-l border-outline-variant/20">Viewer</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30 text-body-md font-body-md">
+<!-- Category Row -->
+<tr class="bg-obsidian-elevated/30">
+<td class="p-2 px-4 font-label-sm text-label-sm text-primary-container uppercase tracking-widest text-[10px] flex items-center gap-2" colspan="5">
+<span class="material-symbols-outlined text-[14px]">folder_open</span>
+                                    Project Management
+                                </td>
+</tr>
+<!-- Permission Row 1 -->
+<tr class="hover:bg-obsidian-elevated/50 transition-colors group">
+<td class="p-4">
+<div class="flex flex-col">
+<span class="text-primary font-medium">Create Projects</span>
+<span class="text-label-xs text-on-surface-variant/70 font-code-sm">projects:create</span>
+</div>
+</td>
+<!-- Admin Cell -->
+<td class="p-4 text-center border-l border-outline-variant/10">
+<div class="flex justify-center items-center h-full">
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-obsidian-base border-2 border-primary-container appearance-none cursor-pointer z-10 transition-all duration-300 right-0" id="admin_p1" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-primary-container/80 cursor-pointer shadow-inner transition-colors duration-300" for="admin_p1"></label>
+</div>
+</div>
+</td>
+<!-- Manager Cell -->
+<td class="p-4 text-center border-l border-outline-variant/10">
+<div class="flex justify-center items-center h-full">
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-obsidian-base border-2 border-primary-container appearance-none cursor-pointer z-10 transition-all duration-300 right-0" id="mgr_p1" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-primary-container/80 cursor-pointer shadow-inner transition-colors duration-300" for="mgr_p1"></label>
+</div>
+</div>
+</td>
+<!-- Engineer Cell -->
+<td class="p-4 text-center border-l border-outline-variant/10">
+<div class="flex justify-center items-center h-full opacity-50">
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-outline-variant border-2 border-outline appearance-none cursor-not-allowed z-10 transition-all duration-300 left-0" disabled="" id="eng_p1" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-obsidian-base cursor-not-allowed shadow-inner transition-colors duration-300 border border-outline-variant" for="eng_p1"></label>
+</div>
+<span class="material-symbols-outlined text-[14px] text-outline ml-1" title="Disabled by higher policy">lock</span>
+</div>
+</td>
+<!-- Viewer Cell -->
+<td class="p-4 text-center border-l border-outline-variant/10">
+<div class="flex justify-center items-center h-full">
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-outline-variant border-2 border-outline appearance-none cursor-pointer z-10 transition-all duration-300 left-0" id="vw_p1" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-obsidian-base cursor-pointer shadow-inner transition-colors duration-300 border border-outline-variant" for="vw_p1"></label>
+</div>
+</div>
+</td>
+</tr>
+<!-- Permission Row 2 -->
+<tr class="hover:bg-obsidian-elevated/50 transition-colors group">
+<td class="p-4">
+<div class="flex flex-col">
+<span class="text-primary font-medium">View Projects</span>
+<span class="text-label-xs text-on-surface-variant/70 font-code-sm">projects:read</span>
+</div>
+</td>
+<!-- Admin Cell (Implicitly checked and locked)-->
+<td class="p-4 text-center border-l border-outline-variant/10">
+<div class="flex justify-center items-center h-full">
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in opacity-50">
+<input checked="" class="absolute block w-5 h-5 rounded-full bg-obsidian-base border-2 border-primary-container right-0 z-10 cursor-not-allowed" disabled="" type="checkbox"/>
+<label class="block overflow-hidden h-5 rounded-full bg-primary-container cursor-not-allowed"></label>
+</div>
+</div>
+</td>
+<!-- Manager Cell -->
+<td class="p-4 text-center border-l border-outline-variant/10">
+<div class="flex justify-center items-center h-full">
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in opacity-50">
+<input checked="" class="absolute block w-5 h-5 rounded-full bg-obsidian-base border-2 border-primary-container right-0 z-10 cursor-not-allowed" disabled="" type="checkbox"/>
+<label class="block overflow-hidden h-5 rounded-full bg-primary-container cursor-not-allowed"></label>
+</div>
+</div>
+</td>
+<!-- Engineer Cell -->
+<td class="p-4 text-center border-l border-outline-variant/10">
+<div class="flex justify-center items-center h-full">
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-obsidian-base border-2 border-primary-container appearance-none cursor-pointer z-10 transition-all duration-300 right-0" id="eng_p2" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-primary-container/80 cursor-pointer shadow-inner transition-colors duration-300" for="eng_p2"></label>
+</div>
+</div>
+</td>
+<!-- Viewer Cell -->
+<td class="p-4 text-center border-l border-outline-variant/10">
+<div class="flex justify-center items-center h-full">
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-obsidian-base border-2 border-primary-container appearance-none cursor-pointer z-10 transition-all duration-300 right-0" id="vw_p2" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-primary-container/80 cursor-pointer shadow-inner transition-colors duration-300" for="vw_p2"></label>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple script to handle generic toggle interactions for visual feedback without forms
+        document.querySelectorAll('.toggle-checkbox').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                // In a real app, this would dispatch an event to update the state
+                if(!this.disabled) {
+                    const row = this.closest('tr');
+                    // Add subtle pulse effect to row when changed
+                    row.classList.add('bg-primary-container/5');
+                    setTimeout(() => row.classList.remove('bg-primary-container/5'), 300);
+                }
+            });
+        });
+    </script>
+</body></html>

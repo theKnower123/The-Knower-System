@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Security &amp; 2FA Setup - The Knower OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#2c0051",
+                        "on-tertiary": "#490080",
+                        "error-container": "#93000a",
+                        "secondary": "#44e2cd",
+                        "surface-container-high": "#222a3d",
+                        "secondary-fixed-dim": "#3cddc7",
+                        "outline-variant": "#3a494a",
+                        "on-secondary-fixed": "#00201c",
+                        "obsidian-surface": "#0F172A",
+                        "outline": "#849495",
+                        "surface-container-low": "#131b2e",
+                        "primary-container": "#00f5ff",
+                        "tertiary-fixed": "#f0dbff",
+                        "inverse-on-surface": "#283044",
+                        "on-primary-container": "#006c71",
+                        "success-emerald": "#10B981",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "primary-fixed": "#63f7ff",
+                        "error": "#ffb4ab",
+                        "inverse-primary": "#00696e",
+                        "on-primary-fixed-variant": "#004f53",
+                        "tertiary-container": "#edd4ff",
+                        "ai-purple": "#A855F7",
+                        "surface": "#0b1326",
+                        "on-background": "#dae2fd",
+                        "on-primary": "#003739",
+                        "on-tertiary-container": "#872fd5",
+                        "obsidian-elevated": "#1E293B",
+                        "surface-tint": "#00dce5",
+                        "surface-container-highest": "#2d3449",
+                        "surface-container": "#171f33",
+                        "primary-fixed-dim": "#00dce5",
+                        "surface-container-lowest": "#060e20",
+                        "surface-dim": "#0b1326",
+                        "secondary-container": "#03c6b2",
+                        "background": "#0b1326",
+                        "warning-amber": "#F59E0B",
+                        "surface-variant": "#2d3449",
+                        "obsidian-base": "#020617",
+                        "primary": "#e9feff",
+                        "on-surface-variant": "#b9caca",
+                        "on-secondary-fixed-variant": "#005047",
+                        "surface-bright": "#31394d",
+                        "on-tertiary-fixed-variant": "#6900b3",
+                        "inverse-surface": "#dae2fd",
+                        "on-primary-fixed": "#002021",
+                        "tertiary-fixed-dim": "#ddb7ff",
+                        "on-surface": "#dae2fd",
+                        "on-secondary-container": "#004d44",
+                        "on-secondary": "#003731",
+                        "error-rose": "#F43F5E",
+                        "secondary-fixed": "#62fae3",
+                        "info-cyan": "#06B6D4",
+                        "tertiary": "#fff8fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "margin-mobile": "16px",
+                        "container-max": "1440px",
+                        "base": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.obsidian-base');
+            color: theme('colors.on-surface');
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Custom scrollbar for deep dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.obsidian-base');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.surface-container-high');
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline-variant');
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid theme('colors.obsidian-elevated');
+        }
+
+        .input-field {
+            background-color: theme('colors.obsidian-base');
+            border: 1px solid theme('colors.obsidian-elevated');
+            color: theme('colors.on-surface');
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .input-field:focus {
+            border-color: theme('colors.primary-container');
+            box-shadow: 0 0 0 2px rgba(0, 245, 255, 0.2);
+            outline: none;
+        }
+
+        /* Toggle Switch CSS */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: theme('colors.success-emerald');
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: theme('colors.success-emerald');
+        }
+        .toggle-checkbox:checked + .toggle-label:after {
+            transform: translateX(100%);
+            border-color: white;
+        }
+        .toggle-label {
+            background-color: theme('colors.obsidian-elevated');
+            transition: background-color 0.2s ease-in-out;
+        }
+        .toggle-label:after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- SideNavBar (Suppressed due to deep contextual screen logic - Security Settings is a focused sub-task, but for enterprise we keep it as it's part of Settings tab) -->
+<nav class="hidden md:flex flex-col h-full py-6 px-4 bg-obsidian-base dark:bg-obsidian-base border-r border-outline-variant docked h-screen left-0 w-64 z-50">
+<div class="mb-8 px-2 flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-obsidian-base font-bold text-sm" style="font-variation-settings: 'FILL' 1;">widgets</span>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary leading-tight">The Knower OS</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Enterprise Suite</p>
+</div>
+</div>
+<button class="mb-8 w-full bg-primary-container text-obsidian-base py-2 px-4 rounded-DEFAULT font-label-md text-label-md font-semibold flex items-center justify-center gap-2 hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+            New Workspace
+        </button>
+<ul class="flex flex-col gap-2 flex-grow">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+                    CRM
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">tactic</span>
+                    Projects
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+                    Finance
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+                    Analytics
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-secondary-container font-bold border-r-2 border-secondary-container text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+                    Settings
+                </a>
+</li>
+</ul>
+<div class="mt-auto border-t border-obsidian-elevated pt-4">
+<ul class="flex flex-col gap-2">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+                        Help
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<img class="w-6 h-6 rounded-full object-cover" data-alt="A small, professional avatar of a user in a minimalist dark theme context, showing just a clean silhouette or subtle glowing geometric pattern indicating identity. Deep blacks and subtle cyan accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmQnspID8Lctm9C5o_ySNe-shVdrZpzuv6NV0uQ-9VU6EP2bgESUYd4xZOXZ7LGXwhjSLEl_pqgqShEJZ-Nz_HnTCTSvoml-HdlR-m-o-5cAoA4ncDulNi6va9BiACXwp7e8MDnpuSTDl8abSBh3EQZ9hV2YkSwBmEJKwXd1_zVC1qm04KtprH8V9G6INEKa5T6nxH5QuE3T2t-QLN5JhWM4SnhQxY8AHupONVWYN0P_sllLv0_IxP0ytal5310xBDlwvt6rRP1l1i"/>
+                        User Profile
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex flex-col flex-grow w-full relative overflow-hidden">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky top-0 z-40 bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md border-b border-outline-variant shadow-sm">
+<div class="flex items-center gap-6">
+<!-- Search Bar -->
+<div class="relative hidden sm:block w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="w-full bg-obsidian-base border border-obsidian-elevated text-on-surface text-label-sm font-label-sm rounded-lg pl-9 pr-3 py-1.5 focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Search logs, devices..." type="text"/>
+</div>
+</div>
+<!-- Navigation Links (Contextual) -->
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-on-surface-variant text-label-sm font-label-sm hover:text-primary transition-all" href="#">Profile</a>
+<a class="text-primary border-b-2 border-primary pb-1 text-label-sm font-label-sm focus:ring-2 focus:ring-primary-container" href="#">Security</a>
+<a class="text-on-surface-variant text-label-sm font-label-sm hover:text-primary transition-all" href="#">Billing</a>
+<a class="text-on-surface-variant text-label-sm font-label-sm hover:text-primary transition-all" href="#">Team</a>
+</nav>
+<div class="flex items-center gap-4">
+<!-- Icon Actions -->
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-all rounded-full hover:bg-obsidian-elevated flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-all rounded-full hover:bg-obsidian-elevated flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">language</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-all rounded-full hover:bg-obsidian-elevated flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">terminal</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Scrollable Canvas -->
+<main class="flex-grow overflow-y-auto overflow-x-hidden relative">
+<!-- Subtle background ambient light -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-primary-container/5 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+<div class="max-w-5xl mx-auto px-margin-mobile md:px-margin-desktop py-8 md:py-12 flex flex-col gap-8">
+<!-- Page Header -->
+<div>
+<h2 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-primary mb-2">Security &amp; 2FA Setup</h2>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-2xl">Manage your password, configure multi-factor authentication, and monitor account activity to ensure enterprise-grade security.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Left Column: Password & MFA (Takes 2 columns on lg) -->
+<div class="lg:col-span-2 flex flex-col gap-6">
+<!-- Password Change Card -->
+<div class="glass-panel rounded-xl overflow-hidden">
+<div class="px-6 py-4 border-b border-obsidian-elevated flex justify-between items-center bg-obsidian-surface/40">
+<h3 class="text-headline-md font-headline-md text-primary text-[18px]">Change Password</h3>
+<span class="material-symbols-outlined text-on-surface-variant">key</span>
+</div>
+<div class="p-6 flex flex-col gap-5">
+<div class="grid grid-cols-1 gap-5">
+<div class="flex flex-col gap-2">
+<label class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Current Password</label>
+<input class="input-field rounded-lg px-4 py-2 w-full font-label-md text-body-md" placeholder="••••••••••••" type="password"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="flex flex-col gap-2">
+<label class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">New Password</label>
+<input class="input-field rounded-lg px-4 py-2 w-full font-label-md text-body-md" placeholder="••••••••••••" type="password"/>
+<div class="flex gap-1 mt-1">
+<div class="h-1 flex-1 bg-success-emerald rounded-full"></div>
+<div class="h-1 flex-1 bg-success-emerald rounded-full"></div>
+<div class="h-1 flex-1 bg-success-emerald rounded-full"></div>
+<div class="h-1 flex-1 bg-obsidian-elevated rounded-full"></div>
+</div>
+<span class="text-label-sm font-label-sm text-success-emerald mt-1">Strong</span>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Confirm Password</label>
+<input class="input-field rounded-lg px-4 py-2 w-full font-label-md text-body-md" placeholder="••••••••••••" type="password"/>
+</div>
+</div>
+</div>
+<div class="flex justify-end mt-2">
+<button class="bg-obsidian-elevated border border-outline-variant text-on-surface px-6 py-2 rounded-lg text-label-md font-label-md hover:border-primary-container transition-colors">
+                                        Update Password
+                                    </button>
+</div>
+</div>
+</div>
+<!-- MFA Wizard Card -->
+<div class="glass-panel rounded-xl overflow-hidden relative">
+<!-- Subtle purple gradient for MFA highlight -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-ai-purple/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="px-6 py-4 border-b border-obsidian-elevated flex justify-between items-center bg-obsidian-surface/40">
+<div>
+<h3 class="text-headline-md font-headline-md text-primary text-[18px]">Multi-Factor Authentication</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Add an extra layer of security to your Knower OS account.</p>
+</div>
+<!-- Custom Toggle -->
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-obsidian-elevated appearance-none cursor-pointer z-10 top-0 left-0" id="mfa-toggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer border border-obsidian-elevated" for="mfa-toggle"></label>
+</div>
+</div>
+<div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+<!-- QR Code Area -->
+<div class="flex flex-col items-center justify-center p-6 bg-obsidian-base rounded-lg border border-obsidian-elevated">
+<div class="w-40 h-40 bg-white p-2 rounded-md mb-4 flex items-center justify-center relative group cursor-pointer">
+<!-- Simulated QR Code visual -->
+<div class="grid grid-cols-5 grid-rows-5 gap-1 w-full h-full opacity-80 mix-blend-multiply">
+<div class="bg-black col-span-2 row-span-2"></div>
+<div class="bg-white"></div>
+<div class="bg-black col-span-2 row-span-2"></div>
+<div class="bg-black"></div>
+<div class="bg-black"></div>
+<div class="bg-white"></div>
+<div class="bg-black"></div>
+<div class="bg-black"></div>
+<div class="bg-white col-span-5"></div>
+<div class="bg-black col-span-2 row-span-2"></div>
+<div class="bg-black"></div>
+<div class="bg-black"></div>
+<div class="bg-white"></div>
+<div class="bg-white"></div>
+<div class="bg-black"></div>
+<div class="bg-black"></div>
+</div>
+<div class="absolute inset-0 bg-obsidian-base/80 hidden group-hover:flex items-center justify-center backdrop-blur-sm rounded-md transition-all">
+<span class="material-symbols-outlined text-primary">refresh</span>
+</div>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant font-mono text-center">KNWR-8B4X-9Y2Z-1Q7P</p>
+</div>
+<!-- Instructions Area -->
+<div class="flex flex-col gap-6">
+<ol class="flex flex-col gap-4 text-body-sm font-body-sm text-on-surface">
+<li class="flex gap-3">
+<span class="w-6 h-6 rounded-full bg-obsidian-elevated flex items-center justify-center text-label-sm font-label-md shrink-0 text-primary">1</span>
+<span>Install an authenticator app like Authy or Google Authenticator on your mobile device.</span>
+</li>
+<li class="flex gap-3">
+<span class="w-6 h-6 rounded-full bg-obsidian-elevated flex items-center justify-center text-label-sm font-label-md shrink-0 text-primary">2</span>
+<span>Scan the QR code with the app, or manually enter the secret key shown below the code.</span>
+</li>
+<li class="flex gap-3">
+<span class="w-6 h-6 rounded-full bg-obsidian-elevated flex items-center justify-center text-label-sm font-label-md shrink-0 text-primary">3</span>
+<span>Enter the 6-digit verification code generated by your app to verify setup.</span>
+</li>
+</ol>
+<div class="flex gap-3 items-end">
+<div class="flex-1 flex flex-col gap-2">
+<label class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Verification Code</label>
+<input class="input-field rounded-lg px-4 py-2 w-full font-label-md text-body-md text-center tracking-[0.2em]" maxlength="7" placeholder="000 000" type="text"/>
+</div>
+<button class="bg-primary-container text-obsidian-base px-6 py-2 rounded-lg text-label-md font-label-md font-semibold hover:bg-primary-fixed transition-colors h-[42px]">
+                                            Verify
+                                        </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Devices & Logs -->
+<div class="flex flex-col gap-6">
+<!-- Trusted Devices -->
+<div class="glass-panel rounded-xl overflow-hidden flex flex-col h-[300px]">
+<div class="px-5 py-4 border-b border-obsidian-elevated flex justify-between items-center bg-obsidian-surface/40 shrink-0">
+<h3 class="text-headline-md font-headline-md text-primary text-[16px]">Active Sessions</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">devices</span>
+</div>
+<div class="p-0 overflow-y-auto flex-grow">
+<ul class="flex flex-col divide-y divide-obsidian-elevated">
+<li class="p-4 hover:bg-obsidian-elevated/30 transition-colors flex justify-between items-start group">
+<div class="flex gap-3">
+<div class="mt-1">
+<span class="material-symbols-outlined text-success-emerald text-[20px]">laptop_mac</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm text-on-surface font-medium">MacBook Pro 16"</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">San Francisco, CA • Chrome</p>
+<span class="inline-block mt-1 bg-success-emerald/10 text-success-emerald text-[10px] px-2 py-0.5 rounded-full font-label-sm uppercase">Current Session</span>
+</div>
+</div>
+</li>
+<li class="p-4 hover:bg-obsidian-elevated/30 transition-colors flex justify-between items-start group">
+<div class="flex gap-3">
+<div class="mt-1">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">smartphone</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm text-on-surface font-medium">iPhone 14 Pro</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">San Francisco, CA • Knower App</p>
+<p class="text-label-sm font-label-sm text-outline mt-1">Last active: 2h ago</p>
+</div>
+</div>
+<button class="text-error-rose opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-error-container/20 rounded">
+<span class="material-symbols-outlined text-[16px]">logout</span>
+</button>
+</li>
+<li class="p-4 hover:bg-obsidian-elevated/30 transition-colors flex justify-between items-start group">
+<div class="flex gap-3">
+<div class="mt-1">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">laptop_windows</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm text-on-surface font-medium">Dell XPS 15</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">New York, NY • Firefox</p>
+<p class="text-label-sm font-label-sm text-outline mt-1">Last active: 3 days ago</p>
+</div>
+</div>
+<button class="text-error-rose opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-error-container/20 rounded">
+<span class="material-symbols-outlined text-[16px]">logout</span>
+</button>
+</li>
+</ul>
+</div>
+<div class="p-3 border-t border-obsidian-elevated bg-obsidian-base shrink-0">
+<button class="w-full py-2 text-label-sm font-label-sm text-error-rose hover:bg-error-rose/10 rounded transition-colors">Revoke All Other Sessions</button>
+</div>
+</div>
+<!-- Security Log Summary -->
+<div class="glass-panel rounded-xl overflow-hidden flex flex-col flex-grow">
+<div class="px-5 py-4 border-b border-obsidian-elevated flex justify-between items-center bg-obsidian-surface/40">
+<h3 class="text-headline-md font-headline-md text-primary text-[16px]">Security Log</h3>
+<button class="text-label-sm font-label-sm text-info-cyan hover:underline">View All</button>
+</div>
+<div class="p-4 flex-grow flex flex-col gap-4">
+<div class="flex gap-3 items-start relative pb-4 border-b border-obsidian-elevated/50 last:border-0 last:pb-0">
+<div class="absolute left-[11px] top-6 bottom-0 w-[1px] bg-obsidian-elevated -z-10"></div>
+<div class="w-6 h-6 rounded-full bg-success-emerald/20 border border-success-emerald/50 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-success-emerald text-[12px]">check</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm text-on-surface">Successful Login</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">IP: 192.168.1.1 • Mac OS</p>
+<p class="text-label-sm font-label-sm text-outline mt-0.5">Today, 09:41 AM</p>
+</div>
+</div>
+<div class="flex gap-3 items-start relative pb-4 border-b border-obsidian-elevated/50 last:border-0 last:pb-0">
+<div class="absolute left-[11px] top-6 bottom-0 w-[1px] bg-obsidian-elevated -z-10"></div>
+<div class="w-6 h-6 rounded-full bg-ai-purple/20 border border-ai-purple/50 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-ai-purple text-[12px]">security_update_good</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm text-on-surface">MFA Settings Updated</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Recovery codes regenerated</p>
+<p class="text-label-sm font-label-sm text-outline mt-0.5">Yesterday, 14:22 PM</p>
+</div>
+</div>
+<div class="flex gap-3 items-start relative last:pb-0">
+<div class="w-6 h-6 rounded-full bg-warning-amber/20 border border-warning-amber/50 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-warning-amber text-[12px]">warning</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm text-on-surface">Failed Login Attempt</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">IP: 45.33.12.9 (Unknown)</p>
+<p class="text-label-sm font-label-sm text-outline mt-0.5">Oct 12, 03:15 AM</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="flex justify-between items-center w-full px-margin-desktop py-2 h-8 bg-obsidian-base dark:bg-obsidian-base border-t border-outline-variant mt-auto">
+<div class="text-label-sm font-label-sm text-on-surface-variant">The Knower OS v2.4.0 • System Status: Operational</div>
+<div class="flex gap-4">
+<a class="text-label-sm font-label-sm text-success-emerald dark:text-success-emerald hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-label-sm font-label-sm text-success-emerald dark:text-success-emerald hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="text-label-sm font-label-sm text-success-emerald dark:text-success-emerald hover:text-primary transition-colors" href="#">Server Health</a>
+</div>
+</footer>
+</main>
+</div>
+</body></html>

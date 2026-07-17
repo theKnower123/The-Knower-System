@@ -3,79 +3,81 @@
 namespace App\Http\Controllers\Hosting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Hosting\StoreSslCertificateRequest;
+use App\Http\Requests\Hosting\UpdateSslCertificateRequest;
+use App\Http\Resources\Hosting\SslCertificateResource;
 use App\Models\SslCertificate;
-use Illuminate\Http\Request;
+use App\Services\Hosting\SslCertificateService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class SslCertificateController extends Controller
 {
-    public function index()
+    protected SslCertificateService $sslcertificateService;
+
+    public function __construct(SslCertificateService $sslcertificateService)
     {
-        $certs = SslCertificate::with('domain')->latest('id')->get();
+        $this->sslcertificateService = $sslcertificateService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', SslCertificate::class);
+
+        $sslcertificates = $this->sslcertificateService->getAll();
+        
+        // Load relations if needed
+        $sslcertificates->load('domain');
 
         return response()->json([
             'success' => true,
-            'message' => 'SSL certificates retrieved successfully.',
-            'data' => $certs
+            'message' => 'SslCertificates retrieved successfully.',
+            'data' => SslCertificateResource::collection($sslcertificates)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreSslCertificateRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'domain_id' => 'required|exists:domains,id',
-            'provider' => 'nullable|string|max:100',
-            'expiry_date' => 'nullable|date',
-            'status' => 'nullable|in:active,expired,revoked',
-        ]);
-
-        $cert = SslCertificate::create($validated);
+        $sslcertificate = $this->sslcertificateService->create($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'SSL certificate log created successfully.',
-            'data' => $cert
+            'message' => 'SslCertificate created successfully.',
+            'data' => new SslCertificateResource($sslcertificate)
         ], 201);
     }
 
-    public function show($id)
+    public function show(SslCertificate $sslcertificate): JsonResponse
     {
-        $cert = SslCertificate::with('domain')->findOrFail($id);
+        Gate::authorize('view', $sslcertificate);
 
         return response()->json([
             'success' => true,
-            'message' => 'SSL certificate retrieved successfully.',
-            'data' => $cert
+            'message' => 'SslCertificate retrieved successfully.',
+            'data' => new SslCertificateResource($sslcertificate)
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateSslCertificateRequest $request, SslCertificate $sslcertificate): JsonResponse
     {
-        $cert = SslCertificate::findOrFail($id);
-
-        $validated = $request->validate([
-            'domain_id' => 'sometimes|required|exists:domains,id',
-            'provider' => 'nullable|string|max:100',
-            'expiry_date' => 'nullable|date',
-            'status' => 'sometimes|required|in:active,expired,revoked',
-        ]);
-
-        $cert->update($validated);
+        $sslcertificate = $this->sslcertificateService->update($sslcertificate, $request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'SSL certificate updated successfully.',
-            'data' => $cert
+            'message' => 'SslCertificate updated successfully.',
+            'data' => new SslCertificateResource($sslcertificate)
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(SslCertificate $sslcertificate): JsonResponse
     {
-        $cert = SslCertificate::findOrFail($id);
-        $cert->delete();
+        Gate::authorize('delete', $sslcertificate);
+
+        $this->sslcertificateService->delete($sslcertificate);
 
         return response()->json([
             'success' => true,
-            'message' => 'SSL certificate deleted successfully.',
+            'message' => 'SslCertificate deleted successfully.',
             'data' => null
         ]);
     }

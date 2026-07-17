@@ -3,82 +3,81 @@
 namespace App\Http\Controllers\HR;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\StoreLeaveRequest;
+use App\Http\Requests\HR\UpdateLeaveRequest;
+use App\Http\Resources\HR\LeaveResource;
 use App\Models\Leave;
-use Illuminate\Http\Request;
+use App\Services\HR\LeaveService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class LeaveController extends Controller
 {
-    public function index()
+    protected LeaveService $leaveService;
+
+    public function __construct(LeaveService $leaveService)
     {
-        $leaves = Leave::with('employee.user')->latest('id')->get();
+        $this->leaveService = $leaveService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Leave::class);
+
+        $leaves = $this->leaveService->getAll();
+        
+        // Load relations if needed
+        $leaves->load('employee.user');
 
         return response()->json([
             'success' => true,
-            'message' => 'Leave requests retrieved successfully.',
-            'data' => $leaves
+            'message' => 'Leaves retrieved successfully.',
+            'data' => LeaveResource::collection($leaves)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreLeaveRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'employee_id' => 'required|exists:employees,id',
-            'type' => 'required|in:annual,sick,emergency,unpaid,other',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'status' => 'nullable|in:pending,approved,rejected',
-            'reason' => 'nullable|string',
-        ]);
-
-        $leave = Leave::create($validated);
+        $leave = $this->leaveService->create($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Leave requested successfully.',
-            'data' => $leave
+            'message' => 'Leave created successfully.',
+            'data' => new LeaveResource($leave)
         ], 201);
     }
 
-    public function show($id)
+    public function show(Leave $leave): JsonResponse
     {
-        $leave = Leave::with('employee.user')->findOrFail($id);
+        Gate::authorize('view', $leave);
 
         return response()->json([
             'success' => true,
-            'message' => 'Leave request details retrieved.',
-            'data' => $leave
+            'message' => 'Leave retrieved successfully.',
+            'data' => new LeaveResource($leave)
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateLeaveRequest $request, Leave $leave): JsonResponse
     {
-        $leave = Leave::findOrFail($id);
-
-        $validated = $request->validate([
-            'type' => 'sometimes|required|in:annual,sick,emergency,unpaid,other',
-            'start_date' => 'sometimes|required|date',
-            'end_date' => 'sometimes|required|date|after_or_equal:start_date',
-            'status' => 'sometimes|required|in:pending,approved,rejected',
-            'reason' => 'nullable|string',
-        ]);
-
-        $leave->update($validated);
+        $leave = $this->leaveService->update($leave, $request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Leave request updated successfully.',
-            'data' => $leave
+            'message' => 'Leave updated successfully.',
+            'data' => new LeaveResource($leave)
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(Leave $leave): JsonResponse
     {
-        $leave = Leave::findOrFail($id);
-        $leave->delete();
+        Gate::authorize('delete', $leave);
+
+        $this->leaveService->delete($leave);
 
         return response()->json([
             'success' => true,
-            'message' => 'Leave request deleted successfully.',
+            'message' => 'Leave deleted successfully.',
             'data' => null
         ]);
     }

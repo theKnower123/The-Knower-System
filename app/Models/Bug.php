@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+use App\Traits\HasWorkspace;
 
 class Bug extends Model
 {
@@ -13,20 +16,45 @@ class Bug extends Model
     public function project()
     {
         return $this->belongsTo(Project::class);
+    
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
+}
 
     public function task()
     {
         return $this->belongsTo(Task::class);
+    
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
+}
 
     public function reporter()
     {
         return $this->belongsTo(User::class, 'reported_by');
+    
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
+}
 
     public function assignee()
     {
         return $this->belongsTo(User::class, 'assigned_to');
+    
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
+    }
+}
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
 }

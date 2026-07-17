@@ -3,86 +3,78 @@
 namespace App\Http\Controllers\Projects;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Projects\StoreTaskRequest;
+use App\Http\Requests\Projects\UpdateTaskRequest;
+use App\Http\Resources\Projects\TaskResource;
 use App\Models\Task;
-use Illuminate\Http\Request;
+use App\Services\Projects\TaskService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
-    public function index()
+    protected TaskService $taskService;
+
+    public function __construct(TaskService $taskService)
     {
-        $tasks = Task::with(['project', 'milestone', 'assignee'])->latest()->get();
+        $this->taskService = $taskService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Task::class);
+
+        $tasks = $this->taskService->getAll();
+        
+        // Load relations if needed
+        $tasks->load(['project', 'milestone', 'assignee']);
 
         return response()->json([
             'success' => true,
             'message' => 'Tasks retrieved successfully.',
-            'data' => $tasks
+            'data' => TaskResource::collection($tasks)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreTaskRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'milestone_id' => 'nullable|exists:milestones,id',
-            'assigned_to' => 'nullable|exists:users,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'status' => 'nullable|in:todo,in_progress,review,done',
-            'priority' => 'nullable|in:low,medium,high,urgent',
-            'start_date' => 'nullable|date',
-            'due_date' => 'nullable|date|after_or_equal:start_date',
-            'estimated_hours' => 'nullable|numeric|min:0',
-            'actual_hours' => 'nullable|numeric|min:0',
-        ]);
-
-        $task = Task::create($validated);
+        $task = $this->taskService->create($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Task created successfully.',
-            'data' => $task
+            'data' => new TaskResource($task)
         ], 201);
     }
 
-    public function show(Task $task)
+    public function show(Task $task): JsonResponse
     {
+        Gate::authorize('view', $task);
         $task->load(['project', 'milestone', 'assignee', 'comments.user', 'bugs']);
 
         return response()->json([
             'success' => true,
             'message' => 'Task retrieved successfully.',
-            'data' => $task
+            'data' => new TaskResource($task)
         ]);
     }
 
-    public function update(Request $request, Task $task)
+    public function update(UpdateTaskRequest $request, Task $task): JsonResponse
     {
-        $validated = $request->validate([
-            'project_id' => 'sometimes|required|exists:projects,id',
-            'milestone_id' => 'nullable|exists:milestones,id',
-            'assigned_to' => 'nullable|exists:users,id',
-            'title' => 'sometimes|required|string|max:255',
-            'description' => 'nullable|string',
-            'status' => 'sometimes|required|in:todo,in_progress,review,done',
-            'priority' => 'sometimes|required|in:low,medium,high,urgent',
-            'start_date' => 'nullable|date',
-            'due_date' => 'nullable|date|after_or_equal:start_date',
-            'estimated_hours' => 'nullable|numeric|min:0',
-            'actual_hours' => 'nullable|numeric|min:0',
-        ]);
-
-        $task->update($validated);
+        $task = $this->taskService->update($task, $request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Task updated successfully.',
-            'data' => $task
+            'data' => new TaskResource($task)
         ]);
     }
 
-    public function destroy(Task $task)
+    public function destroy(Task $task): JsonResponse
     {
-        $task->delete();
+        Gate::authorize('delete', $task);
+
+        $this->taskService->delete($task);
 
         return response()->json([
             'success' => true,

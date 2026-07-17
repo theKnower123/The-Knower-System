@@ -21,6 +21,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // Core Platform Routes
+    Route::get('/roles', function () {
+        return Inertia::render('Core/Roles');
+    })->name('roles.index');
+
+    Route::get('/workspaces', function () {
+        return Inertia::render('Core/Workspaces');
+    })->name('workspaces.index');
 });
 
 require __DIR__.'/auth.php';

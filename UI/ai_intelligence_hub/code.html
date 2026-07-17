@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Knower OS - AI Assistant Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#003739",
+                        "surface-container-low": "#131b2e",
+                        "surface-bright": "#31394d",
+                        "warning-amber": "#F59E0B",
+                        "obsidian-surface": "#0F172A",
+                        "secondary-fixed": "#62fae3",
+                        "on-tertiary": "#490080",
+                        "error-rose": "#F43F5E",
+                        "surface-tint": "#00dce5",
+                        "outline-variant": "#3a494a",
+                        "on-surface-variant": "#b9caca",
+                        "tertiary-container": "#edd4ff",
+                        "surface-container": "#171f33",
+                        "on-tertiary-fixed-variant": "#6900b3",
+                        "ai-purple": "#A855F7",
+                        "on-tertiary-fixed": "#2c0051",
+                        "primary-fixed-dim": "#00dce5",
+                        "surface-container-highest": "#2d3449",
+                        "on-secondary-container": "#004d44",
+                        "error": "#ffb4ab",
+                        "inverse-primary": "#00696e",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#872fd5",
+                        "obsidian-base": "#020617",
+                        "on-secondary": "#003731",
+                        "secondary-fixed-dim": "#3cddc7",
+                        "on-secondary-fixed": "#00201c",
+                        "on-background": "#dae2fd",
+                        "outline": "#849495",
+                        "surface-container-lowest": "#060e20",
+                        "info-cyan": "#06B6D4",
+                        "on-error-container": "#ffdad6",
+                        "tertiary": "#fff8fd",
+                        "surface-variant": "#2d3449",
+                        "tertiary-fixed-dim": "#ddb7ff",
+                        "primary-fixed": "#63f7ff",
+                        "success-emerald": "#10B981",
+                        "on-surface": "#dae2fd",
+                        "background": "#0b1326",
+                        "secondary-container": "#03c6b2",
+                        "surface": "#0b1326",
+                        "surface-dim": "#0b1326",
+                        "obsidian-elevated": "#1E293B",
+                        "on-error": "#690005",
+                        "secondary": "#44e2cd",
+                        "primary": "#e9feff",
+                        "on-primary-fixed": "#002021",
+                        "surface-container-high": "#222a3d",
+                        "tertiary-fixed": "#f0dbff",
+                        "on-secondary-fixed-variant": "#005047",
+                        "on-primary-fixed-variant": "#004f53",
+                        "primary-container": "#00f5ff",
+                        "inverse-on-surface": "#283044",
+                        "on-primary-container": "#006c71",
+                        "inverse-surface": "#dae2fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "64px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["JetBrains Mono"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for sleekness */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3a494a;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #849495;
+        }
+        
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid #3a494a;
+        }
+    </style>
+</head>
+<body class="bg-obsidian-base text-on-surface font-body-sm h-screen flex overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar Component -->
+<nav class="bg-obsidian-base dark:bg-obsidian-base text-secondary-container dark:text-secondary-container docked h-screen left-0 w-64 border-r border-outline-variant hidden md:flex flex-col h-full py-6 px-4 z-50">
+<!-- Header -->
+<div class="flex items-center gap-3 mb-8 px-2">
+<div class="w-10 h-10 rounded bg-obsidian-elevated flex items-center justify-center border border-outline-variant overflow-hidden">
+<img alt="Organization Workspace Logo" class="w-full h-full object-cover" data-alt="A stylized geometric logo representing an organization workspace, featuring sharp angles, deep slate blues, and glowing cyan accents. High-tech, minimal, corporate identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQWqOrYMblOiYsv4OCMVT81lcwzDY77ofECQQzdcqSRKpRwSH8k4kVbmfZFOzQlxuQY4Z1V23kYoPlXcKgj5jjzefeVXghcA5H6ko1gfZxuPyOSPp9bsURWpxCDzAhFWx-byikDHYrpWVEDWGI0agOab3CQ0VjPGMq_oiKW97rF-GjX1OvSamUY9ySaH0XOk4fwvEkDALRdi1ZTeR_JG0SgPnKY-j5iB_jxZjGgIYKt3fzI0jm0SPg4B6A0UblOP7qWdb7GUzjabAu"/>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary leading-tight">The Knower OS</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Enterprise Suite</p>
+</div>
+</div>
+<!-- Main Tabs -->
+<ul class="flex flex-col gap-1 flex-1">
+<!-- Non-active state for all since we are in a special workspace overlay -->
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="text-label-md font-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">group</span>
+<span class="text-label-md font-label-md">CRM</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">tactic</span>
+<span class="text-label-md font-label-md">Projects</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+<span class="text-label-md font-label-md">Finance</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">monitoring</span>
+<span class="text-label-md font-label-md">Analytics</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</li>
+</ul>
+<!-- CTA -->
+<div class="mt-4 mb-6">
+<button class="w-full py-2 px-4 rounded-lg bg-obsidian-elevated border border-outline-variant text-primary text-label-md font-label-md hover:border-primary-container transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Workspace
+            </button>
+</div>
+<!-- Footer Tabs -->
+<ul class="flex flex-col gap-1 border-t border-outline-variant pt-4">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="text-label-md font-label-md">Help</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">account_circle</span>
+<span class="text-label-md font-label-md">User Profile</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area Wrapper -->
+<div class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- TopNavBar Component -->
+<header class="bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md text-primary dark:text-primary docked full-width top-0 border-b border-outline-variant shadow-sm flex justify-between items-center w-full px-margin-desktop h-16 sticky top-0 z-40">
+<!-- Left: Brand & Search -->
+<div class="flex items-center gap-6">
+<!-- Brand injected here as per visual guidance -->
+<div class="flex items-center gap-2">
+<img alt="Logo" class="w-8 h-8 rounded" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZdTZR5vL5hL2601uG0gciiL3yzXg2Sz-CgopZW-UHWJazfJ_8Rkdac_wYXhBPxOAtrt4fmy6MGrzS0WdUOIKEhsQZLD495BLWPgNnhfphp-wvEWMHWbsKI9m1cjxPSoFk_u5NbbYVSw7XYnt31OTInuuHaOjaxSw_Ty98m5SrWyTpTpYQUhu792hIt3AgOJF0__xIIpI7TeUNPQ0udxgQSncXoqAb16CAnBBnaSZHhy3UcfcUP9kdWRHjwE_4FzKW_lTAiLT6i_ol"/>
+<span class="text-headline-md font-headline-md font-black text-primary">The Knower OS</span>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden lg:flex items-center gap-4">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all focus:ring-2 focus:ring-primary-container rounded px-2 py-1" href="#">List</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all focus:ring-2 focus:ring-primary-container rounded px-2 py-1" href="#">Kanban</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all focus:ring-2 focus:ring-primary-container rounded px-2 py-1" href="#">Timeline</a>
+</nav>
+</div>
+<!-- Right: Actions -->
+<div class="flex items-center gap-4">
+<!-- Icon Actions -->
+<div class="flex items-center gap-2 border-r border-outline-variant pr-4">
+<button class="p-2 text-on-surface-variant hover:text-primary rounded focus:ring-2 focus:ring-primary-container transition-all">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary rounded focus:ring-2 focus:ring-primary-container transition-all">
+<span class="material-symbols-outlined text-[20px]">language</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary rounded focus:ring-2 focus:ring-primary-container transition-all">
+<span class="material-symbols-outlined text-[20px]">terminal</span>
+</button>
+</div>
+<!-- Text Actions -->
+<div class="flex items-center gap-3">
+<button class="text-label-sm font-label-sm px-4 py-2 rounded border border-outline-variant text-on-surface hover:text-primary hover:border-primary-container transition-all focus:ring-2 focus:ring-primary-container">
+                        New Task
+                    </button>
+<!-- AI Assistant Active State CTA -->
+<button class="text-label-sm font-label-sm px-4 py-2 rounded bg-primary-container text-on-primary-container font-bold hover:bg-primary transition-all focus:ring-2 focus:ring-primary-container flex items-center gap-2 shadow-[0_0_15px_rgba(0,245,255,0.2)]">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                        AI Assistant
+                    </button>
+</div>
+<!-- Avatar -->
+<div class="w-8 h-8 rounded-full bg-obsidian-elevated border border-outline-variant overflow-hidden ml-2 cursor-pointer">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a corporate user, dimly lit with a cyan rim light, high quality, minimal background, suitable for an enterprise avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAy9PZJSv4JNQp5MpSgTSeS4i1Tfl6TeWQ5lAgV4if79pnYtFh9XtRc-dWjwoZYi8LKpRRAUkjTwPCcvYm2zQWfaSQ7Jk0yb-LrnHLCZ6-X9Nk_r1CQY5N77iaz6EXoDpy3vdYN4EyahcjN1-H9hd1ciUkx_TF9jZaXRD-8F6T1rhH07tsNZtey-vZ7idZ3Y2hcobhVl0yI97osg8-kenkMCEeaE7evFTnLob_htiNqLSFo9_vedS5sLT2pSM6HSriPZncSXa0vRg4F"/>
+</div>
+</div>
+</header>
+<!-- 3-Column AI Workspace Layout -->
+<main class="flex-1 flex gap-4 p-4 overflow-hidden bg-obsidian-base relative z-10">
+<!-- Left Panel: Smart Templates & History -->
+<aside class="w-80 flex-shrink-0 flex flex-col gap-4 rounded-xl glass-panel p-4 overflow-hidden">
+<!-- Smart Templates -->
+<div class="flex flex-col gap-3">
+<h2 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Smart Templates</h2>
+<div class="flex flex-col gap-2">
+<button class="flex items-center gap-3 w-full p-3 rounded-lg bg-obsidian-base border border-outline-variant hover:border-ai-purple/50 hover:bg-ai-purple/5 transition-all text-left group">
+<span class="material-symbols-outlined text-ai-purple text-[20px] group-hover:scale-110 transition-transform">receipt_long</span>
+<span class="text-body-sm font-body-sm text-on-surface">Generate Quotation</span>
+</button>
+<button class="flex items-center gap-3 w-full p-3 rounded-lg bg-obsidian-base border border-outline-variant hover:border-primary-container/50 hover:bg-primary-container/5 transition-all text-left group">
+<span class="material-symbols-outlined text-primary-container text-[20px] group-hover:scale-110 transition-transform">bug_report</span>
+<span class="text-body-sm font-body-sm text-on-surface">Analyze Bugs</span>
+</button>
+<button class="flex items-center gap-3 w-full p-3 rounded-lg bg-obsidian-base border border-outline-variant hover:border-success-emerald/50 hover:bg-success-emerald/5 transition-all text-left group">
+<span class="material-symbols-outlined text-success-emerald text-[20px] group-hover:scale-110 transition-transform">summarize</span>
+<span class="text-body-sm font-body-sm text-on-surface">Project Summary</span>
+</button>
+</div>
+</div>
+<div class="h-px w-full bg-outline-variant my-2 opacity-50"></div>
+<!-- Recent Chats -->
+<div class="flex flex-col gap-3 flex-1 overflow-y-auto pr-2">
+<h2 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider sticky top-0 bg-obsidian-surface/90 pb-2 backdrop-blur z-10">Recent Chats</h2>
+<a class="flex flex-col p-3 rounded-lg bg-obsidian-elevated border border-outline-variant" href="#">
+<span class="text-body-sm font-body-sm text-primary mb-1 truncate">Q3 Financial Modeling Context</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">2 hours ago • Finance</span>
+</a>
+<a class="flex flex-col p-3 rounded-lg hover:bg-obsidian-elevated border border-transparent hover:border-outline-variant transition-all" href="#">
+<span class="text-body-sm font-body-sm text-on-surface mb-1 truncate">Refactoring Auth Module</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Yesterday • Engineering</span>
+</a>
+<a class="flex flex-col p-3 rounded-lg hover:bg-obsidian-elevated border border-transparent hover:border-outline-variant transition-all" href="#">
+<span class="text-body-sm font-body-sm text-on-surface mb-1 truncate">Drafting Client Proposal: Acme Corp</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Oct 12 • Sales</span>
+</a>
+</div>
+</aside>
+<!-- Center Panel: Centralized Chat Interface -->
+<section class="flex-1 flex flex-col rounded-xl glass-panel overflow-hidden relative">
+<!-- Chat Header -->
+<div class="h-14 border-b border-outline-variant flex items-center justify-between px-6 bg-obsidian-base/50 backdrop-blur-sm z-10">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_8px_#00f5ff]"></div>
+<h3 class="text-body-md font-body-md font-medium text-on-surface">New AI Session</h3>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-obsidian-elevated px-2 py-1 rounded border border-outline-variant">Model: Knower-Ultra-v2</span>
+</div>
+</div>
+<!-- Messages Area -->
+<div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+<!-- User Message -->
+<div class="flex flex-col items-end gap-1 w-full max-w-3xl ml-auto">
+<div class="bg-obsidian-elevated border border-outline-variant px-5 py-3 rounded-2xl rounded-tr-sm text-body-sm font-body-sm text-on-surface leading-relaxed max-w-[85%]">
+                            Can you analyze the recent error logs for the authentication service and summarize the main issues? Also, generate a table of the top 3 endpoints affected.
+                        </div>
+</div>
+<!-- AI Message -->
+<div class="flex items-start gap-4 w-full max-w-4xl">
+<div class="w-8 h-8 rounded-lg bg-ai-purple/20 border border-ai-purple/50 flex items-center justify-center flex-shrink-0 mt-1 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
+<span class="material-symbols-outlined text-ai-purple text-[18px]">smart_toy</span>
+</div>
+<div class="flex flex-col gap-4 flex-1">
+<div class="text-body-sm font-body-sm text-on-surface leading-relaxed">
+                                Based on the active telemetry context for the <strong>AuthService</strong> module, I've analyzed the logs from the past 24 hours. There are two primary anomalies detected related to token validation timeouts and rate limiting.
+                                <br/><br/>
+                                Here is the breakdown of the most affected endpoints:
+                            </div>
+<!-- Generated Table -->
+<div class="w-full rounded-lg border border-outline-variant overflow-hidden bg-obsidian-base">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high border-b border-outline-variant text-label-sm font-label-sm text-on-surface-variant">
+<th class="p-3 font-medium">Endpoint</th>
+<th class="p-3 font-medium">Error Type</th>
+<th class="p-3 font-medium">Incidents</th>
+<th class="p-3 font-medium">Status</th>
+</tr>
+</thead>
+<tbody class="text-body-sm font-body-sm">
+<tr class="border-b border-outline-variant/50 hover:bg-obsidian-elevated/50 transition-colors">
+<td class="p-3 text-info-cyan font-label-sm">/api/v1/auth/verify</td>
+<td class="p-3 text-error-rose">TimeoutException</td>
+<td class="p-3">1,245</td>
+<td class="p-3"><span class="px-2 py-0.5 rounded bg-error-rose/10 text-error-rose text-label-sm border border-error-rose/20">Critical</span></td>
+</tr>
+<tr class="border-b border-outline-variant/50 hover:bg-obsidian-elevated/50 transition-colors">
+<td class="p-3 text-info-cyan font-label-sm">/api/v1/oauth/token</td>
+<td class="p-3 text-warning-amber">RateLimitExceeded</td>
+<td class="p-3">892</td>
+<td class="p-3"><span class="px-2 py-0.5 rounded bg-warning-amber/10 text-warning-amber text-label-sm border border-warning-amber/20">Warning</span></td>
+</tr>
+<tr class="hover:bg-obsidian-elevated/50 transition-colors">
+<td class="p-3 text-info-cyan font-label-sm">/api/v1/users/me</td>
+<td class="p-3 text-on-surface-variant">InvalidTokenFormat</td>
+<td class="p-3">134</td>
+<td class="p-3"><span class="px-2 py-0.5 rounded bg-obsidian-surface text-on-surface-variant text-label-sm border border-outline-variant">Low</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="text-body-sm font-body-sm text-on-surface leading-relaxed">
+                                I recommend applying a patch to the validation logic. Here is the suggested remediation snippet for the <code>TokenValidator.ts</code> class:
+                            </div>
+<!-- Generated Code Block -->
+<div class="rounded-lg border border-outline-variant bg-obsidian-base overflow-hidden relative group">
+<div class="flex items-center justify-between px-4 py-2 border-b border-outline-variant bg-obsidian-elevated text-label-sm font-label-sm text-on-surface-variant">
+<span>typescript</span>
+<button class="flex items-center gap-1 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+                                        Copy
+                                    </button>
+</div>
+<div class="p-4 overflow-x-auto text-label-sm font-label-sm leading-relaxed">
+<pre><code><span class="text-ai-purple">async function</span> <span class="text-info-cyan">validateTokenWithTimeout</span>(token: <span class="text-secondary">string</span>): <span class="text-secondary">Promise</span>&lt;<span class="text-secondary">ValidationResult</span>&gt; {
+  <span class="text-ai-purple">try</span> {
+    <span class="text-outline-variant"> // Introduced 1500ms hard timeout to prevent cascade failure</span>
+    <span class="text-ai-purple">const</span> controller = <span class="text-ai-purple">new</span> <span class="text-info-cyan">AbortController</span>();
+    <span class="text-ai-purple">const</span> timeoutId = <span class="text-info-cyan">setTimeout</span>(() =&gt; controller.<span class="text-info-cyan">abort</span>(), <span class="text-warning-amber">1500</span>);
+    
+    <span class="text-ai-purple">const</span> result = <span class="text-ai-purple">await</span> jwtService.<span class="text-info-cyan">verifyAsync</span>(token, {
+      signal: controller.signal
+    });
+    
+    <span class="text-info-cyan">clearTimeout</span>(timeoutId);
+    <span class="text-ai-purple">return</span> result;
+  } <span class="text-ai-purple">catch</span> (error) {
+    logger.<span class="text-info-cyan">error</span>(<span class="text-success-emerald">'Token validation failed or timed out'</span>, error);
+    <span class="text-ai-purple">throw new</span> <span class="text-info-cyan">AuthException</span>(<span class="text-success-emerald">'Validation unavailable'</span>);
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Input Box Area -->
+<div class="p-4 bg-obsidian-surface border-t border-outline-variant">
+<div class="relative max-w-4xl mx-auto">
+<div class="absolute inset-y-0 left-3 flex items-center gap-2">
+<button class="p-1.5 text-on-surface-variant hover:text-primary rounded-md hover:bg-obsidian-elevated transition-colors" title="Attach Context">
+<span class="material-symbols-outlined text-[20px]">add_link</span>
+</button>
+</div>
+<textarea class="w-full bg-obsidian-base border border-outline-variant rounded-xl py-4 pl-12 pr-14 text-body-sm font-body-sm text-on-surface placeholder-on-surface-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container resize-none outline-none shadow-inner" placeholder="Ask Knower-Ultra or type '/' for commands..." rows="1" style="min-height: 56px; max-height: 200px;"></textarea>
+<div class="absolute inset-y-0 right-3 flex items-end pb-3">
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary-container text-on-primary-container hover:bg-primary transition-colors shadow-[0_0_10px_rgba(0,245,255,0.2)]">
+<span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+</button>
+</div>
+</div>
+<div class="max-w-4xl mx-auto mt-2 flex justify-center gap-4">
+<span class="text-[10px] font-label-sm text-on-surface-variant tracking-wider uppercase">Shift + Enter for new line</span>
+<span class="text-[10px] font-label-sm text-on-surface-variant tracking-wider uppercase flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-success-emerald"></span> System Optimal</span>
+</div>
+</div>
+</section>
+<!-- Right Panel: Contextual Intelligence -->
+<aside class="w-80 flex-shrink-0 flex flex-col gap-4 rounded-xl glass-panel p-4 overflow-hidden bg-obsidian-surface/40">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-info-cyan text-[18px]">radar</span>
+<h2 class="text-label-sm font-label-sm text-info-cyan uppercase tracking-wider font-bold">Contextual Intelligence</h2>
+</div>
+<!-- Active Entity Card -->
+<div class="p-4 rounded-lg bg-obsidian-base border border-outline-variant relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-info-cyan/10 to-transparent"></div>
+<div class="flex items-center justify-between mb-3">
+<span class="text-[10px] font-label-sm text-on-surface-variant uppercase px-2 py-0.5 rounded border border-outline-variant bg-obsidian-elevated">Active Entity</span>
+<span class="w-2 h-2 rounded-full bg-success-emerald animate-pulse"></span>
+</div>
+<h3 class="text-body-md font-body-md font-semibold text-primary mb-1">AuthService Module</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-4">Repo: backend-core/auth</p>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-label-sm font-label-sm">
+<span class="text-on-surface-variant">Health</span>
+<span class="text-warning-amber">Degraded (89%)</span>
+</div>
+<div class="w-full bg-obsidian-elevated h-1.5 rounded-full overflow-hidden">
+<div class="bg-warning-amber h-full w-[89%]"></div>
+</div>
+</div>
+</div>
+<!-- Extracted Metrics/Tags -->
+<div class="flex flex-col gap-2 mt-2">
+<h4 class="text-label-sm font-label-sm text-on-surface-variant mb-1">Extracted Signals</h4>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 rounded bg-ai-purple/10 border border-ai-purple/30 text-ai-purple text-label-sm font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">memory</span>
+                            High Latency
+                        </span>
+<span class="px-2 py-1 rounded bg-error-rose/10 border border-error-rose/30 text-error-rose text-label-sm font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                            Rate Limits
+                        </span>
+<span class="px-2 py-1 rounded bg-obsidian-elevated border border-outline-variant text-on-surface text-label-sm font-label-sm">
+                            v2.4.1
+                        </span>
+</div>
+</div>
+<!-- Suggested Context Links -->
+<div class="mt-4 flex flex-col gap-2">
+<h4 class="text-label-sm font-label-sm text-on-surface-variant mb-1">Related Assets</h4>
+<a class="flex items-center gap-3 p-2 rounded hover:bg-obsidian-elevated transition-colors group" href="#">
+<div class="w-6 h-6 rounded bg-surface-container-high flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant group-hover:text-primary">description</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface group-hover:text-primary transition-colors">API Architecture Spec</span>
+</a>
+<a class="flex items-center gap-3 p-2 rounded hover:bg-obsidian-elevated transition-colors group" href="#">
+<div class="w-6 h-6 rounded bg-surface-container-high flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant group-hover:text-primary">group</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface group-hover:text-primary transition-colors">DevOps Team Channel</span>
+</a>
+</div>
+</aside>
+</main>
+</div>
+</body></html>

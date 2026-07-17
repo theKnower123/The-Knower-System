@@ -3,79 +3,78 @@
 namespace App\Http\Controllers\Projects;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Projects\StoreBugRequest;
+use App\Http\Requests\Projects\UpdateBugRequest;
+use App\Http\Resources\Projects\BugResource;
 use App\Models\Bug;
-use Illuminate\Http\Request;
+use App\Services\Projects\BugService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class BugController extends Controller
 {
-    public function index()
+    protected BugService $bugService;
+
+    public function __construct(BugService $bugService)
     {
-        $bugs = Bug::with(['project', 'task', 'reporter', 'assignee'])->latest()->get();
+        $this->bugService = $bugService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Bug::class);
+
+        $bugs = $this->bugService->getAll();
+        
+        // Load relations if needed
+        $bugs->load(['project', 'task', 'reporter', 'assignee']);
 
         return response()->json([
             'success' => true,
             'message' => 'Bugs retrieved successfully.',
-            'data' => $bugs
+            'data' => BugResource::collection($bugs)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreBugRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'task_id' => 'nullable|exists:tasks,id',
-            'assigned_to' => 'nullable|exists:users,id',
-            'severity' => 'nullable|in:low,medium,high,critical',
-            'status' => 'nullable|in:open,in_progress,resolved,closed',
-            'description' => 'required|string',
-            'steps_to_reproduce' => 'nullable|string',
-        ]);
-
-        $validated['reported_by'] = auth()->id();
-        $bug = Bug::create($validated);
+        $bug = $this->bugService->create($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Bug reported successfully.',
-            'data' => $bug
+            'message' => 'Bug created successfully.',
+            'data' => new BugResource($bug)
         ], 201);
     }
 
-    public function show(Bug $bug)
+    public function show(Bug $bug): JsonResponse
     {
+        Gate::authorize('view', $bug);
         $bug->load(['project', 'task', 'reporter', 'assignee']);
 
         return response()->json([
             'success' => true,
             'message' => 'Bug retrieved successfully.',
-            'data' => $bug
+            'data' => new BugResource($bug)
         ]);
     }
 
-    public function update(Request $request, Bug $bug)
+    public function update(UpdateBugRequest $request, Bug $bug): JsonResponse
     {
-        $validated = $request->validate([
-            'project_id' => 'sometimes|required|exists:projects,id',
-            'task_id' => 'nullable|exists:tasks,id',
-            'assigned_to' => 'nullable|exists:users,id',
-            'severity' => 'sometimes|required|in:low,medium,high,critical',
-            'status' => 'sometimes|required|in:open,in_progress,resolved,closed',
-            'description' => 'sometimes|required|string',
-            'steps_to_reproduce' => 'nullable|string',
-        ]);
-
-        $bug->update($validated);
+        $bug = $this->bugService->update($bug, $request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Bug updated successfully.',
-            'data' => $bug
+            'data' => new BugResource($bug)
         ]);
     }
 
-    public function destroy(Bug $bug)
+    public function destroy(Bug $bug): JsonResponse
     {
-        $bug->delete();
+        Gate::authorize('delete', $bug);
+
+        $this->bugService->delete($bug);
 
         return response()->json([
             'success' => true,

@@ -3,78 +3,78 @@
 namespace App\Http\Controllers\CRM;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CRM\StoreQuotationRequest;
+use App\Http\Requests\CRM\UpdateQuotationRequest;
+use App\Http\Resources\CRM\QuotationResource;
 use App\Models\Quotation;
-use Illuminate\Http\Request;
+use App\Services\CRM\QuotationService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class QuotationController extends Controller
 {
-    public function index()
+    protected QuotationService $quotationService;
+
+    public function __construct(QuotationService $quotationService)
     {
-        $quotations = Quotation::with('client')->latest()->get();
+        $this->quotationService = $quotationService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Quotation::class);
+
+        $quotations = $this->quotationService->getAll();
+        
+        // Load relations if needed
+        $quotations->load('client');
 
         return response()->json([
             'success' => true,
             'message' => 'Quotations retrieved successfully.',
-            'data' => $quotations
+            'data' => QuotationResource::collection($quotations)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreQuotationRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'quotation_number' => 'required|string|unique:quotations,quotation_number|max:100',
-            'price' => 'required|numeric|min:0',
-            'currency' => 'nullable|string|max:10',
-            'status' => 'nullable|in:draft,sent,accepted,rejected,expired',
-            'valid_until' => 'nullable|date',
-            'notes' => 'nullable|string',
-        ]);
-
-        $quotation = Quotation::create($validated);
+        $quotation = $this->quotationService->create($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Quotation created successfully.',
-            'data' => $quotation
+            'data' => new QuotationResource($quotation)
         ], 201);
     }
 
-    public function show(Quotation $quotation)
+    public function show(Quotation $quotation): JsonResponse
     {
+        Gate::authorize('view', $quotation);
         $quotation->load(['client', 'contract']);
 
         return response()->json([
             'success' => true,
             'message' => 'Quotation retrieved successfully.',
-            'data' => $quotation
+            'data' => new QuotationResource($quotation)
         ]);
     }
 
-    public function update(Request $request, Quotation $quotation)
+    public function update(UpdateQuotationRequest $request, Quotation $quotation): JsonResponse
     {
-        $validated = $request->validate([
-            'client_id' => 'sometimes|required|exists:clients,id',
-            'quotation_number' => 'sometimes|required|string|max:100|unique:quotations,quotation_number,' . $quotation->id,
-            'price' => 'sometimes|required|numeric|min:0',
-            'currency' => 'nullable|string|max:10',
-            'status' => 'sometimes|required|in:draft,sent,accepted,rejected,expired',
-            'valid_until' => 'nullable|date',
-            'notes' => 'nullable|string',
-        ]);
-
-        $quotation->update($validated);
+        $quotation = $this->quotationService->update($quotation, $request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Quotation updated successfully.',
-            'data' => $quotation
+            'data' => new QuotationResource($quotation)
         ]);
     }
 
-    public function destroy(Quotation $quotation)
+    public function destroy(Quotation $quotation): JsonResponse
     {
-        $quotation->delete();
+        Gate::authorize('delete', $quotation);
+
+        $this->quotationService->delete($quotation);
 
         return response()->json([
             'success' => true,

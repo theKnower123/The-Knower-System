@@ -3,85 +3,78 @@
 namespace App\Http\Controllers\Projects;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Projects\StoreProjectRequest;
+use App\Http\Requests\Projects\UpdateProjectRequest;
+use App\Http\Resources\Projects\ProjectResource;
 use App\Models\Project;
-use Illuminate\Http\Request;
+use App\Services\Projects\ProjectService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
 {
-    public function index()
+    protected ProjectService $projectService;
+
+    public function __construct(ProjectService $projectService)
     {
-        $projects = Project::with(['client', 'creator'])->latest()->get();
+        $this->projectService = $projectService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Project::class);
+
+        $projects = $this->projectService->getAll();
+        
+        // Load relations if needed
+        $projects->load(['client', 'creator']);
 
         return response()->json([
             'success' => true,
             'message' => 'Projects retrieved successfully.',
-            'data' => $projects
+            'data' => ProjectResource::collection($projects)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'client_id' => 'nullable|exists:clients,id',
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'type' => 'nullable|string|max:100',
-            'status' => 'nullable|in:planning,active,on_hold,completed,cancelled',
-            'priority' => 'nullable|in:low,medium,high,urgent',
-            'start_date' => 'nullable|date',
-            'deadline' => 'nullable|date|after_or_equal:start_date',
-            'budget' => 'nullable|numeric|min:0',
-            'progress' => 'nullable|integer|between:0,100',
-        ]);
-
-        $validated['created_by'] = auth()->id();
-        $project = Project::create($validated);
+        $project = $this->projectService->create($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Project created successfully.',
-            'data' => $project
+            'data' => new ProjectResource($project)
         ], 201);
     }
 
-    public function show(Project $project)
+    public function show(Project $project): JsonResponse
     {
+        Gate::authorize('view', $project);
         $project->load(['client', 'creator', 'milestones', 'tasks.assignee', 'bugs', 'files']);
 
         return response()->json([
             'success' => true,
             'message' => 'Project retrieved successfully.',
-            'data' => $project
+            'data' => new ProjectResource($project)
         ]);
     }
 
-    public function update(Request $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project): JsonResponse
     {
-        $validated = $request->validate([
-            'client_id' => 'nullable|exists:clients,id',
-            'name' => 'sometimes|required|string|max:255',
-            'description' => 'nullable|string',
-            'type' => 'nullable|string|max:100',
-            'status' => 'sometimes|required|in:planning,active,on_hold,completed,cancelled',
-            'priority' => 'sometimes|required|in:low,medium,high,urgent',
-            'start_date' => 'nullable|date',
-            'deadline' => 'nullable|date|after_or_equal:start_date',
-            'budget' => 'nullable|numeric|min:0',
-            'progress' => 'nullable|integer|between:0,100',
-        ]);
-
-        $project->update($validated);
+        $project = $this->projectService->update($project, $request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Project updated successfully.',
-            'data' => $project
+            'data' => new ProjectResource($project)
         ]);
     }
 
-    public function destroy(Project $project)
+    public function destroy(Project $project): JsonResponse
     {
-        $project->delete();
+        Gate::authorize('delete', $project);
+
+        $this->projectService->delete($project);
 
         return response()->json([
             'success' => true,

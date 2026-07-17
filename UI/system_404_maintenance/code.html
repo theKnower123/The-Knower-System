@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Knower OS - System Status</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface": "#dae2fd",
+                      "outline": "#849495",
+                      "tertiary-fixed": "#f0dbff",
+                      "secondary-container": "#03c6b2",
+                      "success-emerald": "#10B981",
+                      "error": "#ffb4ab",
+                      "on-secondary-fixed": "#00201c",
+                      "tertiary": "#fff8fd",
+                      "on-tertiary-container": "#872fd5",
+                      "inverse-surface": "#dae2fd",
+                      "on-primary-fixed-variant": "#004f53",
+                      "error-rose": "#F43F5E",
+                      "on-secondary-container": "#004d44",
+                      "secondary-fixed-dim": "#3cddc7",
+                      "on-tertiary-fixed": "#2c0051",
+                      "on-background": "#dae2fd",
+                      "on-primary-fixed": "#002021",
+                      "on-surface-variant": "#b9caca",
+                      "background": "#0b1326",
+                      "surface-bright": "#31394d",
+                      "surface-dim": "#0b1326",
+                      "primary-fixed-dim": "#00dce5",
+                      "surface-container-high": "#222a3d",
+                      "obsidian-base": "#020617",
+                      "error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#6900b3",
+                      "inverse-primary": "#00696e",
+                      "primary": "#e9feff",
+                      "surface-container": "#171f33",
+                      "primary-container": "#00f5ff",
+                      "on-tertiary": "#490080",
+                      "obsidian-surface": "#0F172A",
+                      "surface-variant": "#2d3449",
+                      "warning-amber": "#F59E0B",
+                      "on-secondary": "#003731",
+                      "surface-container-highest": "#2d3449",
+                      "obsidian-elevated": "#1E293B",
+                      "surface-container-lowest": "#060e20",
+                      "surface": "#0b1326",
+                      "inverse-on-surface": "#283044",
+                      "primary-fixed": "#63f7ff",
+                      "surface-tint": "#00dce5",
+                      "on-error": "#690005",
+                      "on-secondary-fixed-variant": "#005047",
+                      "outline-variant": "#3a494a",
+                      "on-primary-container": "#006c71",
+                      "secondary-fixed": "#62fae3",
+                      "ai-purple": "#A855F7",
+                      "surface-container-low": "#131b2e",
+                      "tertiary-fixed-dim": "#ddb7ff",
+                      "info-cyan": "#06B6D4",
+                      "on-error-container": "#ffdad6",
+                      "tertiary-container": "#edd4ff",
+                      "secondary": "#44e2cd",
+                      "on-primary": "#003739"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "64px",
+                      "gutter": "24px",
+                      "margin-mobile": "16px",
+                      "container-max": "1440px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-md": ["JetBrains Mono"],
+                      "body-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "label-sm": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(30, 41, 59, 0.8);
+        }
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 #A855F7;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 #00F5FF;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 86px, 0); }
+            20% { clip: rect(62px, 9999px, 11px, 0); }
+            40% { clip: rect(28px, 9999px, 98px, 0); }
+            60% { clip: rect(74px, 9999px, 42px, 0); }
+            80% { clip: rect(93px, 9999px, 20px, 0); }
+            100% { clip: rect(14px, 9999px, 73px, 0); }
+        }
+    </style>
+</head>
+<body class="bg-obsidian-base text-on-surface font-body-md min-h-screen flex flex-col selection:bg-primary-container selection:text-obsidian-base overflow-x-hidden">
+<!-- Ambient Background -->
+<div class="fixed inset-0 z-0 pointer-events-none opacity-20" style="background: radial-gradient(circle at 50% 0%, rgba(0, 245, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 100%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);"></div>
+<!-- Main Content Container (Switching between 404 and Maintenance for demo, normally separate routes) -->
+<main class="flex-grow flex items-center justify-center relative z-10 px-margin-mobile md:px-margin-desktop py-12 md:py-24">
+<!-- View Toggle (For Demo Purposes) -->
+<div class="absolute top-8 right-8 z-50 flex gap-4 glass-panel rounded-full p-2">
+<button class="px-4 py-2 rounded-full text-label-sm font-label-sm hover:bg-obsidian-elevated hover:text-primary transition-colors text-on-surface-variant" onclick="document.getElementById('view-404').classList.remove('hidden'); document.getElementById('view-maintenance').classList.add('hidden');">404 Error</button>
+<button class="px-4 py-2 rounded-full text-label-sm font-label-sm hover:bg-obsidian-elevated hover:text-primary transition-colors text-on-surface-variant" onclick="document.getElementById('view-maintenance').classList.remove('hidden'); document.getElementById('view-404').classList.add('hidden');">Maintenance</button>
+</div>
+<!-- ========================================== -->
+<!-- 404 VIEW -->
+<!-- ========================================== -->
+<div class="w-full max-w-5xl flex flex-col md:flex-row items-center gap-16" id="view-404">
+<!-- Visual Element -->
+<div class="flex-1 w-full relative aspect-square max-w-md mx-auto md:mx-0 flex items-center justify-center">
+<!-- Abstract Data Core Representation -->
+<div class="absolute inset-0 rounded-full border border-outline-variant opacity-20 animate-[spin_60s_linear_infinite]"></div>
+<div class="absolute inset-8 rounded-full border border-dashed border-primary-container opacity-30 animate-[spin_40s_linear_infinite_reverse]"></div>
+<div class="absolute inset-16 rounded-full border border-outline-variant opacity-20 animate-[spin_20s_linear_infinite]"></div>
+<div class="relative z-10 text-center">
+<h1 class="text-[120px] md:text-[180px] font-display-lg font-bold leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-primary-container via-primary to-obsidian-elevated glitch-text" data-text="404">404</h1>
+<div class="text-label-md font-label-md text-info-cyan tracking-widest uppercase mt-4">Sector Uncharted</div>
+</div>
+</div>
+<!-- Content -->
+<div class="flex-1 w-full text-center md:text-left">
+<h2 class="text-headline-lg font-headline-lg text-primary mb-4">Entity Not Found</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant mb-8 max-w-md mx-auto md:mx-0">
+                    The intelligence protocol could not locate the requested destination. It may have been relocated, restricted, or purged from the core database.
+                </p>
+<!-- Search/AI Action -->
+<div class="relative max-w-md mx-auto md:mx-0 mb-8">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-ai-purple" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<input class="w-full bg-obsidian-base border border-outline-variant rounded-lg py-4 pl-12 pr-4 text-body-md font-body-md text-on-surface focus:outline-none focus:border-ai-purple focus:ring-1 focus:ring-ai-purple transition-all placeholder:text-outline-variant" placeholder="Query AI Command..." type="text"/>
+</div>
+<!-- Suggested Actions -->
+<div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+<button class="bg-primary-container text-obsidian-base px-8 py-3 rounded-lg text-label-md font-label-md hover:bg-primary transition-colors flex items-center justify-center gap-2 font-bold">
+<span class="material-symbols-outlined" data-icon="keyboard_return">keyboard_return</span>
+                        Return to Command Center
+                    </button>
+<button class="glass-panel text-on-surface px-8 py-3 rounded-lg text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+                        View Logs
+                    </button>
+</div>
+</div>
+</div>
+<!-- ========================================== -->
+<!-- MAINTENANCE VIEW (Hidden by default for demo) -->
+<!-- ========================================== -->
+<div class="hidden w-full max-w-3xl flex flex-col items-center text-center" id="view-maintenance">
+<!-- Health Pulse Animation -->
+<div class="relative w-32 h-32 mb-12 flex items-center justify-center">
+<div class="absolute inset-0 bg-warning-amber/20 rounded-full pulse-ring"></div>
+<div class="absolute inset-4 bg-warning-amber/30 rounded-full pulse-ring" style="animation-delay: -1s;"></div>
+<div class="relative z-10 w-16 h-16 bg-obsidian-surface border-2 border-warning-amber rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.3)]">
+<span class="material-symbols-outlined text-warning-amber text-3xl" data-icon="engineering">engineering</span>
+</div>
+</div>
+<h1 class="text-display-lg font-display-lg text-primary mb-6">System Upgrade in Progress</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant max-w-2xl mb-12">
+                The Knower OS is currently undergoing scheduled optimization to enhance core processing capabilities and security protocols. All systems are suspended temporarily.
+            </p>
+<!-- Status Bento -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl text-left mb-12">
+<div class="glass-panel p-6 rounded-xl flex flex-col gap-2">
+<span class="text-label-sm font-label-sm text-outline-variant uppercase">Current Status</span>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-warning-amber animate-pulse"></div>
+<span class="text-label-md font-label-md text-warning-amber">Deploying Node Alpha</span>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex flex-col gap-2">
+<span class="text-label-sm font-label-sm text-outline-variant uppercase">Est. Completion</span>
+<span class="text-headline-md font-headline-md text-primary">00:45:22</span>
+</div>
+<div class="glass-panel p-6 rounded-xl flex flex-col gap-2">
+<span class="text-label-sm font-label-sm text-outline-variant uppercase">Impact Level</span>
+<span class="text-label-md font-label-md text-on-surface">Global Architecture</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full max-w-xl">
+<div class="flex justify-between text-label-sm font-label-sm mb-2">
+<span class="text-outline-variant">Optimization Progress</span>
+<span class="text-primary-container">78%</span>
+</div>
+<div class="h-1 bg-obsidian-elevated rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[78%] relative">
+<div class="absolute top-0 right-0 bottom-0 left-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
+</div>
+</div>
+</div>
+<button class="mt-12 glass-panel text-on-surface px-6 py-2 rounded-lg text-label-sm font-label-sm hover:bg-obsidian-elevated hover:text-primary transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="notifications">notifications</span>
+                Alert me when operational
+            </button>
+</div>
+</main>
+<!-- Footer Component from JSON -->
+<footer class="bg-obsidian-base dark:bg-obsidian-base border-t border-outline-variant flex justify-between items-center w-full px-margin-desktop py-2 h-8 sticky bottom-0 z-40">
+<div class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-4">
+<span class="text-label-sm font-label-sm text-on-surface-variant">The Knower OS v2.4.0 • System Status: Operational</span>
+</div>
+<div class="flex items-center gap-6">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Privacy</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">API Docs</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors duration-200 flex items-center gap-2" href="#">
+                Server Health <div class="w-2 h-2 rounded-full bg-success-emerald"></div>
+</a>
+</div>
+</footer>
+<style>
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</body></html>

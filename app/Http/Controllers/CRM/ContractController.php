@@ -3,78 +3,78 @@
 namespace App\Http\Controllers\CRM;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CRM\StoreContractRequest;
+use App\Http\Requests\CRM\UpdateContractRequest;
+use App\Http\Resources\CRM\ContractResource;
 use App\Models\Contract;
-use Illuminate\Http\Request;
+use App\Services\CRM\ContractService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class ContractController extends Controller
 {
-    public function index()
+    protected ContractService $contractService;
+
+    public function __construct(ContractService $contractService)
     {
-        $contracts = Contract::with(['client', 'quotation'])->latest()->get();
+        $this->contractService = $contractService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Contract::class);
+
+        $contracts = $this->contractService->getAll();
+        
+        // Load relations if needed
+        $contracts->load(['client', 'quotation']);
 
         return response()->json([
             'success' => true,
             'message' => 'Contracts retrieved successfully.',
-            'data' => $contracts
+            'data' => ContractResource::collection($contracts)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreContractRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'quotation_id' => 'nullable|exists:quotations,id',
-            'contract_number' => 'required|string|unique:contracts,contract_number|max:100',
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-            'status' => 'nullable|in:draft,active,completed,terminated',
-            'file' => 'nullable|string|max:255',
-        ]);
-
-        $contract = Contract::create($validated);
+        $contract = $this->contractService->create($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Contract created successfully.',
-            'data' => $contract
+            'data' => new ContractResource($contract)
         ], 201);
     }
 
-    public function show(Contract $contract)
+    public function show(Contract $contract): JsonResponse
     {
+        Gate::authorize('view', $contract);
         $contract->load(['client', 'quotation']);
 
         return response()->json([
             'success' => true,
             'message' => 'Contract retrieved successfully.',
-            'data' => $contract
+            'data' => new ContractResource($contract)
         ]);
     }
 
-    public function update(Request $request, Contract $contract)
+    public function update(UpdateContractRequest $request, Contract $contract): JsonResponse
     {
-        $validated = $request->validate([
-            'client_id' => 'sometimes|required|exists:clients,id',
-            'quotation_id' => 'nullable|exists:quotations,id',
-            'contract_number' => 'sometimes|required|string|max:100|unique:contracts,contract_number,' . $contract->id,
-            'start_date' => 'sometimes|required|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-            'status' => 'sometimes|required|in:draft,active,completed,terminated',
-            'file' => 'nullable|string|max:255',
-        ]);
-
-        $contract->update($validated);
+        $contract = $this->contractService->update($contract, $request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Contract updated successfully.',
-            'data' => $contract
+            'data' => new ContractResource($contract)
         ]);
     }
 
-    public function destroy(Contract $contract)
+    public function destroy(Contract $contract): JsonResponse
     {
-        $contract->delete();
+        Gate::authorize('delete', $contract);
+
+        $this->contractService->delete($contract);
 
         return response()->json([
             'success' => true,

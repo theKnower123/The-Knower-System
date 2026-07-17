@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login - The Knower OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#3a494a",
+                      "on-tertiary-fixed-variant": "#6900b3",
+                      "on-surface-variant": "#b9caca",
+                      "on-tertiary-container": "#872fd5",
+                      "surface-container": "#171f33",
+                      "tertiary-fixed-dim": "#ddb7ff",
+                      "on-background": "#dae2fd",
+                      "background": "#0b1326",
+                      "on-primary-container": "#006c71",
+                      "on-tertiary-fixed": "#2c0051",
+                      "primary": "#e9feff",
+                      "surface-tint": "#00dce5",
+                      "surface-container-lowest": "#060e20",
+                      "surface-bright": "#31394d",
+                      "on-primary-fixed": "#002021",
+                      "warning-amber": "#F59E0B",
+                      "on-error-container": "#ffdad6",
+                      "surface-variant": "#2d3449",
+                      "error-container": "#93000a",
+                      "error-rose": "#F43F5E",
+                      "surface-container-high": "#222a3d",
+                      "primary-container": "#00f5ff",
+                      "on-secondary": "#003731",
+                      "surface": "#0b1326",
+                      "obsidian-elevated": "#1E293B",
+                      "surface-container-low": "#131b2e",
+                      "on-secondary-fixed-variant": "#005047",
+                      "tertiary-fixed": "#f0dbff",
+                      "secondary-fixed-dim": "#3cddc7",
+                      "surface-container-highest": "#2d3449",
+                      "on-secondary-fixed": "#00201c",
+                      "info-cyan": "#06B6D4",
+                      "on-primary": "#003739",
+                      "inverse-on-surface": "#283044",
+                      "on-error": "#690005",
+                      "error": "#ffb4ab",
+                      "primary-fixed-dim": "#00dce5",
+                      "tertiary-container": "#edd4ff",
+                      "primary-fixed": "#63f7ff",
+                      "inverse-primary": "#00696e",
+                      "on-primary-fixed-variant": "#004f53",
+                      "obsidian-base": "#020617",
+                      "obsidian-surface": "#0F172A",
+                      "surface-dim": "#0b1326",
+                      "on-secondary-container": "#004d44",
+                      "on-tertiary": "#490080",
+                      "success-emerald": "#10B981",
+                      "inverse-surface": "#dae2fd",
+                      "on-surface": "#dae2fd",
+                      "tertiary": "#fff8fd",
+                      "secondary-container": "#03c6b2",
+                      "outline": "#849495",
+                      "ai-purple": "#A855F7",
+                      "secondary": "#44e2cd",
+                      "secondary-fixed": "#62fae3"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "64px",
+                      "base": "4px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "container-max": "1440px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-obsidian-base text-on-surface min-h-screen flex flex-col items-center justify-center p-margin-mobile relative overflow-hidden">
+<!-- Ambient Background Effect -->
+<div class="absolute inset-0 pointer-events-none opacity-20" style="background: radial-gradient(circle at 50% 0%, #A855F7 0%, transparent 60%);"></div>
+<div class="w-full max-w-sm z-10">
+<!-- Logo Header -->
+<div class="flex flex-col items-center mb-8">
+<div class="w-12 h-12 bg-primary-container rounded-lg flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(0,245,255,0.3)]">
+<span class="material-symbols-outlined text-obsidian-base" data-icon="hub">hub</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile tracking-tighter text-primary-container">The Knower OS</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 text-center">Secure Authentication Required</p>
+</div>
+<!-- Login Card -->
+<div class="bg-obsidian-surface border border-obsidian-elevated rounded-xl p-6 shadow-lg shadow-black/50 backdrop-blur-md">
+<form action="#" class="space-y-6" method="POST">
+<!-- Email Input -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 uppercase tracking-wider" for="email">Operator ID</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline-variant" data-icon="badge">badge</span>
+</div>
+<input class="block w-full pl-10 bg-obsidian-base border border-obsidian-elevated rounded-lg py-3 text-on-surface font-body-md focus:ring-1 focus:ring-primary-container focus:border-primary-container transition-colors shadow-inner" id="email" name="email" placeholder="operator@obsidian.sys" required="" type="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider" for="password">Access Key</label>
+<a class="font-label-sm text-label-sm text-primary-container hover:text-primary transition-colors" href="#">Recover</a>
+</div>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline-variant" data-icon="key">key</span>
+</div>
+<input class="block w-full pl-10 pr-10 bg-obsidian-base border border-obsidian-elevated rounded-lg py-3 text-on-surface font-body-md focus:ring-1 focus:ring-primary-container focus:border-primary-container transition-colors shadow-inner" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<button class="absolute inset-y-0 right-0 pr-3 flex items-center text-outline-variant hover:text-on-surface-variant transition-colors focus:outline-none" type="button">
+<span class="material-symbols-outlined" data-icon="visibility_off">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Biometric/MFA hint -->
+<div class="flex items-center justify-center p-3 bg-obsidian-elevated/30 border border-obsidian-elevated rounded-lg">
+<span class="material-symbols-outlined text-ai-purple mr-2" data-icon="fingerprint">fingerprint</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Biometric Auth Ready</span>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-primary-container text-on-primary-container font-body-md font-semibold py-3 px-4 rounded-lg hover:bg-primary transition-all active:scale-95 shadow-[0_0_15px_rgba(0,245,255,0.2)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-obsidian-base focus:ring-primary-container flex justify-center items-center" type="submit">
+                    Initiate Sequence
+                    <span class="material-symbols-outlined ml-2 text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+</div>
+<!-- Footer -->
+<div class="mt-8 text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-50">
+                © 2024 Obsidian Intelligence Systems
+            </p>
+</div>
+</div>
+</body></html>

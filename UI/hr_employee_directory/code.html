@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HR Employee Directory - The Knower OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#004d44",
+                      "inverse-surface": "#dae2fd",
+                      "surface-variant": "#2d3449",
+                      "surface-container-high": "#222a3d",
+                      "error": "#ffb4ab",
+                      "background": "#0b1326",
+                      "outline-variant": "#3a494a",
+                      "on-secondary-fixed-variant": "#005047",
+                      "surface-tint": "#00dce5",
+                      "tertiary": "#fff8fd",
+                      "warning-amber": "#F59E0B",
+                      "surface-container-low": "#131b2e",
+                      "success-emerald": "#10B981",
+                      "on-surface-variant": "#b9caca",
+                      "error-rose": "#F43F5E",
+                      "on-error": "#690005",
+                      "secondary-fixed": "#62fae3",
+                      "surface-dim": "#0b1326",
+                      "surface-container-lowest": "#060e20",
+                      "surface": "#0b1326",
+                      "secondary-fixed-dim": "#3cddc7",
+                      "on-secondary-fixed": "#00201c",
+                      "on-secondary": "#003731",
+                      "inverse-on-surface": "#283044",
+                      "primary-fixed-dim": "#00dce5",
+                      "inverse-primary": "#00696e",
+                      "ai-purple": "#A855F7",
+                      "secondary-container": "#03c6b2",
+                      "surface-container-highest": "#2d3449",
+                      "tertiary-container": "#edd4ff",
+                      "on-primary-container": "#006c71",
+                      "obsidian-elevated": "#1E293B",
+                      "primary": "#e9feff",
+                      "on-surface": "#dae2fd",
+                      "on-tertiary-fixed-variant": "#6900b3",
+                      "on-tertiary": "#490080",
+                      "secondary": "#44e2cd",
+                      "tertiary-fixed-dim": "#ddb7ff",
+                      "obsidian-surface": "#0F172A",
+                      "on-primary": "#003739",
+                      "info-cyan": "#06B6D4",
+                      "on-primary-fixed-variant": "#004f53",
+                      "obsidian-base": "#020617",
+                      "outline": "#849495",
+                      "on-tertiary-fixed": "#2c0051",
+                      "error-container": "#93000a",
+                      "surface-bright": "#31394d",
+                      "on-primary-fixed": "#002021",
+                      "tertiary-fixed": "#f0dbff",
+                      "on-error-container": "#ffdad6",
+                      "surface-container": "#171f33",
+                      "on-background": "#dae2fd",
+                      "primary-container": "#00f5ff",
+                      "primary-fixed": "#63f7ff",
+                      "on-tertiary-container": "#872fd5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1440px",
+                      "margin-desktop": "64px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-obsidian-base text-on-surface font-body-md text-body-md antialiased overflow-x-hidden min-h-screen flex flex-col md:flex-row">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-screen left-0 w-64 bg-obsidian-base dark:bg-obsidian-base border-r border-outline-variant py-6 px-4 z-50 fixed">
+<div class="flex items-center gap-3 mb-8 px-2">
+<div class="w-8 h-8 rounded-lg bg-primary-container/10 flex items-center justify-center border border-primary-container/20">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">dataset</span>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary leading-none">The Knower OS</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Enterprise Suite</p>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container font-label-md text-label-md py-3 px-4 rounded-lg flex items-center justify-center gap-2 mb-8 hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            New Workspace
+        </button>
+<nav class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="text-label-md font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-secondary-container font-bold border-r-2 border-secondary-container bg-obsidian-elevated/50" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="text-label-md font-label-md">CRM</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">tactic</span>
+<span class="text-label-md font-label-md">Projects</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+<span class="text-label-md font-label-md">Finance</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">monitoring</span>
+<span class="text-label-md font-label-md">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-1 pt-4 border-t border-outline-variant/50">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="text-label-md font-label-md">Help</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">account_circle</span>
+<span class="text-label-md font-label-md">User Profile</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col md:ml-64 min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md border-b border-outline-variant shadow-sm flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky top-0 z-40">
+<div class="flex items-center gap-6">
+<!-- Search -->
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="bg-obsidian-base border border-outline-variant rounded-lg pl-10 pr-4 py-1.5 text-body-sm font-body-sm text-primary placeholder-on-surface-variant focus:border-info-cyan focus:ring-1 focus:ring-info-cyan/20 transition-all w-64" placeholder="Search directory..." type="text"/>
+</div>
+<nav class="hidden md:flex gap-6">
+<a class="text-label-sm font-label-sm text-primary border-b-2 border-primary pb-[21px] mt-[21px]" href="#">List</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all pb-[21px] mt-[21px]" href="#">Kanban</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all pb-[21px] mt-[21px]" href="#">Timeline</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden sm:flex items-center gap-2 text-label-sm font-label-sm text-ai-purple border border-ai-purple/30 bg-ai-purple/10 px-3 py-1.5 rounded-lg hover:bg-ai-purple/20 transition-all">
+<span class="material-symbols-outlined text-[16px]">smart_toy</span>
+                    AI Assistant
+                </button>
+<button class="hidden sm:block text-label-sm font-label-sm text-primary bg-obsidian-elevated border border-outline-variant px-3 py-1.5 rounded-lg hover:border-primary/50 transition-all">
+                    New Task
+                </button>
+<div class="flex items-center gap-2 border-l border-outline-variant pl-4">
+<button class="text-on-surface-variant hover:text-primary transition-all p-1.5 rounded-md hover:bg-obsidian-elevated">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-all p-1.5 rounded-md hover:bg-obsidian-elevated">
+<span class="material-symbols-outlined text-[20px]">language</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-all p-1.5 rounded-md hover:bg-obsidian-elevated">
+<span class="material-symbols-outlined text-[20px]">terminal</span>
+</button>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant ml-2">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A highly detailed close-up portrait of a professional corporate user avatar, shot with dramatic studio lighting against a dark minimal background. High resolution, sleek tech aesthetic, muted tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFBU1dIkooF7U8pgIEgi2GNIwMI3dNmQcRJWHKRGr6BMWnxzIYGtHz-t3uc2BNHH4trKccuGqH7UU1QJMUceP_HvsCANel8NqTbqGV3caY3YvC2Uy-rvLfjigJycgE7D5ydc3kIvvJCcMJ-UvIWBAv4maBa3_VI71r400-I4qQWcBCGdEI1REcuMj4k0mVznExyTcoPBvvFxeZWTAkIU8Ex_3VzPlhchqzCdSKnR3LOR5fJUqgrb5Z7YdX4Yu6BddwEzCRYdt3cHu0"/>
+</div>
+</div>
+</header>
+<!-- Directory Canvas -->
+<div class="flex-1 flex flex-col md:flex-row w-full max-w-[container-max] mx-auto">
+<!-- Filter Sidebar -->
+<aside class="w-full md:w-64 flex-shrink-0 p-6 border-r border-outline-variant/50 bg-obsidian-surface/30">
+<div class="mb-8">
+<h2 class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-4">Departments</h2>
+<ul class="space-y-2">
+<li>
+<button class="w-full flex items-center justify-between text-left px-3 py-2 rounded-lg bg-obsidian-elevated text-primary border border-outline-variant text-label-sm font-label-sm">
+<span>Engineering</span>
+<span class="bg-obsidian-base px-2 py-0.5 rounded text-xs">42</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between text-left px-3 py-2 rounded-lg hover:bg-obsidian-elevated/50 text-on-surface-variant hover:text-primary transition-colors text-label-sm font-label-sm">
+<span>Design</span>
+<span class="bg-obsidian-base px-2 py-0.5 rounded text-xs opacity-70">12</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between text-left px-3 py-2 rounded-lg hover:bg-obsidian-elevated/50 text-on-surface-variant hover:text-primary transition-colors text-label-sm font-label-sm">
+<span>Product</span>
+<span class="bg-obsidian-base px-2 py-0.5 rounded text-xs opacity-70">8</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between text-left px-3 py-2 rounded-lg hover:bg-obsidian-elevated/50 text-on-surface-variant hover:text-primary transition-colors text-label-sm font-label-sm">
+<span>Marketing</span>
+<span class="bg-obsidian-base px-2 py-0.5 rounded text-xs opacity-70">15</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between text-left px-3 py-2 rounded-lg hover:bg-obsidian-elevated/50 text-on-surface-variant hover:text-primary transition-colors text-label-sm font-label-sm">
+<span>Sales</span>
+<span class="bg-obsidian-base px-2 py-0.5 rounded text-xs opacity-70">24</span>
+</button>
+</li>
+</ul>
+</div>
+<div>
+<h2 class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-4">Status</h2>
+<div class="space-y-3">
+<label class="flex items-center gap-3 cursor-pointer">
+<input checked="" class="w-4 h-4 rounded border-outline-variant bg-obsidian-base text-info-cyan focus:ring-info-cyan focus:ring-offset-obsidian-base" type="checkbox"/>
+<span class="text-body-sm font-body-sm text-primary">Active</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer">
+<input checked="" class="w-4 h-4 rounded border-outline-variant bg-obsidian-base text-warning-amber focus:ring-warning-amber focus:ring-offset-obsidian-base" type="checkbox"/>
+<span class="text-body-sm font-body-sm text-primary">Remote</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer">
+<input class="w-4 h-4 rounded border-outline-variant bg-obsidian-base text-outline focus:ring-outline focus:ring-offset-obsidian-base" type="checkbox"/>
+<span class="text-body-sm font-body-sm text-on-surface-variant">On Leave</span>
+</label>
+</div>
+</div>
+</aside>
+<!-- Grid Content -->
+<div class="flex-1 p-6 md:p-8">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h1 class="text-headline-lg font-headline-lg text-primary tracking-tight">Directory</h1>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">101 employees total</p>
+</div>
+<button class="bg-info-cyan text-obsidian-base font-label-md text-label-md py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-primary-fixed transition-colors shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+                        Onboard Employee
+                    </button>
+</div>
+<!-- Bento Grid for Employees -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Card 1 -->
+<div class="bg-obsidian-surface rounded-xl border border-obsidian-elevated p-5 flex flex-col relative group hover:border-outline-variant transition-colors shadow-sm">
+<div class="absolute top-4 right-4">
+<span class="w-2.5 h-2.5 rounded-full bg-success-emerald block shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+</div>
+<div class="w-16 h-16 rounded-full overflow-hidden border border-obsidian-elevated mb-4">
+<img alt="Employee" class="w-full h-full object-cover" data-alt="Professional headshot of a female software engineer in her 30s, natural lighting, dark minimal studio background, wearing a sleek dark turtleneck. High resolution, sharp focus on face." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMhnTST7XI7VS3GTZbHr2Ckh0uWTDq31rd9ZFF583w-q2wp_6UIxRHyeErckU7lo_U9FBOGbsRwgbsUOquhuoc6YFZCsJnPLX3A2iStawSBsj3sTvjFCsIM8vcpyivsdhLmXUxeg3_cm03QxH_G090XsXNkQyiZ_7U6BKTWimIasU-h9B_OI8PaNZnw6Z8bKs19CJE7csUVsoy0moigJRTZn810M4AAwpz7IorSJTYc2yoofALNzmZFws7vPCT5OB7NsxgPK3j4XAK"/>
+</div>
+<h3 class="text-body-md font-body-md font-medium text-primary">Sarah Chen</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5 mb-3">Senior Full Stack Engineer</p>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="px-2 py-1 rounded bg-info-cyan/10 text-info-cyan text-label-sm font-label-sm border border-info-cyan/20">Engineering</span>
+<span class="px-2 py-1 rounded bg-obsidian-elevated text-on-surface-variant text-label-sm font-label-sm border border-outline-variant/30">L4</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-obsidian-surface rounded-xl border border-obsidian-elevated p-5 flex flex-col relative group hover:border-outline-variant transition-colors shadow-sm">
+<div class="absolute top-4 right-4 flex gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-warning-amber" title="Remote">home_work</span>
+<span class="w-2.5 h-2.5 rounded-full bg-success-emerald block shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+</div>
+<div class="w-16 h-16 rounded-full overflow-hidden border border-obsidian-elevated mb-4">
+<img alt="Employee" class="w-full h-full object-cover" data-alt="Professional headshot of a male UX designer in his 20s, warm rim lighting, dark minimal studio background, wearing glasses and a casual dark overshirt. High resolution, crisp details." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDV9nglGujKAuKjnUuEBw7ZK9dDNHB55z-B81O273WlgsHaUfa6tasFljXF3nmCCLuwNfcpD7W3qjQE97U7PCKd2Dc9OTtQ2QOGHSjhFB9vvGVHfoHedo5UZqZe6UkC_S82pdhz8ohzm2t_kcjPObA5BYWT_CszWM9sA3YW0kUJYHvMZw88INLBd8LmS2U5AVtTPFoyjOU6vyzrQomNnELd39AbWkopnv9lj7AO-1mT_D7DZ8zskp2TmZxexBGQgu_-KclXvNMTITPf"/>
+</div>
+<h3 class="text-body-md font-body-md font-medium text-primary">Marcus Johnson</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5 mb-3">Lead Product Designer</p>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="px-2 py-1 rounded bg-secondary-container/10 text-secondary-container text-label-sm font-label-sm border border-secondary-container/20">Design</span>
+<span class="px-2 py-1 rounded bg-obsidian-elevated text-on-surface-variant text-label-sm font-label-sm border border-outline-variant/30">L5</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-obsidian-surface rounded-xl border border-obsidian-elevated p-5 flex flex-col relative group hover:border-outline-variant transition-colors shadow-sm opacity-70">
+<div class="absolute top-4 right-4">
+<span class="w-2.5 h-2.5 rounded-full bg-outline block"></span>
+</div>
+<div class="w-16 h-16 rounded-full overflow-hidden border border-obsidian-elevated mb-4 grayscale">
+<img alt="Employee" class="w-full h-full object-cover" data-alt="Professional headshot of a female data scientist, soft diffuse lighting, dark minimal studio background, looking slightly off-camera. High resolution, muted moody tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfoeozRIyOCAPAZ4emIxb3Uz9hmhswNgCwabo3ZsKSUi4gk2KB4ImMD5jJPWmb4M9DLmAAylceniUmLW5NmfD5HiiytOU4HjPy869zofKIjR0MGScbm11SphdXxFdQB270rIdzol6coE2UCx9xinhLmgbQfUTnN7-nR_CADFsqBCL7xQ69pNlFxoDKxj7XXzl4KEIZ94pLtR9X8I1GbDIsms0OFqcNEaajEqgUsQ5B--fT4hKvnCAJ-rIIcfqFlcJpLh5V6nzFZNh8"/>
+</div>
+<h3 class="text-body-md font-body-md font-medium text-primary">Elena Rodriguez</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5 mb-3">Data Scientist (On Leave)</p>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="px-2 py-1 rounded bg-info-cyan/10 text-info-cyan text-label-sm font-label-sm border border-info-cyan/20">Engineering</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-obsidian-surface rounded-xl border border-obsidian-elevated p-5 flex flex-col relative group hover:border-outline-variant transition-colors shadow-sm">
+<div class="absolute top-4 right-4 flex gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-success-emerald block shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+</div>
+<div class="w-16 h-16 rounded-full overflow-hidden border border-obsidian-elevated mb-4">
+<img alt="Employee" class="w-full h-full object-cover" data-alt="Professional headshot of a mature male engineering manager, distinguished look, dramatic cross lighting, dark minimal studio background, wearing a tailored dark blazer. High resolution, authoritative." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2ov9eaXLOBcii31Ep2_Sk_KcN1J9WT1LsYhhPuZSwjlKS7FeXmCjH3h6ALcHyjgjtJI_3NDradUI89G0_4UxZ5Pnz8puJCHcR1jz0A6ABr8brpUlKl1iS2qsj-dbFPuvHcF-0kdwJfBzb17ppCPG7MdnOg2arHU7t2LCnmVfjnAEWPCesorscwLBvk3yXXdetnBxT2z95mLNbNYmaTZVNC8TCwwa370Mv62SBuAvLDi6AJo-AYXw3cVSI5i5qya4w8O8Qx8PXffU4"/>
+</div>
+<h3 class="text-body-md font-body-md font-medium text-primary">David Kim</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5 mb-3">VP of Engineering</p>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="px-2 py-1 rounded bg-info-cyan/10 text-info-cyan text-label-sm font-label-sm border border-info-cyan/20">Engineering</span>
+<span class="px-2 py-1 rounded bg-ai-purple/10 text-ai-purple text-label-sm font-label-sm border border-ai-purple/30">Exec</span>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-obsidian-surface rounded-xl border border-obsidian-elevated p-5 flex flex-col relative group hover:border-outline-variant transition-colors shadow-sm">
+<div class="absolute top-4 right-4 flex gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-warning-amber" title="Remote">home_work</span>
+<span class="w-2.5 h-2.5 rounded-full bg-success-emerald block shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+</div>
+<div class="w-16 h-16 rounded-full overflow-hidden border border-obsidian-elevated mb-4">
+<img alt="Employee" class="w-full h-full object-cover" data-alt="Professional headshot of a non-binary product manager, cool blue accent lighting, dark minimal studio background, wearing minimalist contemporary clothing. High resolution, sleek." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8ucM3y7YgkmEOkA___jmpGDr6nD_yI13fldnd7BYsPhArPF4h9juGukYAPb98SGSUqiwa1o4FkT9hilPcP7zoVWFPQADV2crw8VQDp1F1nhVOQVuGppUugYfRyna3_5hrguYsGZAOLMAraMOzXtcFBUhw6vsI5LtW-fR7V20xs-By60chrpkQvoz3jX1vwIRvI91lQ4B8LRDW2iM7whP6XnUUFpXT-k3RXUfX_m6nKYObmQbIP-tbLIoAZUtZ82hDenbiuQnY2cPT"/>
+</div>
+<h3 class="text-body-md font-body-md font-medium text-primary">Alex Mercer</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5 mb-3">Group Product Manager</p>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="px-2 py-1 rounded bg-warning-amber/10 text-warning-amber text-label-sm font-label-sm border border-warning-amber/20">Product</span>
+<span class="px-2 py-1 rounded bg-obsidian-elevated text-on-surface-variant text-label-sm font-label-sm border border-outline-variant/30">L6</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-auto bg-obsidian-base dark:bg-obsidian-base border-t border-outline-variant flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-2 h-8">
+<div class="text-label-sm font-label-sm text-on-surface-variant">The Knower OS v2.4.0 • System Status: <span class="text-success-emerald">Operational</span></div>
+<div class="flex gap-4">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Server Health</a>
+</div>
+</footer>
+</main>
+</body></html>

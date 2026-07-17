@@ -3,57 +3,77 @@
 namespace App\Http\Controllers\Projects;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Projects\StoreFileRequest;
+use App\Http\Requests\Projects\UpdateFileRequest;
+use App\Http\Resources\Projects\FileResource;
 use App\Models\File;
-use Illuminate\Http\Request;
+use App\Services\Projects\FileService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class FileController extends Controller
 {
-    public function index()
+    protected FileService $fileService;
+
+    public function __construct(FileService $fileService)
     {
-        $files = File::with(['project', 'uploader'])->latest('id')->get();
+        $this->fileService = $fileService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', File::class);
+
+        $files = $this->fileService->getAll();
+        
+        // Load relations if needed
+        $files->load(['project', 'uploader']);
 
         return response()->json([
             'success' => true,
             'message' => 'Files retrieved successfully.',
-            'data' => $files
+            'data' => FileResource::collection($files)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreFileRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'file_name' => 'required|string|max:255',
-            'file_path' => 'required|string|max:255',
-            'size' => 'nullable|integer',
-            'type' => 'nullable|string|max:100',
-        ]);
-
-        $validated['uploaded_by'] = auth()->id();
-        $file = File::create($validated);
+        $file = $this->fileService->create($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'File entry logged successfully.',
-            'data' => $file
+            'message' => 'File created successfully.',
+            'data' => new FileResource($file)
         ], 201);
     }
 
-    public function show($id)
+    public function show(File $file): JsonResponse
     {
-        $file = File::with(['project', 'uploader'])->findOrFail($id);
+        Gate::authorize('view', $file);
 
         return response()->json([
             'success' => true,
             'message' => 'File retrieved successfully.',
-            'data' => $file
+            'data' => new FileResource($file)
         ]);
     }
 
-    public function destroy($id)
+    public function update(UpdateFileRequest $request, File $file): JsonResponse
     {
-        $file = File::findOrFail($id);
-        $file->delete();
+        $file = $this->fileService->update($file, $request->validated());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'File updated successfully.',
+            'data' => new FileResource($file)
+        ]);
+    }
+
+    public function destroy(File $file): JsonResponse
+    {
+        Gate::authorize('delete', $file);
+
+        $this->fileService->delete($file);
 
         return response()->json([
             'success' => true,

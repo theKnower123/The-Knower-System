@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Knower OS - Help &amp; Documentation Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed": "#2c0051",
+                      "on-tertiary": "#490080",
+                      "error-container": "#93000a",
+                      "secondary": "#44e2cd",
+                      "surface-container-high": "#222a3d",
+                      "secondary-fixed-dim": "#3cddc7",
+                      "outline-variant": "#3a494a",
+                      "on-secondary-fixed": "#00201c",
+                      "obsidian-surface": "#0F172A",
+                      "outline": "#849495",
+                      "surface-container-low": "#131b2e",
+                      "primary-container": "#00f5ff",
+                      "tertiary-fixed": "#f0dbff",
+                      "inverse-on-surface": "#283044",
+                      "on-primary-container": "#006c71",
+                      "success-emerald": "#10B981",
+                      "on-error-container": "#ffdad6",
+                      "on-error": "#690005",
+                      "primary-fixed": "#63f7ff",
+                      "error": "#ffb4ab",
+                      "inverse-primary": "#00696e",
+                      "on-primary-fixed-variant": "#004f53",
+                      "tertiary-container": "#edd4ff",
+                      "ai-purple": "#A855F7",
+                      "surface": "#0b1326",
+                      "on-background": "#dae2fd",
+                      "on-primary": "#003739",
+                      "on-tertiary-container": "#872fd5",
+                      "obsidian-elevated": "#1E293B",
+                      "surface-tint": "#00dce5",
+                      "surface-container-highest": "#2d3449",
+                      "surface-container": "#171f33",
+                      "primary-fixed-dim": "#00dce5",
+                      "surface-container-lowest": "#060e20",
+                      "surface-dim": "#0b1326",
+                      "secondary-container": "#03c6b2",
+                      "background": "#0b1326",
+                      "warning-amber": "#F59E0B",
+                      "surface-variant": "#2d3449",
+                      "obsidian-base": "#020617",
+                      "primary": "#e9feff",
+                      "on-surface-variant": "#b9caca",
+                      "on-secondary-fixed-variant": "#005047",
+                      "surface-bright": "#31394d",
+                      "on-tertiary-fixed-variant": "#6900b3",
+                      "inverse-surface": "#dae2fd",
+                      "on-primary-fixed": "#002021",
+                      "tertiary-fixed-dim": "#ddb7ff",
+                      "on-surface": "#dae2fd",
+                      "on-secondary-container": "#004d44",
+                      "on-secondary": "#003731",
+                      "error-rose": "#F43F5E",
+                      "secondary-fixed": "#62fae3",
+                      "info-cyan": "#06B6D4",
+                      "tertiary": "#fff8fd"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "64px",
+                      "margin-mobile": "16px",
+                      "container-max": "1440px",
+                      "base": "4px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-md": ["JetBrains Mono"],
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "label-sm": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+              }
+            },
+          }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(30, 41, 59, 1);
+        }
+        
+        .ai-gradient-text {
+            background: linear-gradient(135deg, #A855F7 0%, #00f5ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .ai-glow-border {
+            position: relative;
+        }
+        .ai-glow-border::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 1rem;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.5), rgba(0, 245, 255, 0.5));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .ai-glow-border:hover::before {
+            opacity: 1;
+        }
+        
+        .subtle-grid {
+            background-image: linear-gradient(to right, rgba(30, 41, 59, 0.3) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-obsidian-base text-on-surface font-body-md min-h-screen flex flex-col antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation -->
+<nav class="bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md text-primary dark:text-primary border-b border-outline-variant shadow-sm flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky top-0 z-40">
+<div class="flex items-center gap-6">
+<div class="text-headline-md font-headline-md font-black text-primary">The Knower OS</div>
+<div class="hidden md:flex items-center gap-6 text-label-sm font-label-sm">
+<a class="text-on-surface-variant hover:text-primary transition-all" href="#">List</a>
+<a class="text-on-surface-variant hover:text-primary transition-all" href="#">Kanban</a>
+<a class="text-on-surface-variant hover:text-primary transition-all" href="#">Timeline</a>
+<a class="text-primary border-b-2 border-primary pb-2" href="#">Help</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="w-full bg-obsidian-base border border-outline-variant rounded focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 text-body-sm font-body-sm pl-10 pr-4 py-1.5 transition-all outline-none text-on-surface placeholder:text-on-surface-variant" placeholder="Search documentation..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant hover:text-primary transition-all p-1.5 rounded focus:ring-2 focus:ring-primary-container"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-all p-1.5 rounded focus:ring-2 focus:ring-primary-container"><span class="material-symbols-outlined" data-icon="language">language</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-all p-1.5 rounded focus:ring-2 focus:ring-primary-container"><span class="material-symbols-outlined" data-icon="terminal">terminal</span></button>
+</div>
+<div class="h-6 w-px bg-outline-variant mx-2"></div>
+<button class="hidden md:flex items-center gap-2 text-label-sm font-label-sm bg-obsidian-base border border-ai-purple/50 text-ai-purple hover:bg-ai-purple/10 px-3 py-1.5 rounded transition-all">
+<span class="material-symbols-outlined text-[16px]">smart_toy</span>
+                AI Assistant
+            </button>
+<button class="hidden md:block text-label-sm font-label-sm bg-primary-container text-on-primary-container hover:bg-primary-fixed hover:text-on-primary-fixed px-3 py-1.5 rounded font-medium transition-all">
+                New Task
+            </button>
+<div class="h-8 w-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant ml-2">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A small, professional avatar portrait of a user in a dark, minimalist enterprise UI setting. High contrast, sharp focus, cool lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuibnuGodaT9hoI7TNE7Vm7vxvyhbX8VgnSMDftFSuAdYR8ZIyy05KRWALTt4IiuwlsIGlP7RbCv70QMvpuyPjw6TF37cuuenE2AjJJek_OKgZdVPTiVWv2dEjKeacM4tonzR9rx3RmP6_ZKzSALVv13lB5HJ2jSMUDhFMYeqdqrXCYQHZSFTLeNViWIuE0mt0VuuV_clmyyS7KpHJXI16vR8OoMUGwFObBs9Jd5ziSlL7dDffNlVMBL1oIrQccOVORnWRT0eYIfEV"/>
+</div>
+</div>
+</nav>
+<div class="flex flex-1 overflow-hidden">
+<!-- Side Navigation -->
+<aside class="hidden md:flex bg-obsidian-base dark:bg-obsidian-base text-secondary-container dark:text-secondary-container flex-col h-full py-6 px-4 docked h-screen left-0 w-64 border-r border-outline-variant border-r border-outline-variant z-30 shrink-0">
+<div class="flex flex-col gap-2 flex-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="group">group</span>
+                    CRM
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="tactic">tactic</span>
+                    Projects
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="payments">payments</span>
+                    Finance
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="monitoring">monitoring</span>
+                    Analytics
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+                    Settings
+                </a>
+</div>
+<div class="mt-auto pt-6 border-t border-outline-variant flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded text-label-md font-label-md text-secondary-container font-bold border-r-2 border-secondary-container hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+                    Help
+                </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_circle">account_circle</span>
+                    User Profile
+                </a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto relative subtle-grid">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 md:py-20 flex flex-col gap-12">
+<!-- Hero Section -->
+<section class="flex flex-col items-center text-center gap-6 max-w-3xl mx-auto w-full">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-variant/50 border border-outline-variant text-label-sm font-label-sm text-info-cyan">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                        Ask Knower AI anything
+                    </div>
+<h1 class="text-display-lg font-display-lg text-primary tracking-tight">How can we help?</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant">Search our knowledge base, explore guides, or ask the AI assistant for instant answers.</p>
+<div class="w-full relative mt-4 group">
+<div class="absolute -inset-1 bg-gradient-to-r from-ai-purple to-primary-container rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+<div class="relative flex items-center bg-obsidian-surface border border-outline-variant rounded-lg overflow-hidden focus-within:border-primary-container focus-within:ring-1 focus-within:ring-primary-container transition-all">
+<span class="material-symbols-outlined text-on-surface-variant pl-4 text-[24px]">search</span>
+<input class="w-full bg-transparent border-none text-body-lg font-body-lg text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 py-4 px-4 outline-none" placeholder="Describe your issue or search for a specific feature..." type="text"/>
+<button class="bg-primary-container text-on-primary-container px-6 py-4 text-label-md font-label-md font-bold hover:bg-primary-fixed transition-colors flex items-center gap-2">
+                                Search
+                                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Knowledge Categories (Bento Grid) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Getting Started -->
+<div class="glass-panel rounded-xl p-6 hover:bg-obsidian-elevated/50 transition-all duration-300 flex flex-col gap-4 group cursor-pointer border border-outline-variant">
+<div class="h-12 w-12 rounded bg-surface-variant flex items-center justify-center text-info-cyan border border-outline-variant group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[28px]">rocket_launch</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-primary mb-2">Getting Started</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Basic concepts, account setup, and navigating the workspace.</p>
+</div>
+<ul class="flex flex-col gap-2 mt-auto pt-4 border-t border-outline-variant/50">
+<li><a class="text-body-sm font-body-sm text-on-surface hover:text-primary-container flex items-center gap-2 transition-colors" href="#"><span class="material-symbols-outlined text-[16px] text-on-surface-variant">article</span> Workspace Architecture</a></li>
+<li><a class="text-body-sm font-body-sm text-on-surface hover:text-primary-container flex items-center gap-2 transition-colors" href="#"><span class="material-symbols-outlined text-[16px] text-on-surface-variant">article</span> Inviting Team Members</a></li>
+<li><a class="text-body-sm font-body-sm text-on-surface hover:text-primary-container flex items-center gap-2 transition-colors" href="#"><span class="material-symbols-outlined text-[16px] text-on-surface-variant">article</span> Setting up 2FA</a></li>
+</ul>
+</div>
+<!-- AI Workflows (Highlight) -->
+<div class="glass-panel rounded-xl p-6 flex flex-col gap-4 group cursor-pointer ai-glow-border border border-ai-purple/30 bg-obsidian-surface/80 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-ai-purple/10 rounded-full blur-3xl"></div>
+<div class="h-12 w-12 rounded bg-surface-variant flex items-center justify-center text-ai-purple border border-ai-purple/30 group-hover:scale-105 transition-transform z-10">
+<span class="material-symbols-outlined text-[28px]">psychology</span>
+</div>
+<div class="z-10">
+<h3 class="text-headline-md font-headline-md text-primary mb-2 ai-gradient-text">AI Workflows</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Leverage Knower AI for data extraction, summarization, and automation.</p>
+</div>
+<ul class="flex flex-col gap-2 mt-auto pt-4 border-t border-outline-variant/50 z-10">
+<li><a class="text-body-sm font-body-sm text-on-surface hover:text-ai-purple flex items-center gap-2 transition-colors" href="#"><span class="material-symbols-outlined text-[16px] text-ai-purple/70">smart_toy</span> Prompt Engineering Basics</a></li>
+<li><a class="text-body-sm font-body-sm text-on-surface hover:text-ai-purple flex items-center gap-2 transition-colors" href="#"><span class="material-symbols-outlined text-[16px] text-ai-purple/70">smart_toy</span> Automated Data Tagging</a></li>
+<li><a class="text-body-sm font-body-sm text-on-surface hover:text-ai-purple flex items-center gap-2 transition-colors" href="#"><span class="material-symbols-outlined text-[16px] text-ai-purple/70">smart_toy</span> Setting up AI Alerts</a></li>
+</ul>
+</div>
+<!-- Security -->
+<div class="glass-panel rounded-xl p-6 hover:bg-obsidian-elevated/50 transition-all duration-300 flex flex-col gap-4 group cursor-pointer border border-outline-variant">
+<div class="h-12 w-12 rounded bg-surface-variant flex items-center justify-center text-success-emerald border border-outline-variant group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[28px]">shield_lock</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-primary mb-2">Security &amp; Compliance</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Data residency, RBAC, audit logs, and compliance certifications.</p>
+</div>
+<ul class="flex flex-col gap-2 mt-auto pt-4 border-t border-outline-variant/50">
+<li><a class="text-body-sm font-body-sm text-on-surface hover:text-success-emerald flex items-center gap-2 transition-colors" href="#"><span class="material-symbols-outlined text-[16px] text-on-surface-variant">article</span> Understanding RBAC Levels</a></li>
+<li><a class="text-body-sm font-body-sm text-on-surface hover:text-success-emerald flex items-center gap-2 transition-colors" href="#"><span class="material-symbols-outlined text-[16px] text-on-surface-variant">article</span> Exporting Audit Logs</a></li>
+<li><a class="text-body-sm font-body-sm text-on-surface hover:text-success-emerald flex items-center gap-2 transition-colors" href="#"><span class="material-symbols-outlined text-[16px] text-on-surface-variant">article</span> SOC2 Compliance Report</a></li>
+</ul>
+</div>
+</section>
+<!-- Bottom Section Layout -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
+<!-- Popular Articles -->
+<div class="lg:col-span-2 flex flex-col gap-6">
+<h2 class="text-headline-md font-headline-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-info-cyan">trending_up</span>
+                            Popular Articles
+                        </h2>
+<div class="flex flex-col gap-2">
+<a class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-obsidian-elevated transition-colors border border-outline-variant" href="#">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">description</span>
+<div>
+<h4 class="text-body-md font-body-md font-medium text-primary">Connecting Custom Data Sources via API</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Integrations • 5 min read</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">chevron_right</span>
+</a>
+<a class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-obsidian-elevated transition-colors border border-outline-variant" href="#">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">description</span>
+<div>
+<h4 class="text-body-md font-body-md font-medium text-primary">Configuring Advanced Dashboard Metrics</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Analytics • 8 min read</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">chevron_right</span>
+</a>
+<a class="glass-panel p-4 rounded-lg flex items-center justify-between hover:bg-obsidian-elevated transition-colors border border-outline-variant" href="#">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">description</span>
+<div>
+<h4 class="text-body-md font-body-md font-medium text-primary">Managing Cross-Workspace Permissions</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Admin • 4 min read</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">chevron_right</span>
+</a>
+</div>
+</div>
+<!-- Recent Release Notes -->
+<div class="lg:col-span-1 flex flex-col gap-6">
+<h2 class="text-headline-md font-headline-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-success-emerald">update</span>
+                            Recent Release Notes
+                        </h2>
+<div class="glass-panel rounded-xl p-6 border border-outline-variant h-full flex flex-col relative overflow-hidden">
+<div class="absolute right-0 top-0 w-32 h-full bg-gradient-to-l from-obsidian-surface to-transparent pointer-events-none"></div>
+<div class="relative flex flex-col gap-6 border-l-2 border-outline-variant pl-4 py-2">
+<div class="relative">
+<div class="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary-container ring-4 ring-obsidian-base"></div>
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-primary-container/10 text-primary-container border border-primary-container/20 uppercase">v2.4.0</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Today</span>
+</div>
+<h4 class="text-body-md font-body-md font-medium text-primary mb-1">Enhanced AI Summarization</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant line-clamp-2">New context-aware models deployed for faster, more accurate document summaries.</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-surface-variant ring-4 ring-obsidian-base"></div>
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-surface-variant text-on-surface border border-outline-variant uppercase">v2.3.8</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Oct 12</span>
+</div>
+<h4 class="text-body-md font-body-md font-medium text-primary mb-1">Custom Dashboards V2</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant line-clamp-2">Drag-and-drop interface overhaul and new visualization types added to the analytics suite.</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-surface-variant ring-4 ring-obsidian-base"></div>
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-surface-variant text-on-surface border border-outline-variant uppercase">v2.3.5</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Sep 28</span>
+</div>
+<h4 class="text-body-md font-body-md font-medium text-primary mb-1">Security Patch Update</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant line-clamp-2">Minor bug fixes and infrastructure improvements for EU instances.</p>
+</div>
+</div>
+<a class="mt-auto pt-4 text-label-sm font-label-sm text-info-cyan hover:text-primary-container transition-colors flex items-center gap-1 font-medium" href="#">
+                                View all release notes <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+<!-- Support CTA -->
+<section class="mt-8 bg-obsidian-elevated/30 border border-outline-variant rounded-xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+<div>
+<h3 class="text-headline-md font-headline-md text-primary mb-2">Still need help?</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Our support team is available 24/7 for Enterprise customers.</p>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-4 py-2 border border-outline-variant bg-transparent text-primary hover:bg-surface-variant rounded text-label-md font-label-md transition-colors">
+                            Community Forum
+                        </button>
+<button class="px-4 py-2 bg-primary-container text-on-primary-container hover:bg-primary-fixed rounded text-label-md font-label-md font-bold transition-colors">
+                            Contact Support
+                        </button>
+</div>
+</section>
+</div>
+<!-- Footer -->
+<footer class="bg-obsidian-base dark:bg-obsidian-base border-t border-outline-variant flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-2 h-8 docked full-width bottom-0 z-40">
+<div class="text-label-sm font-label-sm text-on-surface-variant">
+                    The Knower OS v2.4.0 • System Status: Operational
+                </div>
+<div class="flex items-center gap-4 text-label-sm font-label-sm">
+<a class="text-on-surface-variant hover:text-primary" href="#">Privacy</a>
+<a class="text-on-surface-variant hover:text-primary" href="#">API Docs</a>
+<a class="text-on-surface-variant hover:text-primary" href="#">Server Health</a>
+</div>
+</footer>
+</main>
+</div>
+</body></html>

@@ -3,78 +3,77 @@
 namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Finance\StoreExpenseRequest;
+use App\Http\Requests\Finance\UpdateExpenseRequest;
+use App\Http\Resources\Finance\ExpenseResource;
 use App\Models\Expense;
-use Illuminate\Http\Request;
+use App\Services\Finance\ExpenseService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class ExpenseController extends Controller
 {
-    public function index()
+    protected ExpenseService $expenseService;
+
+    public function __construct(ExpenseService $expenseService)
     {
-        $expenses = Expense::with('creator')->latest('id')->get();
+        $this->expenseService = $expenseService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Expense::class);
+
+        $expenses = $this->expenseService->getAll();
+        
+        // Load relations if needed
+        $expenses->load('creator');
 
         return response()->json([
             'success' => true,
             'message' => 'Expenses retrieved successfully.',
-            'data' => $expenses
+            'data' => ExpenseResource::collection($expenses)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreExpenseRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'category' => 'required|string|max:255',
-            'title' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:0',
-            'payment_method' => 'nullable|in:cash,bank_transfer,card,other',
-            'notes' => 'nullable|string',
-        ]);
-
-        $validated['created_by'] = auth()->id();
-        $expense = Expense::create($validated);
+        $expense = $this->expenseService->create($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Expense created successfully.',
-            'data' => $expense
+            'data' => new ExpenseResource($expense)
         ], 201);
     }
 
-    public function show($id)
+    public function show(Expense $expense): JsonResponse
     {
-        $expense = Expense::with('creator')->findOrFail($id);
+        Gate::authorize('view', $expense);
 
         return response()->json([
             'success' => true,
             'message' => 'Expense retrieved successfully.',
-            'data' => $expense
+            'data' => new ExpenseResource($expense)
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateExpenseRequest $request, Expense $expense): JsonResponse
     {
-        $expense = Expense::findOrFail($id);
-
-        $validated = $request->validate([
-            'category' => 'sometimes|required|string|max:255',
-            'title' => 'sometimes|required|string|max:255',
-            'amount' => 'sometimes|required|numeric|min:0',
-            'payment_method' => 'sometimes|required|in:cash,bank_transfer,card,other',
-            'notes' => 'nullable|string',
-        ]);
-
-        $expense->update($validated);
+        $expense = $this->expenseService->update($expense, $request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Expense updated successfully.',
-            'data' => $expense
+            'data' => new ExpenseResource($expense)
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(Expense $expense): JsonResponse
     {
-        $expense = Expense::findOrFail($id);
-        $expense->delete();
+        Gate::authorize('delete', $expense);
+
+        $this->expenseService->delete($expense);
 
         return response()->json([
             'success' => true,

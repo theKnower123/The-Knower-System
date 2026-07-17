@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Knower OS - Projects Kanban</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#003739",
+                        "surface-container-low": "#131b2e",
+                        "surface-bright": "#31394d",
+                        "warning-amber": "#F59E0B",
+                        "obsidian-surface": "#0F172A",
+                        "secondary-fixed": "#62fae3",
+                        "on-tertiary": "#490080",
+                        "error-rose": "#F43F5E",
+                        "surface-tint": "#00dce5",
+                        "outline-variant": "#3a494a",
+                        "on-surface-variant": "#b9caca",
+                        "tertiary-container": "#edd4ff",
+                        "surface-container": "#171f33",
+                        "on-tertiary-fixed-variant": "#6900b3",
+                        "ai-purple": "#A855F7",
+                        "on-tertiary-fixed": "#2c0051",
+                        "primary-fixed-dim": "#00dce5",
+                        "surface-container-highest": "#2d3449",
+                        "on-secondary-container": "#004d44",
+                        "error": "#ffb4ab",
+                        "inverse-primary": "#00696e",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#872fd5",
+                        "obsidian-base": "#020617",
+                        "on-secondary": "#003731",
+                        "secondary-fixed-dim": "#3cddc7",
+                        "on-secondary-fixed": "#00201c",
+                        "on-background": "#dae2fd",
+                        "outline": "#849495",
+                        "surface-container-lowest": "#060e20",
+                        "info-cyan": "#06B6D4",
+                        "on-error-container": "#ffdad6",
+                        "tertiary": "#fff8fd",
+                        "surface-variant": "#2d3449",
+                        "tertiary-fixed-dim": "#ddb7ff",
+                        "primary-fixed": "#63f7ff",
+                        "success-emerald": "#10B981",
+                        "on-surface": "#dae2fd",
+                        "background": "#0b1326",
+                        "secondary-container": "#03c6b2",
+                        "surface": "#0b1326",
+                        "surface-dim": "#0b1326",
+                        "obsidian-elevated": "#1E293B",
+                        "on-error": "#690005",
+                        "secondary": "#44e2cd",
+                        "primary": "#e9feff",
+                        "on-primary-fixed": "#002021",
+                        "surface-container-high": "#222a3d",
+                        "tertiary-fixed": "#f0dbff",
+                        "on-secondary-fixed-variant": "#005047",
+                        "on-primary-fixed-variant": "#004f53",
+                        "primary-container": "#00f5ff",
+                        "inverse-on-surface": "#283044",
+                        "on-primary-container": "#006c71",
+                        "inverse-surface": "#dae2fd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "64px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["JetBrains Mono"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for kanban */
+        .kanban-scroll::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .kanban-scroll::-webkit-scrollbar-track {
+            background: theme('colors.obsidian-base');
+        }
+        .kanban-scroll::-webkit-scrollbar-thumb {
+            background: theme('colors.obsidian-elevated');
+            border-radius: theme('borderRadius.full');
+        }
+        .kanban-scroll::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline-variant');
+        }
+    </style>
+</head>
+<body class="bg-obsidian-base text-on-surface min-h-screen flex font-body-sm overflow-hidden">
+<!-- SideNavBar -->
+<nav class="docked h-screen left-0 w-64 border-r border-outline-variant bg-obsidian-base flex flex-col py-6 px-4 hidden md:flex z-50">
+<div class="mb-8 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Organization Workspace Logo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZdTZR5vL5hL2601uG0gciiL3yzXg2Sz-CgopZW-UHWJazfJ_8Rkdac_wYXhBPxOAtrt4fmy6MGrzS0WdUOIKEhsQZLD495BLWPgNnhfphp-wvEWMHWbsKI9m1cjxPSoFk_u5NbbYVSw7XYnt31OTInuuHaOjaxSw_Ty98m5SrWyTpTpYQUhu792hIt3AgOJF0__xIIpI7TeUNPQ0udxgQSncXoqAb16CAnBBnaSZHhy3UcfcUP9kdWRHjwE_4FzKW_lTAiLT6i_ol"/>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary">The Knower OS</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Enterprise Suite</p>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container font-label-md text-label-md py-2 rounded mb-6 hover:bg-primary-fixed transition-colors duration-200">
+            New Workspace
+        </button>
+<div class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+<span class="text-label-md font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 0;">group</span>
+<span class="text-label-md font-label-md">CRM</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-secondary-container font-bold border-r-2 border-secondary-container bg-obsidian-elevated scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">tactic</span>
+<span class="text-label-md font-label-md">Projects</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 0;">payments</span>
+<span class="text-label-md font-label-md">Finance</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 0;">monitoring</span>
+<span class="text-label-md font-label-md">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 0;">settings</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-2 pt-4 border-t border-outline-variant">
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 0;">help</span>
+<span class="text-label-md font-label-md">Help</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+<span class="text-label-md font-label-md">User Profile</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin-desktop h-16 sticky top-0 z-40 bg-obsidian-surface/80 backdrop-blur-md border-b border-outline-variant shadow-sm md:px-margin-desktop px-margin-mobile">
+<div class="flex items-center gap-6">
+<!-- Mobile Menu Trigger -->
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">List</a>
+<a class="text-label-sm font-label-sm text-primary border-b-2 border-primary pb-2 hover:text-primary transition-all" href="#">Kanban</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Timeline</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center gap-2">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">language</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">terminal</span>
+</button>
+</div>
+<button class="px-4 py-1.5 rounded border border-ai-purple text-ai-purple text-label-sm font-label-sm hover:bg-ai-purple/10 transition-colors hidden sm:block">
+                    AI Assistant
+                </button>
+<button class="px-4 py-1.5 rounded bg-primary-container text-on-primary-container text-label-sm font-label-sm hover:bg-primary-fixed transition-colors">
+                    New Task
+                </button>
+<div class="w-8 h-8 rounded-full bg-obsidian-elevated overflow-hidden border border-outline-variant ml-2">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A detailed, hyper-realistic portrait of a professional corporate user in a minimal dark-mode environment. Soft cyan lighting subtly illuminates the face, conveying a sense of focus and calm intelligence suitable for a high-end enterprise software avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJdnU2faHEqe0kFWYbfl9QHVKq-FSmp6csxQczTngTob08PvSRZWRTmvjodEOawtiwaDFJ05_ZmJS6QiCC47dqF_fNil1lQVi36O03fL58V_o22FS8nEIBeoCBvJ9sr8ikoWZYe3EhvGKgQtLeGIe6wKfl7iKKfh90bCSZN8G61grdWz9ysNT32p-oyQx-p2rUJ7TKcRpdh1pHK1NNYAlT0Sivwip1acA5ffg6May4y7c2pwwR42lxkqc2_6d1H5gPWEKGnSlbyipu"/>
+</div>
+</div>
+</header>
+<!-- Board Toolbar -->
+<div class="px-margin-desktop py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-outline-variant/50 bg-obsidian-surface/30">
+<div class="flex items-center gap-4">
+<h2 class="text-headline-md font-headline-md text-primary">Alpha Protocol Sprint</h2>
+<span class="px-2 py-1 rounded bg-obsidian-elevated text-label-sm font-label-sm text-on-surface-variant border border-outline-variant">Sprint 42</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-obsidian-base border border-outline-variant rounded pl-8 pr-3 py-1.5 text-body-sm text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container/20 transition-all w-48 placeholder:text-on-surface-variant/50" placeholder="Filter tasks..." type="text"/>
+</div>
+<button class="p-1.5 rounded border border-outline-variant text-on-surface-variant hover:bg-obsidian-elevated transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+</button>
+<button class="p-1.5 rounded border border-outline-variant text-on-surface-variant hover:bg-obsidian-elevated transition-colors">
+<span class="material-symbols-outlined text-sm">person</span>
+</button>
+</div>
+</div>
+<!-- Kanban Board Area -->
+<main class="flex-1 overflow-x-auto kanban-scroll p-6 flex gap-6 items-start">
+<!-- Column: Backlog -->
+<div class="flex-shrink-0 w-80 flex flex-col max-h-full">
+<div class="flex justify-between items-center mb-3 px-1">
+<h3 class="text-label-md font-label-md text-on-surface-variant uppercase">Backlog <span class="ml-2 text-on-surface-variant/50">12</span></h3>
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+<div class="flex-1 overflow-y-auto kanban-scroll pr-2 flex flex-col gap-3 pb-4">
+<!-- Card 1 -->
+<div class="bg-obsidian-surface border border-outline-variant rounded-lg p-4 cursor-pointer hover:border-outline hover:shadow-sm transition-all group">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-obsidian-elevated text-on-surface-variant border border-outline-variant/50">SYS-104</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant/50 group-hover:text-on-surface-variant">more_horiz</span>
+</div>
+<h4 class="text-body-sm font-body-sm text-primary mb-3 leading-tight">Implement WebGL shader caching mechanism</h4>
+<div class="flex justify-between items-center mt-auto">
+<div class="flex gap-2 items-center">
+<div class="w-6 h-6 rounded-full bg-obsidian-elevated border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Minimalist abstract avatar image, geometric shapes in subtle cyan and dark grey, representing a generic user profile in a high-tech UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVEjc6DP3RWtZ9a9xh0Qs6lCk6Nff62ZAHEd7aFguNwIqyYu8NLYBYMDlJ9pgp-yoTPJtzKChDKFC44vbdXqaK972Jt-fkHiDBaph_wHAzdqacJzPEF9yZImr_I2od5jUi0QZwhHvK_vis4YoVg9p6v9sqS60cp1nfMPS7UcJjZ8HxVWPvP6Yl8SOUZxXm3F5XbxUZom0wFNZH6hc7uPeqX_FqlfH8oCizAoweVZZRIAhQmgepMqarnL8R6mj2yPbPohicWNRocR-o"/>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant/70"><span class="material-symbols-outlined text-[12px] align-middle mr-0.5">check_box</span> 0/3</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-info-cyan">flag</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-obsidian-surface border border-outline-variant rounded-lg p-4 cursor-pointer hover:border-outline hover:shadow-sm transition-all group">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-obsidian-elevated text-on-surface-variant border border-outline-variant/50">SYS-108</span>
+</div>
+<h4 class="text-body-sm font-body-sm text-primary mb-3 leading-tight">Refactor user authentication flow to support SSO</h4>
+<div class="flex justify-between items-center mt-auto">
+<div class="flex gap-2 items-center">
+<div class="w-6 h-6 rounded-full bg-obsidian-elevated border border-outline-variant overflow-hidden flex items-center justify-center text-label-sm text-on-surface-variant">
+                                    UN
+                                </div>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant/50">flag</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Column: To Do -->
+<div class="flex-shrink-0 w-80 flex flex-col max-h-full">
+<div class="flex justify-between items-center mb-3 px-1">
+<h3 class="text-label-md font-label-md text-on-surface-variant uppercase">To Do <span class="ml-2 text-on-surface-variant/50">4</span></h3>
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+<div class="flex-1 overflow-y-auto kanban-scroll pr-2 flex flex-col gap-3 pb-4">
+<!-- Card 3 -->
+<div class="bg-obsidian-surface border border-outline-variant rounded-lg p-4 cursor-pointer hover:border-outline hover:shadow-sm transition-all group">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-obsidian-elevated text-on-surface-variant border border-outline-variant/50">UI-241</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant/50 group-hover:text-on-surface-variant">more_horiz</span>
+</div>
+<h4 class="text-body-sm font-body-sm text-primary mb-3 leading-tight">Design new Glassmorphism component library</h4>
+<div class="flex flex-wrap gap-1 mb-3">
+<span class="px-1.5 py-0.5 rounded text-[10px] font-label-sm bg-ai-purple/10 text-ai-purple border border-ai-purple/20">Design</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-label-sm bg-obsidian-elevated text-on-surface-variant border border-outline-variant/50">P1</span>
+</div>
+<div class="flex justify-between items-center mt-auto">
+<div class="flex gap-2 items-center">
+<div class="w-6 h-6 rounded-full bg-obsidian-elevated border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A stylized portrait of a female UI designer, illuminated by soft glowing monitor light in a dark room. Modern, professional, and slightly cyberpunk aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF5pdtYMnaMSPd6myiW1VJDLv9emud8NJhfho_fGgMkj2bI4whg1s2c6vf6q2AcTLwVa91gTnxiMhMPy_nLv4K3n1tKcaOPHolVjtcS8oM9ZcB4RvYUJE6V-Xqp_Uq4BsX1CBid1UQ-TBf024LCKIcVGfrqSm-poXy9eHFMhzIXPkdEoFqAsgpnS1gQTy_Zy04BNDuzD0k05uCIWk3G_EzpVXMKPP-PVRNwNOowDsn2k4V_DU_sH5ZBPF2CxV1dMlwBUoUIQCESNIN"/>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant/70"><span class="material-symbols-outlined text-[12px] align-middle mr-0.5">check_box</span> 2/5</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="text-[10px] font-label-sm text-warning-amber">Oct 24</span>
+<span class="material-symbols-outlined text-[14px] text-warning-amber">flag</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Column: In Progress -->
+<div class="flex-shrink-0 w-80 flex flex-col max-h-full">
+<div class="flex justify-between items-center mb-3 px-1 border-b border-primary-container/30 pb-1">
+<h3 class="text-label-md font-label-md text-primary-container uppercase flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+                        In Progress <span class="ml-2 text-primary-container/50">3</span>
+</h3>
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+<div class="flex-1 overflow-y-auto kanban-scroll pr-2 flex flex-col gap-3 pb-4">
+<!-- Card 4 (Active) -->
+<div class="bg-obsidian-surface border border-primary-container/50 rounded-lg p-4 cursor-pointer shadow-[0_0_15px_rgba(0,245,255,0.05)] relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+<div class="flex justify-between items-start mb-2 pl-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-obsidian-elevated text-on-surface-variant border border-outline-variant/50">API-092</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant/50 group-hover:text-on-surface-variant">more_horiz</span>
+</div>
+<h4 class="text-body-sm font-body-sm text-primary mb-3 leading-tight pl-2">Integrate LLM processing pipeline for real-time analysis</h4>
+<div class="flex flex-wrap gap-1 mb-3 pl-2">
+<span class="px-1.5 py-0.5 rounded text-[10px] font-label-sm bg-ai-purple/20 text-ai-purple border border-ai-purple/30">AI Core</span>
+</div>
+<div class="w-full bg-obsidian-base h-1.5 rounded-full mb-3 ml-2 w-[calc(100%-8px)] overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 65%;"></div>
+</div>
+<div class="flex justify-between items-center mt-auto pl-2">
+<div class="flex gap-2 items-center">
+<div class="w-6 h-6 rounded-full bg-obsidian-elevated border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Profile picture of a software engineer, dark moody lighting with a streak of neon blue across the face, looking focused. Minimalist corporate tech style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAooVhWwHeAzcD3wqSMd7KLHmbJy4y3kjoik8HxOISfdW5-X2NuDzFf2ZpzeqjGVjJJUGVJO63yCw7sk9an5fNPvr-Pyc1MiDgxM33txbIBkPAAXCrQPZKzrm89psTxaddJ5RATNBq7fyiyoUSmjrIuT0by0Jw9kGyn9HYvU_lNLpo9xKxU4PB-1FQBNVBnd_RcLcjftRFUSyTA677HyC2GK3fVyoVZu4kU8HkC59gc7ygzX9oqaNrkZzLCMtjkG0Zm6U-kf8-vY7kI"/>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant"><span class="material-symbols-outlined text-[12px] align-middle mr-0.5">check_box</span> 4/6</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="text-[10px] font-label-sm text-error-rose">Tomorrow</span>
+<span class="material-symbols-outlined text-[14px] text-error-rose" style="font-variation-settings: 'FILL' 1;">flag</span>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-obsidian-surface border border-outline-variant rounded-lg p-4 cursor-pointer hover:border-outline hover:shadow-sm transition-all group">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-obsidian-elevated text-on-surface-variant border border-outline-variant/50">UI-245</span>
+</div>
+<h4 class="text-body-sm font-body-sm text-primary mb-3 leading-tight">Develop custom scrollbar component for Kanban views</h4>
+<div class="flex justify-between items-center mt-auto">
+<div class="flex gap-2 items-center">
+<div class="w-6 h-6 rounded-full bg-obsidian-elevated border border-outline-variant overflow-hidden flex items-center justify-center text-label-sm text-on-surface-variant">
+                                    JD
+                                </div>
+<span class="text-label-sm font-label-sm text-on-surface-variant/70"><span class="material-symbols-outlined text-[12px] align-middle mr-0.5">check_box</span> 1/2</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant/50">flag</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Column: Review -->
+<div class="flex-shrink-0 w-80 flex flex-col max-h-full">
+<div class="flex justify-between items-center mb-3 px-1">
+<h3 class="text-label-md font-label-md text-warning-amber uppercase">Review <span class="ml-2 text-warning-amber/50">2</span></h3>
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm">add</span></button>
+</div>
+<div class="flex-1 overflow-y-auto kanban-scroll pr-2 flex flex-col gap-3 pb-4">
+<!-- Card 6 -->
+<div class="bg-obsidian-surface border border-warning-amber/30 rounded-lg p-4 cursor-pointer hover:border-warning-amber/50 transition-all group">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-obsidian-elevated text-on-surface-variant border border-outline-variant/50">SEC-011</span>
+<span class="material-symbols-outlined text-sm text-warning-amber/70">visibility</span>
+</div>
+<h4 class="text-body-sm font-body-sm text-primary mb-3 leading-tight">Audit dependency tree for known vulnerabilities</h4>
+<div class="flex justify-between items-center mt-auto">
+<div class="flex gap-2 items-center">
+<div class="w-6 h-6 rounded-full bg-obsidian-elevated border border-outline-variant overflow-hidden flex items-center justify-center text-label-sm text-on-surface-variant">
+                                    AK
+                                </div>
+<span class="text-label-sm font-label-sm text-success-emerald"><span class="material-symbols-outlined text-[12px] align-middle mr-0.5">check_box</span> 5/5</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-warning-amber" style="font-variation-settings: 'FILL' 1;">flag</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Column: Done -->
+<div class="flex-shrink-0 w-80 flex flex-col max-h-full opacity-70 hover:opacity-100 transition-opacity">
+<div class="flex justify-between items-center mb-3 px-1">
+<h3 class="text-label-md font-label-md text-success-emerald uppercase">Done <span class="ml-2 text-success-emerald/50">24</span></h3>
+<button class="text-on-surface-variant hover:text-primary"><span class="material-symbols-outlined text-sm">more_horiz</span></button>
+</div>
+<div class="flex-1 overflow-y-auto kanban-scroll pr-2 flex flex-col gap-3 pb-4">
+<!-- Card 7 -->
+<div class="bg-obsidian-base border border-outline-variant/30 rounded-lg p-4 cursor-pointer group">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-obsidian-surface text-on-surface-variant/50 line-through">SYS-099</span>
+<span class="material-symbols-outlined text-sm text-success-emerald">check_circle</span>
+</div>
+<h4 class="text-body-sm font-body-sm text-on-surface-variant/70 mb-3 leading-tight line-through">Setup initial Tailwind configuration and tokens</h4>
+<div class="flex justify-between items-center mt-auto">
+<div class="flex gap-2 items-center">
+<div class="w-6 h-6 rounded-full bg-obsidian-elevated border border-outline-variant/50 overflow-hidden flex items-center justify-center text-label-sm text-on-surface-variant/50">
+                                    SYS
+                                </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Spacer for scrolling past last column -->
+<div class="flex-shrink-0 w-4"></div>
+</main>
+<!-- Footer -->
+<footer class="flex justify-between items-center w-full px-margin-desktop py-2 h-8 bg-obsidian-base border-t border-outline-variant flat">
+<span class="text-label-sm font-label-sm text-on-surface-variant">The Knower OS v2.4.0 • System Status: Operational</span>
+<div class="flex gap-4">
+<a class="text-label-sm font-label-sm text-success-emerald hover:text-primary" href="#">Privacy</a>
+<a class="text-label-sm font-label-sm text-success-emerald hover:text-primary" href="#">API Docs</a>
+<a class="text-label-sm font-label-sm text-success-emerald hover:text-primary" href="#">Server Health</a>
+</div>
+</footer>
+</div>
+</body></html>

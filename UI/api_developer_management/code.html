@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>API Management - The Knower OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#e7c427", "on-secondary-fixed": "#2c0051", "tertiary-container": "#ffdb3f", "on-tertiary-fixed": "#221b00", "background": "#0d1515", "primary-container": "#00f5ff", "surface-variant": "#2e3637", "surface-container-lowest": "#081010", "inverse-surface": "#dce4e4", "surface-container-high": "#232b2c", "primary-fixed-dim": "#00dce5", "surface-container-highest": "#2e3637", "secondary-fixed-dim": "#ddb7ff", "tertiary": "#fff9f0", "on-tertiary-container": "#736000", "on-primary-fixed-variant": "#004f53", "on-primary-fixed": "#002021", "on-secondary-fixed-variant": "#6900b3", "on-surface": "#dce4e4", "on-secondary-container": "#d6a9ff", "on-primary-container": "#006c71", "on-error": "#690005", "outline": "#849495", "surface-dim": "#0d1515", "on-tertiary-fixed-variant": "#544600", "surface": "#0d1515", "on-secondary": "#490080", "secondary-container": "#6f00be", "surface-bright": "#323b3b", "tertiary-fixed": "#ffe16c", "primary-fixed": "#63f7ff", "error": "#ffb4ab", "error-container": "#93000a", "on-primary": "#003739", "secondary-fixed": "#f0dbff", "inverse-primary": "#00696e", "surface-tint": "#00dce5", "on-tertiary": "#3a3000", "surface-container": "#192121", "primary": "#e9feff", "on-error-container": "#ffdad6", "inverse-on-surface": "#2a3232", "surface-container-low": "#151d1d", "outline-variant": "#3a494a", "secondary": "#ddb7ff", "on-background": "#dce4e4", "on-surface-variant": "#b9caca",
+                        "obsidian-base": "#020617", "obsidian-surface": "#0f172a", "obsidian-elevated": "#1e293b", "success-emerald": "#10b981"
+                    },
+                    "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                    "spacing": { "gap-lg": "2rem", "gap-xs": "0.5rem", "gap-md": "1rem", "container-max": "1440px", "base-unit": "4px", "margin-mobile": "1rem", "margin-desktop": "2.5rem" },
+                    "fontFamily": { "body-md": ["Inter"], "display-lg": ["Inter"], "code-sm": ["JetBrains Mono"], "label-xs": ["Inter"], "display-lg-mobile": ["Inter"], "title-sm": ["Inter"], "headline-md": ["Inter"] },
+                    "fontSize": { "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}], "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "code-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}], "label-xs": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}], "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}], "title-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}], "headline-md": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}] }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-fill { font-variation-settings: 'FILL' 1; }
+        
+        /* Subtle grid background for the chart */
+        .chart-grid {
+            background-image: linear-gradient(to right, #3a494a 1px, transparent 1px), linear-gradient(to bottom, #3a494a 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center bottom;
+        }
+        
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3a494a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #849495; }
+    </style>
+</head>
+<body class="bg-surface-dim text-on-surface flex h-screen overflow-hidden antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (JSON Context) -->
+<nav class="bg-obsidian-base dark:bg-obsidian-base docked h-screen w-64 border-r border-outline-variant flat flex flex-col py-6 px-4 hidden md:flex shrink-0 z-50">
+<!-- Header -->
+<div class="mb-gap-lg px-2 flex items-center space-x-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-on-primary-container">webhook</span>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary leading-none text-xl tracking-tight">The Knower OS</h1>
+<p class="text-label-xs font-label-xs text-on-surface-variant mt-1 uppercase tracking-wider">Enterprise Suite</p>
+</div>
+</div>
+<!-- Main Tabs -->
+<div class="flex-1 flex flex-col space-y-2">
+<!-- Inactive -->
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-md font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-label-md font-label-md">CRM</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">tactic</span>
+<span class="text-label-md font-label-md">Projects</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="text-label-md font-label-md">Finance</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="text-label-md font-label-md">Analytics</span>
+</a>
+<!-- Active -->
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-secondary-container font-bold border-r-2 border-secondary-container bg-obsidian-elevated/50 scale-95 transition-transform duration-150 relative" href="#">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary-container rounded-r-full"></div>
+<span class="material-symbols-outlined icon-fill">settings</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</div>
+<!-- CTA & Footer -->
+<div class="mt-auto space-y-4 pt-4 border-t border-outline-variant/30">
+<button class="w-full flex items-center justify-center space-x-2 bg-obsidian-elevated text-primary py-2.5 rounded-lg border border-outline-variant hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200 group">
+<span class="material-symbols-outlined text-[18px] group-hover:scale-110 transition-transform">add</span>
+<span class="text-label-xs font-label-xs">New Workspace</span>
+</button>
+<div class="flex flex-col space-y-1">
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-on-surface-variant text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span>
+<span>Help</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-on-surface-variant text-label-md font-label-md hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[18px]">account_circle</span>
+<span>User Profile</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col overflow-hidden bg-surface-dim relative">
+<!-- Subtle background glow -->
+<div class="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
+<!-- TopNavBar (JSON Context) -->
+<header class="bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md border-b border-outline-variant shadow-sm flex justify-between items-center w-full px-margin-desktop h-16 sticky top-0 z-40 shrink-0">
+<!-- Left: Brand / Mobile menu -->
+<div class="flex items-center space-x-4">
+<button class="md:hidden text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="text-headline-md font-headline-md font-black text-primary text-xl tracking-tight hidden md:block">The Knower OS</span>
+<span class="text-on-surface-variant hidden md:block">/</span>
+<span class="text-title-sm font-title-sm text-on-surface hidden md:block">API Management</span>
+</div>
+<!-- Center: Nav Links (Contextual fit for settings could be sections, but using JSON values) -->
+<nav class="hidden lg:flex items-center space-x-8 absolute left-1/2 -translate-x-1/2 h-full">
+<a class="h-full flex items-center text-label-sm font-label-sm text-primary border-b-2 border-primary pb-2 pt-2 focus:ring-2 focus:ring-primary-container outline-none" href="#">List</a>
+<a class="h-full flex items-center text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all focus:ring-2 focus:ring-primary-container outline-none" href="#">Kanban</a>
+<a class="h-full flex items-center text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all focus:ring-2 focus:ring-primary-container outline-none" href="#">Timeline</a>
+</nav>
+<!-- Right: Actions & Profile -->
+<div class="flex items-center space-x-4">
+<!-- Search (Left per JSON, but right aligned in layout) -->
+<div class="hidden xl:flex items-center bg-obsidian-elevated border border-outline-variant rounded-full px-3 py-1.5 focus-within:ring-2 focus-within:ring-primary-container focus-within:border-primary-container transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span>
+<input class="bg-transparent border-none text-label-sm font-label-sm text-on-surface placeholder-on-surface-variant focus:ring-0 w-48 py-0" placeholder="Search..." type="text"/>
+</div>
+<div class="flex items-center space-x-2 text-on-surface-variant">
+<button class="p-2 hover:text-primary transition-all rounded-full hover:bg-obsidian-elevated focus:ring-2 focus:ring-primary-container outline-none"><span class="material-symbols-outlined text-[20px]">notifications</span></button>
+<button class="p-2 hover:text-primary transition-all rounded-full hover:bg-obsidian-elevated focus:ring-2 focus:ring-primary-container outline-none hidden md:block"><span class="material-symbols-outlined text-[20px]">language</span></button>
+<button class="p-2 hover:text-primary transition-all rounded-full hover:bg-obsidian-elevated focus:ring-2 focus:ring-primary-container outline-none hidden md:block"><span class="material-symbols-outlined text-[20px]">terminal</span></button>
+</div>
+<div class="h-6 w-px bg-outline-variant hidden md:block"></div>
+<div class="flex items-center space-x-3">
+<button class="hidden md:flex items-center px-4 py-2 border border-primary text-primary rounded-lg text-label-sm font-label-sm hover:bg-primary/10 transition-colors focus:ring-2 focus:ring-primary-container outline-none">
+                        New Task
+                    </button>
+<button class="hidden lg:flex items-center px-4 py-2 bg-primary text-on-primary rounded-lg text-label-sm font-label-sm font-medium hover:bg-primary-container transition-colors shadow-[0_0_15px_rgba(233,254,255,0.15)] focus:ring-2 focus:ring-primary-container outline-none">
+<span class="material-symbols-outlined text-[18px] mr-2">smart_toy</span>
+                        AI Assistant
+                    </button>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center border border-outline cursor-pointer relative group">
+<span class="text-label-xs font-label-xs text-on-secondary-container font-bold">AD</span>
+<!-- Fake tooltip -->
+<div class="absolute top-full right-0 mt-2 bg-surface-container-high border border-outline-variant rounded-md shadow-lg p-2 text-label-xs font-label-xs text-on-surface opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">User Avatar</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Scrollable Content -->
+<main class="flex-1 overflow-y-auto px-margin-mobile md:px-margin-desktop py-gap-lg z-10 relative">
+<div class="max-w-container-max mx-auto space-y-gap-lg">
+<!-- Page Header & Actions -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="text-display-lg-mobile md:text-display-lg font-display-lg-mobile md:font-display-lg text-primary">API &amp; Webhooks</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-2 max-w-2xl">Manage your active API keys, monitor usage quotas, and configure webhook endpoints for real-time event streaming.</p>
+</div>
+<div class="flex items-center space-x-3 shrink-0">
+<button class="px-4 py-2 border border-outline-variant text-on-surface rounded-lg text-label-sm font-label-sm hover:bg-surface-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">article</span>
+                            Documentation
+                        </button>
+<button class="px-5 py-2.5 bg-primary text-on-primary rounded-lg text-label-xs font-label-xs font-bold hover:bg-primary-container transition-colors flex items-center gap-2 shadow-[0_0_20px_rgba(233,254,255,0.2)]">
+<span class="material-symbols-outlined text-[20px]">key</span>
+                            Create New Key
+                        </button>
+</div>
+</div>
+<!-- API Usage Chart (Bento Grid Item 1 - Full Width) -->
+<section class="bg-surface-container-low border border-outline-variant rounded-xl p-6 relative overflow-hidden group">
+<!-- Glassmorphic flare -->
+<div class="absolute top-0 left-1/4 w-1/2 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-md bg-surface-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">monitoring</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface">API Request Volume</h3>
+</div>
+<div class="flex bg-surface-container border border-outline-variant rounded-lg p-1">
+<button class="px-3 py-1 text-label-xs font-label-xs rounded-md text-on-surface-variant hover:text-on-surface transition-colors">24h</button>
+<button class="px-3 py-1 text-label-xs font-label-xs rounded-md bg-surface-bright text-primary shadow-sm">7d</button>
+<button class="px-3 py-1 text-label-xs font-label-xs rounded-md text-on-surface-variant hover:text-on-surface transition-colors">30d</button>
+</div>
+</div>
+<!-- Simulated Chart Area -->
+<div class="h-64 w-full relative chart-grid border-b border-l border-outline-variant/50 pt-4 pr-4">
+<!-- Y-Axis Labels -->
+<div class="absolute left-[-30px] bottom-0 h-full flex flex-col justify-between text-label-xs font-label-xs text-on-surface-variant/50 py-2 items-end pr-2">
+<span>10k</span>
+<span>7.5k</span>
+<span>5k</span>
+<span>2.5k</span>
+<span>0</span>
+</div>
+<!-- SVG Line Chart representing data series -->
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 1000 200">
+<!-- Data Series 1 (Primary) -->
+<path class="text-primary drop-shadow-[0_4px_12px_rgba(233,254,255,0.3)]" d="M0,180 L100,150 L200,160 L300,100 L400,120 L500,80 L600,90 L700,40 L800,60 L900,20 L1000,30" fill="none" stroke="currentColor" stroke-width="3"></path>
+<!-- Area fill under primary -->
+<path d="M0,180 L100,150 L200,160 L300,100 L400,120 L500,80 L600,90 L700,40 L800,60 L900,20 L1000,30 L1000,200 L0,200 Z" fill="url(#primaryGradient)" opacity="0.2"></path>
+<!-- Data Series 2 (Secondary) -->
+<path class="text-secondary-container" d="M0,190 L100,170 L200,180 L300,140 L400,150 L500,120 L600,130 L700,90 L800,100 L900,70 L1000,80" fill="none" stroke="currentColor" stroke-dasharray="4 4" stroke-width="2"></path>
+<defs>
+<lineargradient id="primaryGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#e9feff" stop-opacity="1"></stop>
+<stop offset="100%" stop-color="#e9feff" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<!-- X-Axis Labels -->
+<div class="absolute bottom-[-25px] left-0 w-full flex justify-between text-label-xs font-label-xs text-on-surface-variant/50 px-2">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+</div>
+</section>
+<!-- Two Column Grid for Keys and Webhooks -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-gap-lg">
+<!-- API Keys Section -->
+<section class="bg-surface-container-low border border-outline-variant rounded-xl p-6 flex flex-col h-full">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-md bg-surface-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">password</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface">Active API Keys</h3>
+</div>
+</div>
+<!-- Key List -->
+<div class="space-y-4 flex-1">
+<!-- Key Item 1 -->
+<div class="bg-surface-container border border-outline-variant rounded-lg p-4 transition-all hover:border-outline hover:bg-surface-container-high group">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="text-label-sm font-label-sm text-on-surface font-medium">Production Env - Read/Write</h4>
+<p class="text-label-xs font-label-xs text-on-surface-variant mt-0.5">Created: Oct 24, 2023 • Last used: 2 mins ago</p>
+</div>
+<div class="flex gap-2">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-md transition-colors" title="Edit Permissions">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-md transition-colors" title="Revoke Key">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<div class="flex items-center bg-obsidian-base rounded-md border border-outline-variant/50 p-2 overflow-hidden relative">
+<div class="font-code-sm text-code-sm text-on-surface-variant tracking-widest flex-1 overflow-x-auto whitespace-nowrap py-1 scrollbar-hide">
+                                        sk_live_••••••••••••••••••••••••••••abc12
+                                    </div>
+<div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-obsidian-base to-transparent"></div>
+<button class="ml-2 px-3 py-1.5 bg-surface-variant text-on-surface hover:text-primary rounded text-label-xs font-label-xs flex items-center gap-1.5 transition-colors border border-outline-variant/50 z-10">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+                                        Copy
+                                    </button>
+</div>
+</div>
+<!-- Key Item 2 -->
+<div class="bg-surface-container border border-outline-variant rounded-lg p-4 transition-all hover:border-outline hover:bg-surface-container-high group">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="text-label-sm font-label-sm text-on-surface font-medium">Staging Env - Read Only</h4>
+<p class="text-label-xs font-label-xs text-on-surface-variant mt-0.5">Created: Nov 02, 2023 • Last used: 1 day ago</p>
+</div>
+<div class="flex gap-2">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-md transition-colors" title="Edit Permissions">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-md transition-colors" title="Revoke Key">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<div class="flex items-center bg-obsidian-base rounded-md border border-outline-variant/50 p-2 overflow-hidden relative">
+<div class="font-code-sm text-code-sm text-on-surface-variant tracking-widest flex-1 overflow-x-auto whitespace-nowrap py-1 scrollbar-hide">
+                                        sk_test_••••••••••••••••••••••••••••xyz89
+                                    </div>
+<div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-obsidian-base to-transparent"></div>
+<button class="ml-2 px-3 py-1.5 bg-surface-variant text-on-surface hover:text-primary rounded text-label-xs font-label-xs flex items-center gap-1.5 transition-colors border border-outline-variant/50 z-10">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+                                        Copy
+                                    </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Webhooks Section -->
+<section class="bg-surface-container-low border border-outline-variant rounded-xl p-6 flex flex-col h-full">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-md bg-surface-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">call_split</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface">Registered Webhooks</h3>
+</div>
+<button class="p-1.5 text-primary hover:bg-primary/10 rounded-md transition-colors" title="Add Endpoint">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+<!-- Webhook List -->
+<div class="space-y-4 flex-1">
+<!-- Webhook Item 1 (Active) -->
+<div class="flex items-center justify-between p-4 bg-surface-container rounded-lg border border-outline-variant hover:border-outline transition-colors">
+<div class="flex items-start gap-4">
+<!-- Status Indicator -->
+<div class="mt-1 relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-emerald opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-success-emerald"></span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm text-on-surface">https://api.acme.corp/v1/events/sync</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider bg-surface-variant text-on-surface-variant">project.created</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider bg-surface-variant text-on-surface-variant">task.updated</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="text-label-xs font-label-xs text-on-surface-variant">100% Success (24h)</span>
+<button class="text-label-xs font-label-xs text-primary hover:text-primary-container transition-colors">View Logs</button>
+</div>
+</div>
+<!-- Webhook Item 2 (Active) -->
+<div class="flex items-center justify-between p-4 bg-surface-container rounded-lg border border-outline-variant hover:border-outline transition-colors">
+<div class="flex items-start gap-4">
+<!-- Status Indicator -->
+<div class="mt-1 relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-emerald opacity-75" style="animation-delay: 0.5s;"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-success-emerald"></span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm text-on-surface">https://hooks.slack.com/services/T000/B000/XXX</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider bg-surface-variant text-on-surface-variant">alert.triggered</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="text-label-xs font-label-xs text-on-surface-variant">100% Success (24h)</span>
+<button class="text-label-xs font-label-xs text-primary hover:text-primary-container transition-colors">View Logs</button>
+</div>
+</div>
+<!-- Webhook Item 3 (Inactive/Failed) -->
+<div class="flex items-center justify-between p-4 bg-surface-container opacity-60 rounded-lg border border-error/30 hover:border-error/50 transition-colors grayscale-[50%]">
+<div class="flex items-start gap-4">
+<!-- Status Indicator -->
+<div class="mt-1 relative flex h-3 w-3">
+<span class="relative inline-flex rounded-full h-3 w-3 bg-error"></span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-code-sm text-on-surface line-through decoration-error/50">https://legacy.internal.sys/webhook</span>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wider bg-error-container/20 text-error">Failing</span>
+<span class="text-label-xs text-error">HTTP 404 Not Found</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-end gap-2">
+<span class="text-label-xs font-label-xs text-error">0% Success (24h)</span>
+<button class="text-label-xs font-label-xs text-on-surface-variant hover:text-on-surface transition-colors">Disable</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer (JSON Context) -->
+<footer class="bg-obsidian-base dark:bg-obsidian-base border-t border-outline-variant flat flex justify-between items-center w-full px-margin-desktop py-2 h-8 shrink-0 z-40">
+<div class="text-label-sm font-label-sm text-on-surface-variant">
+                The Knower OS v2.4.0 • System Status: <span class="text-success-emerald dark:text-success-emerald font-medium">Operational</span>
+</div>
+<div class="flex space-x-6">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Server Health</a>
+</div>
+</footer>
+</div>
+<!-- Injecting necessary utility for hiding scrollbar visually but keeping functionality -->
+<style>
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

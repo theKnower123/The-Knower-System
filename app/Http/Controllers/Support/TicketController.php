@@ -3,80 +3,82 @@
 namespace App\Http\Controllers\Support;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Support\StoreTicketRequest;
+use App\Http\Requests\Support\UpdateTicketRequest;
+use App\Http\Resources\Support\TicketResource;
 use App\Models\Ticket;
-use Illuminate\Http\Request;
+use App\Services\Support\TicketService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class TicketController extends Controller
 {
-    public function index()
+    protected TicketService $ticketService;
+
+    public function __construct(TicketService $ticketService)
     {
-        $tickets = Ticket::with(['client', 'project', 'assignee'])->latest()->get();
+        $this->ticketService = $ticketService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Ticket::class);
+
+        $tickets = $this->ticketService->getAll();
+        
+        // Load relations if needed
+        $tickets->load(['client', 'project', 'assignee']);
 
         return response()->json([
             'success' => true,
             'message' => 'Tickets retrieved successfully.',
-            'data' => $tickets
+            'data' => TicketResource::collection($tickets)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreTicketRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'client_id' => 'nullable|exists:clients,id',
-            'project_id' => 'nullable|exists:projects,id',
-            'assigned_to' => 'nullable|exists:users,id',
-            'subject' => 'required|string|max:255',
-            'priority' => 'nullable|in:low,medium,high,urgent',
-            'status' => 'nullable|in:open,in_progress,waiting,resolved,closed',
-        ]);
-
-        $ticket = Ticket::create($validated);
+        $ticket = $this->ticketService->create($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Ticket opened successfully.',
-            'data' => $ticket
+            'message' => 'Ticket created successfully.',
+            'data' => new TicketResource($ticket)
         ], 201);
     }
 
-    public function show(Ticket $ticket)
+    public function show(Ticket $ticket): JsonResponse
     {
+        Gate::authorize('view', $ticket);
         $ticket->load(['client', 'project', 'assignee', 'messages.sender']);
 
         return response()->json([
             'success' => true,
             'message' => 'Ticket retrieved successfully.',
-            'data' => $ticket
+            'data' => new TicketResource($ticket)
         ]);
     }
 
-    public function update(Request $request, Ticket $ticket)
+    public function update(UpdateTicketRequest $request, Ticket $ticket): JsonResponse
     {
-        $validated = $request->validate([
-            'client_id' => 'nullable|exists:clients,id',
-            'project_id' => 'nullable|exists:projects,id',
-            'assigned_to' => 'nullable|exists:users,id',
-            'subject' => 'sometimes|required|string|max:255',
-            'priority' => 'sometimes|required|in:low,medium,high,urgent',
-            'status' => 'sometimes|required|in:open,in_progress,waiting,resolved,closed',
-        ]);
-
-        $ticket->update($validated);
+        $ticket = $this->ticketService->update($ticket, $request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Ticket updated successfully.',
-            'data' => $ticket
+            'data' => new TicketResource($ticket)
         ]);
     }
 
-    public function destroy(Ticket $ticket)
+    public function destroy(Ticket $ticket): JsonResponse
     {
-        $ticket->delete();
+        Gate::authorize('delete', $ticket);
+
+        $this->ticketService->delete($ticket);
 
         return response()->json([
             'success' => true,
-            'message' => 'Ticket closed and deleted successfully.',
+            'message' => 'Ticket deleted successfully.',
             'data' => null
         ]);
     }

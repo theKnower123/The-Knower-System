@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+use App\Traits\HasWorkspace;
 
 class TicketMessage extends Model
 {
@@ -17,10 +20,25 @@ class TicketMessage extends Model
     public function ticket()
     {
         return $this->belongsTo(Ticket::class);
+    
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
+}
 
     public function sender()
     {
         return $this->belongsTo(User::class, 'sender_id');
+    
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
+    }
+}
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
 }

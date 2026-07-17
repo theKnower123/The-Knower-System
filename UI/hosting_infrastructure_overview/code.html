@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Knower OS - Hosting &amp; Infrastructure</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#004d44",
+                        "inverse-surface": "#dae2fd",
+                        "surface-variant": "#2d3449",
+                        "surface-container-high": "#222a3d",
+                        "error": "#ffb4ab",
+                        "background": "#0b1326",
+                        "outline-variant": "#3a494a",
+                        "on-secondary-fixed-variant": "#005047",
+                        "surface-tint": "#00dce5",
+                        "tertiary": "#fff8fd",
+                        "warning-amber": "#F59E0B",
+                        "surface-container-low": "#131b2e",
+                        "success-emerald": "#10B981",
+                        "on-surface-variant": "#b9caca",
+                        "error-rose": "#F43F5E",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#62fae3",
+                        "surface-dim": "#0b1326",
+                        "surface-container-lowest": "#060e20",
+                        "surface": "#0b1326",
+                        "secondary-fixed-dim": "#3cddc7",
+                        "on-secondary-fixed": "#00201c",
+                        "on-secondary": "#003731",
+                        "inverse-on-surface": "#283044",
+                        "primary-fixed-dim": "#00dce5",
+                        "inverse-primary": "#00696e",
+                        "ai-purple": "#A855F7",
+                        "secondary-container": "#03c6b2",
+                        "surface-container-highest": "#2d3449",
+                        "tertiary-container": "#edd4ff",
+                        "on-primary-container": "#006c71",
+                        "obsidian-elevated": "#1E293B",
+                        "primary": "#e9feff",
+                        "on-surface": "#dae2fd",
+                        "on-tertiary-fixed-variant": "#6900b3",
+                        "on-tertiary": "#490080",
+                        "secondary": "#44e2cd",
+                        "tertiary-fixed-dim": "#ddb7ff",
+                        "obsidian-surface": "#0F172A",
+                        "on-primary": "#003739",
+                        "info-cyan": "#06B6D4",
+                        "on-primary-fixed-variant": "#004f53",
+                        "obsidian-base": "#020617",
+                        "outline": "#849495",
+                        "on-tertiary-fixed": "#2c0051",
+                        "error-container": "#93000a",
+                        "surface-bright": "#31394d",
+                        "on-primary-fixed": "#002021",
+                        "tertiary-fixed": "#f0dbff",
+                        "on-error-container": "#ffdad6",
+                        "surface-container": "#171f33",
+                        "on-background": "#dae2fd",
+                        "primary-container": "#00f5ff",
+                        "primary-fixed": "#63f7ff",
+                        "on-tertiary-container": "#872fd5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "margin-desktop": "64px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #020617; color: #dae2fd; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid #1E293B; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen font-body-md bg-obsidian-base dark:bg-obsidian-base text-on-surface">
+<!-- TopNavBar -->
+<nav class="bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md text-primary dark:text-primary shadow-sm border-b border-outline-variant flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky top-0 z-40">
+<div class="flex items-center space-x-8">
+<span class="text-headline-md font-headline-md font-black text-primary">The Knower OS</span>
+<div class="hidden md:flex space-x-6">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">List</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Kanban</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Timeline</a>
+<a class="text-label-sm font-label-sm text-primary border-b-2 border-primary pb-2 hover:text-primary transition-all" href="#">Infrastructure</a>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<button class="hidden md:block bg-obsidian-elevated text-on-surface px-4 py-2 rounded border border-outline-variant text-label-sm font-label-sm hover:text-primary transition-all focus:ring-2 focus:ring-primary-container">New Task</button>
+<button class="bg-ai-purple/20 text-ai-purple border border-ai-purple/50 px-4 py-2 rounded text-label-sm font-label-sm hover:bg-ai-purple/30 transition-all focus:ring-2 focus:ring-primary-container">AI Assistant</button>
+<div class="flex space-x-3 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-all focus:ring-2 focus:ring-primary-container" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-all focus:ring-2 focus:ring-primary-container" data-icon="language">language</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-all focus:ring-2 focus:ring-primary-container" data-icon="terminal">terminal</span>
+</div>
+<img alt="User Avatar" class="w-8 h-8 rounded-full border border-outline-variant object-cover ml-2" data-alt="A small, professional avatar of a software engineer, looking focused, set against a dark, minimalist digital background with subtle cyan lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZqV7lP2ZjnTReQfNe2CeoC6SwhGMJznx9oryJ4OScaHw5bodwSNZA6DUS20pKpB6bJIFSvpkvvsCx1F253Cm44yEoGYoGLgjdWZgoKNZB8bxjZTHpbH0mvrGb4VscgA1xi6p9jUeb4JS7ZWfbnNkpB08oDm6h46zZVzNvNzskyaAIw7J7DHiRZcE1waiNF-pXtYwSW5wCEZ6ktQo8XpcA5YXk1xBpKMjYAMim9FcWnvFnUPoNxPmj_QrUpCEuxOz8-tV0aGvgt2EM"/>
+</div>
+</nav>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="hidden md:flex bg-obsidian-base dark:bg-obsidian-base text-secondary-container dark:text-secondary-container border-r border-outline-variant docked h-[calc(100vh-4rem)] left-0 w-64 flex-col py-6 px-4 shrink-0 overflow-y-auto">
+<div class="mb-8 px-2 flex items-center space-x-3">
+<img alt="Organization Workspace Logo" class="w-10 h-10 rounded-lg object-cover" data-alt="A sleek, minimalist logo representing an organization workspace, using deep obsidian blues and bright cyan accents, communicating enterprise software." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0TfxKW1fay2NxaQKRt0Hb8TtaHpiblrJ9OmAfSkYkOtM-k9VSDm9kmVzvV8M8NLgn4weihdz06FI5qrnKweYvH_DsKn91pJrbiRrrX-3Nz8IfzRL0UTJ6TeYpqHvZLwAthR4kbNigebXK4qgKamaSS-4knNmC-ivmNt1sa709b7wNYYXvqqYYhiZbH3o4rP5z9CNXYhkpgEAR_Cpa0RtN5d8sYtCBPP1I1SA_LcP1k5ItxA7thgtMmQfAvWNFGhtRqZ5O7GIGXdnQ"/>
+<div>
+<h2 class="text-label-md font-label-md font-bold text-primary">The Knower OS</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Enterprise Suite</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center space-x-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>CRM</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="tactic">tactic</span>
+<span>Projects</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded text-label-md font-label-md text-secondary-container font-bold border-r-2 border-secondary-container bg-obsidian-elevated/50 hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Finance</span> <!-- Reusing standard labels but active contextually -->
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span>Analytics</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto space-y-4">
+<button class="w-full bg-primary-container text-on-primary-container text-label-md font-label-md font-bold py-2 rounded hover:bg-primary transition-colors duration-200">New Workspace</button>
+<div class="space-y-2 border-t border-outline-variant pt-4">
+<a class="flex items-center space-x-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Help</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded text-label-md font-label-md text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span>User Profile</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto p-margin-mobile md:p-gutter scrollbar-hide">
+<!-- Header Section -->
+<header class="mb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+<div>
+<h1 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-primary mb-2">Hosting &amp; Infrastructure</h1>
+<p class="text-body-md font-body-md text-on-surface-variant">Global server health, active domains, and resource utilization.</p>
+</div>
+<div class="flex items-center space-x-4">
+<div class="text-right">
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Global Health</p>
+<div class="flex items-center space-x-2 text-success-emerald">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+<span class="text-label-md font-label-md font-bold">100% Operational</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Server List (Spans 8 columns on desktop) -->
+<section class="glass-card rounded-xl p-4 md:col-span-8 flex flex-col">
+<div class="flex justify-between items-center mb-6 pb-4 border-b border-outline-variant">
+<h3 class="text-headline-md font-headline-md text-primary">Active Servers</h3>
+<button class="text-label-sm font-label-sm text-info-cyan hover:text-primary transition-colors flex items-center space-x-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="add">add</span>
+<span>Deploy Node</span>
+</button>
+</div>
+<div class="space-y-4 flex-1">
+<!-- Server Row 1 -->
+<div class="bg-obsidian-base rounded-lg p-4 border border-outline-variant/50 hover:border-outline-variant transition-colors group">
+<div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4">
+<div class="flex items-center space-x-4">
+<div class="w-2 h-2 rounded-full bg-success-emerald"></div>
+<div>
+<p class="text-label-md font-label-md font-bold text-primary">prod-app-eu-west</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Ubuntu 22.04 LTS • Frankfurt</p>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-6 lg:gap-8 text-label-sm font-label-sm">
+<div>
+<p class="text-on-surface-variant mb-1">CPU</p>
+<p class="text-primary font-bold">34%</p>
+</div>
+<div>
+<p class="text-on-surface-variant mb-1">RAM</p>
+<p class="text-primary font-bold">16.4 / 32 GB</p>
+</div>
+<div>
+<p class="text-on-surface-variant mb-1">Disk</p>
+<p class="text-primary font-bold">45%</p>
+</div>
+</div>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Server Row 2 -->
+<div class="bg-obsidian-base rounded-lg p-4 border border-outline-variant/50 hover:border-outline-variant transition-colors group">
+<div class="flex flex-col lg:flex-row justify-between lg:items-center gap-4">
+<div class="flex items-center space-x-4">
+<div class="w-2 h-2 rounded-full bg-success-emerald"></div>
+<div>
+<p class="text-label-md font-label-md font-bold text-primary">db-cluster-primary</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">PostgreSQL 15 • US-East</p>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-6 lg:gap-8 text-label-sm font-label-sm">
+<div>
+<p class="text-on-surface-variant mb-1">CPU</p>
+<p class="text-warning-amber font-bold">78%</p>
+</div>
+<div>
+<p class="text-on-surface-variant mb-1">RAM</p>
+<p class="text-primary font-bold">48.2 / 64 GB</p>
+</div>
+<div>
+<p class="text-on-surface-variant mb-1">Disk</p>
+<p class="text-primary font-bold">62%</p>
+</div>
+</div>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Renewal Center (Spans 4 columns on desktop) -->
+<section class="glass-card rounded-xl p-4 md:col-span-4 flex flex-col">
+<div class="flex justify-between items-center mb-6 pb-4 border-b border-outline-variant">
+<h3 class="text-headline-md font-headline-md text-primary">Renewal Center</h3>
+<span class="material-symbols-outlined text-warning-amber" data-icon="credit_card">credit_card</span>
+</div>
+<div class="bg-warning-amber/10 border border-warning-amber/30 rounded-lg p-4 mb-4">
+<div class="flex items-start space-x-3">
+<span class="material-symbols-outlined text-warning-amber mt-0.5" data-icon="warning">warning</span>
+<div>
+<p class="text-label-md font-label-md font-bold text-warning-amber mb-1">Action Required</p>
+<p class="text-body-sm font-body-sm text-on-surface">2 domains are expiring within the next 30 days. Auto-renew is disabled.</p>
+</div>
+</div>
+</div>
+<div class="space-y-3 flex-1">
+<div class="flex justify-between items-center p-3 bg-obsidian-base rounded border border-outline-variant/50">
+<div>
+<p class="text-label-sm font-label-sm text-primary font-bold">knower-analytics.io</p>
+<p class="text-[10px] font-label-sm text-on-surface-variant uppercase mt-1">Exp: 12 days</p>
+</div>
+<button class="px-3 py-1 bg-obsidian-elevated text-primary text-label-sm font-label-sm rounded border border-outline-variant hover:bg-obsidian-surface transition-colors">Renew</button>
+</div>
+<div class="flex justify-between items-center p-3 bg-obsidian-base rounded border border-outline-variant/50">
+<div>
+<p class="text-label-sm font-label-sm text-primary font-bold">app-staging.dev</p>
+<p class="text-[10px] font-label-sm text-on-surface-variant uppercase mt-1">Exp: 24 days</p>
+</div>
+<button class="px-3 py-1 bg-obsidian-elevated text-primary text-label-sm font-label-sm rounded border border-outline-variant hover:bg-obsidian-surface transition-colors">Renew</button>
+</div>
+</div>
+</section>
+<!-- Domains Table (Full Width) -->
+<section class="glass-card rounded-xl p-4 md:col-span-12 overflow-x-auto">
+<div class="flex justify-between items-center mb-6 pb-4 border-b border-outline-variant">
+<h3 class="text-headline-md font-headline-md text-primary">Managed Domains</h3>
+<div class="flex items-center space-x-2">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2 text-on-surface-variant text-[18px]" data-icon="search">search</span>
+<input class="bg-obsidian-base border border-outline-variant rounded pl-10 pr-3 py-1.5 text-label-sm font-label-sm text-primary placeholder-on-surface-variant focus:border-info-cyan focus:ring-1 focus:ring-info-cyan transition-all w-64" placeholder="Search domains..." type="text"/>
+</div>
+</div>
+</div>
+<table class="w-full text-left border-collapse min-w-[800px]">
+<thead>
+<tr class="border-b border-outline-variant">
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider font-medium">Domain Name</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider font-medium">Status</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider font-medium">SSL / TLS</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider font-medium">DNS Provider</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider font-medium text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="text-body-sm font-body-sm divide-y divide-outline-variant/30">
+<tr class="hover:bg-obsidian-elevated/30 transition-colors">
+<td class="py-4 px-4 font-label-sm text-primary">knower-os.com</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-label-sm bg-success-emerald/10 text-success-emerald border border-success-emerald/20">Active</span>
+</td>
+<td class="py-4 px-4">
+<div class="flex items-center space-x-2 text-success-emerald">
+<span class="material-symbols-outlined text-[16px]" data-icon="lock">lock</span>
+<span class="text-label-sm">Valid (180d)</span>
+</div>
+</td>
+<td class="py-4 px-4 text-on-surface-variant">Cloudflare</td>
+<td class="py-4 px-4 text-right">
+<button class="text-info-cyan hover:text-primary text-label-sm font-label-sm mr-4">Manage DNS</button>
+</td>
+</tr>
+<tr class="hover:bg-obsidian-elevated/30 transition-colors">
+<td class="py-4 px-4 font-label-sm text-primary">knower-api.dev</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-label-sm bg-success-emerald/10 text-success-emerald border border-success-emerald/20">Active</span>
+</td>
+<td class="py-4 px-4">
+<div class="flex items-center space-x-2 text-warning-amber">
+<span class="material-symbols-outlined text-[16px]" data-icon="lock_clock">lock_clock</span>
+<span class="text-label-sm">Expiring (12d)</span>
+</div>
+</td>
+<td class="py-4 px-4 text-on-surface-variant">Route53</td>
+<td class="py-4 px-4 text-right">
+<button class="text-info-cyan hover:text-primary text-label-sm font-label-sm mr-4">Manage DNS</button>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-obsidian-base dark:bg-obsidian-base text-success-emerald dark:text-success-emerald border-t border-outline-variant docked full-width bottom-0 flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-2 h-8 z-50">
+<span class="text-label-sm font-label-sm text-on-surface-variant">The Knower OS v2.4.0 • System Status: Operational</span>
+<div class="flex space-x-4">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Server Health</a>
+</div>
+</footer>
+</body></html>

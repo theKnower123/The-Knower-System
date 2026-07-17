@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Infrastructure Health Monitoring - Mobile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#3a494a",
+                      "on-tertiary-fixed-variant": "#6900b3",
+                      "on-surface-variant": "#b9caca",
+                      "on-tertiary-container": "#872fd5",
+                      "surface-container": "#171f33",
+                      "tertiary-fixed-dim": "#ddb7ff",
+                      "on-background": "#dae2fd",
+                      "background": "#0b1326",
+                      "on-primary-container": "#006c71",
+                      "on-tertiary-fixed": "#2c0051",
+                      "primary": "#e9feff",
+                      "surface-tint": "#00dce5",
+                      "surface-container-lowest": "#060e20",
+                      "surface-bright": "#31394d",
+                      "on-primary-fixed": "#002021",
+                      "warning-amber": "#F59E0B",
+                      "on-error-container": "#ffdad6",
+                      "surface-variant": "#2d3449",
+                      "error-container": "#93000a",
+                      "error-rose": "#F43F5E",
+                      "surface-container-high": "#222a3d",
+                      "primary-container": "#00f5ff",
+                      "on-secondary": "#003731",
+                      "surface": "#0b1326",
+                      "obsidian-elevated": "#1E293B",
+                      "surface-container-low": "#131b2e",
+                      "on-secondary-fixed-variant": "#005047",
+                      "tertiary-fixed": "#f0dbff",
+                      "secondary-fixed-dim": "#3cddc7",
+                      "surface-container-highest": "#2d3449",
+                      "on-secondary-fixed": "#00201c",
+                      "info-cyan": "#06B6D4",
+                      "on-primary": "#003739",
+                      "inverse-on-surface": "#283044",
+                      "on-error": "#690005",
+                      "error": "#ffb4ab",
+                      "primary-fixed-dim": "#00dce5",
+                      "tertiary-container": "#edd4ff",
+                      "primary-fixed": "#63f7ff",
+                      "inverse-primary": "#00696e",
+                      "on-primary-fixed-variant": "#004f53",
+                      "obsidian-base": "#020617",
+                      "obsidian-surface": "#0F172A",
+                      "surface-dim": "#0b1326",
+                      "on-secondary-container": "#004d44",
+                      "on-tertiary": "#490080",
+                      "success-emerald": "#10B981",
+                      "inverse-surface": "#dae2fd",
+                      "on-surface": "#dae2fd",
+                      "tertiary": "#fff8fd",
+                      "secondary-container": "#03c6b2",
+                      "outline": "#849495",
+                      "ai-purple": "#A855F7",
+                      "secondary": "#44e2cd",
+                      "secondary-fixed": "#62fae3"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "64px",
+                      "base": "4px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "container-max": "1440px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-obsidian-base text-on-surface min-h-screen font-body-sm pb-20 overflow-x-hidden">
+<!-- Top Navigation App Bar -->
+<header class="bg-obsidian-base/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm fixed top-0 w-full z-50 flex flex-col md:hidden">
+<div class="flex items-center justify-between px-margin-mobile h-16 w-full mx-auto">
+<div class="font-headline-md text-headline-md font-bold tracking-tighter text-primary-container">
+                The Knower OS
+            </div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-highest/50 transition-all rounded-full p-2 active:scale-95 duration-150 relative">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-highest/50 transition-all rounded-full p-2 active:scale-95 duration-150 relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error-rose rounded-full border-2 border-obsidian-base"></span>
+</button>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-outline-variant/30 object-cover" data-alt="A macro shot of a sleek, abstract obsidian sphere glowing softly with cyan light. The sphere sits perfectly centered within a polished, dark geometric frame. Lighting is dramatic, emphasizing deep shadows and bright, vibrant cyan highlights in a minimalist high-tech setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdG_sWwaFkHb6ifdnA4KWl9_URK4v1gEDPVr_xJ1s69QOziecPLXMwTMF3P2HX5zXrYAOt-xHERfh1nB3C6BAZOKB6F6JAP5fx7LGD-KW7ZsUug3mPkN6W0_UvmbzXTTZL4FYGQOQ7MHWELaxbu25Nxzmio8moy_LAlsVMIyXffRSSYQBAjlwSo3JUrpvx8mWbhGAfD2i94sSDMWBfHSa_IVg4-5URQrYq_RFD4u15G2gvZ2D3hF_2SaanxBrJS0jLUbblwbYElbv8"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-20 px-margin-mobile pb-8 w-full flex flex-col gap-6 max-w-container-max mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col gap-1">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Nodes</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Real-time infrastructure health and node status.</p>
+</div>
+<!-- Global Status Card -->
+<div class="bg-obsidian-surface border border-outline-variant/30 rounded-xl p-4 shadow-sm flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined fill text-success-emerald" data-icon="check_circle">check_circle</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Global System Status</h2>
+</div>
+<span class="font-label-sm text-label-sm text-success-emerald bg-success-emerald/10 px-2 py-1 rounded-full">All Systems Operational</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-2">
+<div class="flex flex-col gap-1 border-r border-outline-variant/20 pr-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Uptime</span>
+<span class="font-headline-md text-headline-md text-on-surface">99.998%</span>
+</div>
+<div class="flex flex-col gap-1 pl-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Active Incidents</span>
+<span class="font-headline-md text-headline-md text-on-surface">0</span>
+</div>
+</div>
+</div>
+<!-- Key Metrics Bento Grid -->
+<div class="grid grid-cols-1 gap-4">
+<!-- CPU Gauge -->
+<div class="bg-obsidian-surface border border-outline-variant/30 rounded-xl p-4 shadow-sm flex flex-col items-center justify-center relative overflow-hidden">
+<div class="absolute inset-0 opacity-10 bg-gradient-to-br from-info-cyan to-transparent"></div>
+<div class="w-full flex justify-between items-start mb-4 z-10">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Avg CPU Load</span>
+<span class="material-symbols-outlined text-info-cyan" data-icon="memory">memory</span>
+</div>
+<div class="relative w-32 h-32 flex items-center justify-center z-10">
+<!-- Faux SVG Gauge -->
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<circle class="text-obsidian-elevated" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-info-cyan" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="100.48" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">42%</span>
+</div>
+</div>
+</div>
+<!-- Memory Usage -->
+<div class="bg-obsidian-surface border border-outline-variant/30 rounded-xl p-4 shadow-sm flex flex-col relative overflow-hidden">
+<div class="w-full flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Memory Usage</span>
+<span class="material-symbols-outlined text-ai-purple" data-icon="database">database</span>
+</div>
+<div class="flex items-end gap-2 mt-2">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">68%</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mb-1">/ 128GB Total</span>
+</div>
+<div class="w-full bg-obsidian-elevated h-2 rounded-full mt-4 overflow-hidden">
+<div class="bg-ai-purple h-full rounded-full" style="width: 68%;"></div>
+</div>
+</div>
+<!-- Network Traffic -->
+<div class="bg-obsidian-surface border border-outline-variant/30 rounded-xl p-4 shadow-sm flex flex-col">
+<div class="w-full flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Network I/O</span>
+<span class="material-symbols-outlined text-primary-container" data-icon="router">router</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-2">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Inbound</span>
+<span class="font-body-md text-body-md text-on-surface font-semibold">1.2 GB/s</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Outbound</span>
+<span class="font-body-md text-body-md text-on-surface font-semibold">850 MB/s</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Node Status List -->
+<h3 class="font-headline-md text-headline-md text-on-surface mt-4">Node Clusters</h3>
+<div class="flex flex-col gap-3">
+<!-- Cluster 1 -->
+<div class="bg-obsidian-surface border border-outline-variant/30 rounded-xl p-4 flex flex-col gap-3">
+<div class="flex justify-between items-center border-b border-outline-variant/20 pb-3">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-success-emerald animate-pulse"></div>
+<span class="font-body-md text-body-md font-semibold text-on-surface">us-east-1 (Primary)</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">8 Nodes</span>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">CPU</span>
+<span class="font-body-sm text-body-sm text-on-surface">34%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">RAM</span>
+<span class="font-body-sm text-body-sm text-on-surface">55%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Status</span>
+<span class="font-body-sm text-body-sm text-success-emerald">Healthy</span>
+</div>
+</div>
+</div>
+<!-- Cluster 2 -->
+<div class="bg-obsidian-surface border border-outline-variant/30 rounded-xl p-4 flex flex-col gap-3">
+<div class="flex justify-between items-center border-b border-outline-variant/20 pb-3">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-warning-amber"></div>
+<span class="font-body-md text-body-md font-semibold text-on-surface">eu-west-2 (Replica)</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">4 Nodes</span>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">CPU</span>
+<span class="font-body-sm text-body-sm text-warning-amber">82%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">RAM</span>
+<span class="font-body-sm text-body-sm text-on-surface">71%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Status</span>
+<span class="font-body-sm text-body-sm text-warning-amber">Warning</span>
+</div>
+</div>
+</div>
+<!-- Cluster 3 -->
+<div class="bg-obsidian-surface border border-outline-variant/30 rounded-xl p-4 flex flex-col gap-3">
+<div class="flex justify-between items-center border-b border-outline-variant/20 pb-3">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-success-emerald"></div>
+<span class="font-body-md text-body-md font-semibold text-on-surface">ap-northeast-1 (Edge)</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2 Nodes</span>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">CPU</span>
+<span class="font-body-sm text-body-sm text-on-surface">12%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">RAM</span>
+<span class="font-body-sm text-body-sm text-on-surface">28%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Status</span>
+<span class="font-body-sm text-body-sm text-success-emerald">Healthy</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile Only) -->
+<nav class="bg-obsidian-base/90 backdrop-blur-md border-t border-outline-variant/20 fixed bottom-0 w-full z-50 md:hidden pb-safe">
+<div class="flex items-center justify-around h-16 w-full">
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-sm text-[10px] mt-1">Dashboard</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-sm text-[10px] mt-1">Analytics</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-primary-container border-t-2 border-primary-container">
+<span class="material-symbols-outlined fill" data-icon="hub">hub</span>
+<span class="font-label-sm text-[10px] mt-1">Nodes</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-sm text-[10px] mt-1">History</span>
+</button>
+</div>
+</nav>
+</body></html>

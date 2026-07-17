@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Knower OS - CRM Leads</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#004d44",
+                      "inverse-surface": "#dae2fd",
+                      "surface-variant": "#2d3449",
+                      "surface-container-high": "#222a3d",
+                      "error": "#ffb4ab",
+                      "background": "#0b1326",
+                      "outline-variant": "#3a494a",
+                      "on-secondary-fixed-variant": "#005047",
+                      "surface-tint": "#00dce5",
+                      "tertiary": "#fff8fd",
+                      "warning-amber": "#F59E0B",
+                      "surface-container-low": "#131b2e",
+                      "success-emerald": "#10B981",
+                      "on-surface-variant": "#b9caca",
+                      "error-rose": "#F43F5E",
+                      "on-error": "#690005",
+                      "secondary-fixed": "#62fae3",
+                      "surface-dim": "#0b1326",
+                      "surface-container-lowest": "#060e20",
+                      "surface": "#0b1326",
+                      "secondary-fixed-dim": "#3cddc7",
+                      "on-secondary-fixed": "#00201c",
+                      "on-secondary": "#003731",
+                      "inverse-on-surface": "#283044",
+                      "primary-fixed-dim": "#00dce5",
+                      "inverse-primary": "#00696e",
+                      "ai-purple": "#A855F7",
+                      "secondary-container": "#03c6b2",
+                      "surface-container-highest": "#2d3449",
+                      "tertiary-container": "#edd4ff",
+                      "on-primary-container": "#006c71",
+                      "obsidian-elevated": "#1E293B",
+                      "primary": "#e9feff",
+                      "on-surface": "#dae2fd",
+                      "on-tertiary-fixed-variant": "#6900b3",
+                      "on-tertiary": "#490080",
+                      "secondary": "#44e2cd",
+                      "tertiary-fixed-dim": "#ddb7ff",
+                      "obsidian-surface": "#0F172A",
+                      "on-primary": "#003739",
+                      "info-cyan": "#06B6D4",
+                      "on-primary-fixed-variant": "#004f53",
+                      "obsidian-base": "#020617",
+                      "outline": "#849495",
+                      "on-tertiary-fixed": "#2c0051",
+                      "error-container": "#93000a",
+                      "surface-bright": "#31394d",
+                      "on-primary-fixed": "#002021",
+                      "tertiary-fixed": "#f0dbff",
+                      "on-error-container": "#ffdad6",
+                      "surface-container": "#171f33",
+                      "on-background": "#dae2fd",
+                      "primary-container": "#00f5ff",
+                      "primary-fixed": "#63f7ff",
+                      "on-tertiary-container": "#872fd5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1440px",
+                      "margin-desktop": "64px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Inter"],
+                      "label-md": ["JetBrains Mono"],
+                      "body-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "label-sm": ["JetBrains Mono"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for data tables */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a494a; 
+        }
+    </style>
+</head>
+<body class="bg-obsidian-base text-on-surface flex h-screen overflow-hidden font-body-md text-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-obsidian-base border-r border-outline-variant docked h-screen w-64 hidden md:flex flex-col py-6 px-4 shrink-0 z-50">
+<!-- Brand / Header -->
+<div class="mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-obsidian-elevated flex items-center justify-center border border-outline-variant">
+<img alt="Organization Workspace Logo" class="w-8 h-8 rounded-md object-cover" data-alt="A highly geometric, abstract, high-contrast monochrome logo suitable for an enterprise operating system, featuring sharp angles and a minimalist aesthetic against a very dark background. The logo should feel precise and technological, evoking 'The Knower OS' identity without text." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnXT-px4QTBgiE8TOX-mkYgUW7tGiXZUuUx_VHb1Vb4o6jZPGYy_pk3Yt_Nhl-3FV7vC9i0K8-98Lek938u4W5gDHJaH35nJCMQYuM6h-ndvLMSQnlHxw7LKpcJXQapZqEEBWZnjBOkr7gbmgkn1_0behLSD2QmkSUUfRaXuK8dLHQhACUfBFt1VioGX7Ql_KerSWZ2m6lAwKG-KWqO3pprsMMfRrUxr3Do8OfHaYxyQNaqrDsEaN4QbpdTWYp-M5yQ4g7USFF093U"/>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary">The Knower OS</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Enterprise Suite</p>
+</div>
+</div>
+<!-- CTA -->
+<button class="w-full bg-primary-container hover:bg-primary-fixed text-on-primary-container text-label-md font-label-md py-2 px-4 rounded-DEFAULT transition-colors duration-200 mb-8 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            New Workspace
+        </button>
+<!-- Navigation Tabs -->
+<div class="flex-1 flex flex-col gap-1 overflow-y-auto">
+<a class="text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 flex items-center gap-3 px-3 py-2 rounded-DEFAULT group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-95 transition-transform duration-150">dashboard</span>
+<span class="text-label-md font-label-md">Dashboard</span>
+</a>
+<a class="text-secondary-container font-bold border-r-2 border-secondary-container bg-obsidian-elevated/50 flex items-center gap-3 px-3 py-2 rounded-DEFAULT group" href="#">
+<span class="material-symbols-outlined text-[20px] scale-95 transition-transform duration-150" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="text-label-md font-label-md">CRM</span>
+</a>
+<a class="text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 flex items-center gap-3 px-3 py-2 rounded-DEFAULT group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-95 transition-transform duration-150">tactic</span>
+<span class="text-label-md font-label-md">Projects</span>
+</a>
+<a class="text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 flex items-center gap-3 px-3 py-2 rounded-DEFAULT group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-95 transition-transform duration-150">payments</span>
+<span class="text-label-md font-label-md">Finance</span>
+</a>
+<a class="text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 flex items-center gap-3 px-3 py-2 rounded-DEFAULT group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-95 transition-transform duration-150">monitoring</span>
+<span class="text-label-md font-label-md">Analytics</span>
+</a>
+<a class="text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 flex items-center gap-3 px-3 py-2 rounded-DEFAULT group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-95 transition-transform duration-150">settings</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</div>
+<!-- Footer Tabs -->
+<div class="mt-auto pt-4 border-t border-outline-variant flex flex-col gap-1">
+<a class="text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 flex items-center gap-3 px-3 py-2 rounded-DEFAULT group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-95 transition-transform duration-150">help</span>
+<span class="text-label-md font-label-md">Help</span>
+</a>
+<a class="text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200 flex items-center gap-3 px-3 py-2 rounded-DEFAULT group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-95 transition-transform duration-150">account_circle</span>
+<span class="text-label-md font-label-md">User Profile</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-obsidian-base">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-obsidian-surface/80 backdrop-blur-md border-b border-outline-variant shadow-sm docked full-width top-0 flex justify-between items-center w-full px-4 md:px-margin-desktop h-16 sticky z-40 shrink-0">
+<!-- Left: Mobile Menu & Product Name -->
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface-variant hover:text-primary transition-all focus:ring-2 focus:ring-primary-container rounded-DEFAULT p-1">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="hidden md:flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="bg-obsidian-base border border-outline-variant rounded-DEFAULT py-1.5 pl-9 pr-4 text-label-sm font-label-sm text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container w-64 transition-all placeholder:text-outline" placeholder="Search..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Center: Navigation Links (Web) -->
+<nav class="hidden lg:flex items-center gap-8 h-full">
+<a class="text-primary border-b-2 border-primary h-full flex items-center pt-2 px-1 text-label-sm font-label-sm focus:ring-2 focus:ring-primary-container" href="#">List</a>
+<a class="text-on-surface-variant hover:text-primary transition-all h-full flex items-center pt-2 px-1 border-b-2 border-transparent text-label-sm font-label-sm focus:ring-2 focus:ring-primary-container" href="#">Kanban</a>
+<a class="text-on-surface-variant hover:text-primary transition-all h-full flex items-center pt-2 px-1 border-b-2 border-transparent text-label-sm font-label-sm focus:ring-2 focus:ring-primary-container" href="#">Timeline</a>
+</nav>
+<!-- Right: Actions -->
+<div class="flex items-center gap-3">
+<button class="hidden sm:flex bg-obsidian-elevated border border-ai-purple/50 text-ai-purple hover:bg-ai-purple/10 text-label-sm font-label-sm py-1.5 px-3 rounded-DEFAULT transition-all focus:ring-2 focus:ring-primary-container items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">magic_button</span>
+                    AI Assistant
+                </button>
+<button class="bg-transparent border border-outline-variant hover:border-outline text-on-surface text-label-sm font-label-sm py-1.5 px-3 rounded-DEFAULT transition-all focus:ring-2 focus:ring-primary-container">
+                    New Task
+                </button>
+<div class="hidden md:flex items-center gap-2 border-l border-outline-variant pl-3 ml-1">
+<button class="text-on-surface-variant hover:text-primary transition-all focus:ring-2 focus:ring-primary-container rounded-DEFAULT p-1.5 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-all focus:ring-2 focus:ring-primary-container rounded-DEFAULT p-1.5 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">language</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-all focus:ring-2 focus:ring-primary-container rounded-DEFAULT p-1.5 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">terminal</span>
+</button>
+</div>
+<img alt="User Avatar" class="w-8 h-8 rounded-full border border-outline-variant object-cover ml-2 cursor-pointer hover:border-primary transition-all" data-alt="A tiny, high-quality, professional corporate headshot of a business executive against a dark, minimal background. Lighting should be dramatic but clean, emphasizing competence and authority." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoB4Z48PdnHTO_BfEcq1uJhbvRLA9Zwve8qu0T3K5DJSIqYZCWeU9oqvpftcUZVzioZ4Nk7JR0A-SDmgitl1PM4aM1CznG2QVlSkUO1Kw1UNhf1Izkw_uzMoBrIp6t8LgckjXEnVqiomW76psMsA8-VJRdsCEJiiyOIa7zx1OvKTbQA6rtRXz0i5_k9msprVV4EGjRPozmkkYYSe4hOC94QpgZsX0YYVEBd_cOQO7FXaJMHX_BgjosvNjCZ4OOO17CBMcy3AFPnb0N"/>
+</div>
+</header>
+<!-- Canvas / Content -->
+<main class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-margin-desktop flex flex-col gap-6">
+<!-- Page Header & Filter Bar -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-obsidian-elevated">
+<div>
+<h2 class="text-headline-md font-headline-md font-semibold text-on-surface mb-1">CRM Leads</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Manage and track your active sales pipeline (2,451 total leads).</p>
+</div>
+<div class="flex flex-wrap items-center gap-3">
+<button class="bg-obsidian-surface border border-outline-variant hover:bg-obsidian-elevated text-on-surface text-label-md font-label-md py-2 px-4 rounded-DEFAULT transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Export
+                    </button>
+<button class="bg-primary-container hover:bg-primary-fixed text-on-primary-container text-label-md font-label-md py-2 px-4 rounded-DEFAULT transition-colors flex items-center gap-2 shadow-sm font-bold">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        New Lead
+                    </button>
+</div>
+</div>
+<!-- Sophisticated Filter Bar -->
+<div class="bg-obsidian-surface border border-obsidian-elevated rounded-lg p-3 flex flex-wrap gap-3 items-center shadow-sm">
+<div class="relative flex-grow min-w-[200px] max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="w-full bg-obsidian-base border border-obsidian-elevated rounded-DEFAULT py-2 pl-9 pr-4 text-label-sm font-label-sm text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all placeholder:text-outline-variant" placeholder="Search leads, companies..." type="text"/>
+</div>
+<div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 hide-scrollbar">
+<button class="flex items-center gap-2 bg-obsidian-base border border-obsidian-elevated hover:border-outline-variant rounded-DEFAULT py-1.5 px-3 text-label-sm font-label-sm text-on-surface transition-colors whitespace-nowrap">
+<span class="w-2 h-2 rounded-full bg-info-cyan"></span>
+                        Status
+                        <span class="material-symbols-outlined text-[16px] text-on-surface-variant">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-2 bg-obsidian-base border border-obsidian-elevated hover:border-outline-variant rounded-DEFAULT py-1.5 px-3 text-label-sm font-label-sm text-on-surface transition-colors whitespace-nowrap">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">calendar_today</span>
+                        Date Range
+                        <span class="material-symbols-outlined text-[16px] text-on-surface-variant">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-2 bg-obsidian-base border border-obsidian-elevated hover:border-outline-variant rounded-DEFAULT py-1.5 px-3 text-label-sm font-label-sm text-on-surface transition-colors whitespace-nowrap">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">attach_money</span>
+                        Value
+                        <span class="material-symbols-outlined text-[16px] text-on-surface-variant">arrow_drop_down</span>
+</button>
+</div>
+<div class="ml-auto flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant hidden sm:inline-block">View:</span>
+<div class="flex bg-obsidian-base border border-obsidian-elevated rounded-DEFAULT p-0.5">
+<button class="p-1 rounded bg-obsidian-elevated text-primary shadow-sm"><span class="material-symbols-outlined text-[18px] block">table_rows</span></button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[18px] block">grid_view</span></button>
+</div>
+</div>
+</div>
+<!-- Active Filters Chips -->
+<div class="flex items-center gap-2 flex-wrap">
+<span class="text-label-sm font-label-sm text-on-surface-variant mr-1">Active:</span>
+<span class="bg-obsidian-elevated border border-outline-variant rounded-full py-1 px-3 text-label-sm font-label-sm text-on-surface flex items-center gap-1">
+                    Status: New <button class="hover:text-error-rose transition-colors"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</span>
+<span class="bg-obsidian-elevated border border-outline-variant rounded-full py-1 px-3 text-label-sm font-label-sm text-on-surface flex items-center gap-1">
+                    Value: &gt; $50k <button class="hover:text-error-rose transition-colors"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</span>
+<button class="text-label-sm font-label-sm text-info-cyan hover:text-primary transition-colors ml-2">Clear all</button>
+</div>
+<!-- Data Table Container (Glassmorphism Card) -->
+<div class="bg-obsidian-surface border border-obsidian-elevated rounded-lg shadow-sm flex-1 flex flex-col min-h-[400px] relative overflow-hidden">
+<!-- Table Header Bulk Actions (Hidden by default, shown when checkboxes checked in real app) -->
+<div class="bg-obsidian-elevated border-b border-obsidian-elevated py-2 px-4 flex items-center justify-between absolute top-0 left-0 right-0 z-20 translate-y-[-100%] transition-transform" id="bulk-actions">
+<span class="text-label-sm font-label-sm text-on-surface font-semibold">2 items selected</span>
+<div class="flex items-center gap-2">
+<button class="text-label-sm font-label-sm bg-obsidian-base border border-outline-variant hover:border-error-rose hover:text-error-rose py-1 px-3 rounded-DEFAULT transition-colors">Delete</button>
+<button class="text-label-sm font-label-sm bg-obsidian-base border border-outline-variant hover:border-info-cyan py-1 px-3 rounded-DEFAULT transition-colors">Assign</button>
+<button class="text-label-sm font-label-sm bg-primary-container text-on-primary-container py-1 px-3 rounded-DEFAULT transition-colors font-semibold">Convert Selected</button>
+</div>
+</div>
+<div class="overflow-auto flex-1 relative">
+<table class="w-full text-left border-collapse min-w-[900px]">
+<thead class="sticky top-0 bg-obsidian-surface z-10 before:content-[''] before:absolute before:bottom-0 before:left-0 before:right-0 before:h-px before:bg-obsidian-elevated">
+<tr>
+<th class="py-3 px-4 w-12">
+<input class="rounded-sm bg-obsidian-base border-outline-variant text-primary-container focus:ring-primary-container focus:ring-offset-obsidian-surface cursor-pointer" type="checkbox"/>
+</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant font-medium whitespace-nowrap cursor-pointer hover:text-on-surface transition-colors group">
+                                    Lead Name <span class="material-symbols-outlined text-[14px] align-middle opacity-0 group-hover:opacity-100">arrow_downward</span>
+</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant font-medium whitespace-nowrap cursor-pointer hover:text-on-surface transition-colors">Company</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant font-medium whitespace-nowrap cursor-pointer hover:text-on-surface transition-colors">Status</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant font-medium whitespace-nowrap cursor-pointer hover:text-on-surface transition-colors text-right">Est. Value</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant font-medium whitespace-nowrap cursor-pointer hover:text-on-surface transition-colors">Source</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant font-medium whitespace-nowrap cursor-pointer hover:text-on-surface transition-colors">Last Activity</th>
+<th class="py-3 px-4 w-16"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-obsidian-elevated/50 text-body-sm font-body-sm">
+<!-- Row 1: New -->
+<tr class="hover:bg-obsidian-elevated/30 transition-colors group">
+<td class="py-3 px-4">
+<input class="rounded-sm bg-obsidian-base border-outline-variant text-primary-container focus:ring-primary-container focus:ring-offset-obsidian-surface cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-obsidian-base border border-outline-variant flex items-center justify-center text-label-sm font-label-sm text-on-surface font-bold">EK</div>
+<div>
+<div class="font-medium text-on-surface">Elena Koshka</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">elena@example.com</div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant">Stark Industries</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-info-cyan/10 text-info-cyan border border-info-cyan/20">
+<span class="w-1.5 h-1.5 rounded-full bg-info-cyan mr-1.5"></span> New
+                                    </span>
+</td>
+<td class="py-3 px-4 text-right font-label-md font-medium text-on-surface">$120,000</td>
+<td class="py-3 px-4 text-on-surface-variant text-label-sm">Inbound Web</td>
+<td class="py-3 px-4 text-on-surface-variant text-label-sm">2 hours ago</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant hover:text-primary opacity-0 group-hover:opacity-100 transition-all p-1 rounded hover:bg-obsidian-elevated">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Contacted -->
+<tr class="hover:bg-obsidian-elevated/30 transition-colors group">
+<td class="py-3 px-4">
+<input class="rounded-sm bg-obsidian-base border-outline-variant text-primary-container focus:ring-primary-container focus:ring-offset-obsidian-surface cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-obsidian-base border border-outline-variant flex items-center justify-center text-label-sm font-label-sm text-on-surface font-bold">MR</div>
+<div>
+<div class="font-medium text-on-surface">Marcus Reed</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">m.reed@example.com</div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant">Nexus Corp</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-warning-amber/10 text-warning-amber border border-warning-amber/20">
+<span class="w-1.5 h-1.5 rounded-full bg-warning-amber mr-1.5"></span> Contacted
+                                    </span>
+</td>
+<td class="py-3 px-4 text-right font-label-md font-medium text-on-surface">$45,500</td>
+<td class="py-3 px-4 text-on-surface-variant text-label-sm">Referral</td>
+<td class="py-3 px-4 text-on-surface-variant text-label-sm">Yesterday</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant hover:text-primary opacity-0 group-hover:opacity-100 transition-all p-1 rounded hover:bg-obsidian-elevated">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Qualified -->
+<tr class="hover:bg-obsidian-elevated/30 transition-colors group">
+<td class="py-3 px-4">
+<input class="rounded-sm bg-obsidian-base border-outline-variant text-primary-container focus:ring-primary-container focus:ring-offset-obsidian-surface cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<img alt="Sarah Chen" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A small, professional headshot of an Asian woman in her 30s, looking confident, dark background, sharp high-contrast lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBElAO7FVfUpjzIgxT7JNWIBimlzEm7ndby5UX3wF-9bO2CtiscILJlc3PBfuxBaTxeK0nuy0wnLnaCO_vh_uSS3tvEU_8UHQKxmNXVW4_n4TsGm2YtdJEfafq7uPSqe7_YvkjBpp933VxL4EwXYyVhzsjtwFjUrboVTL_lFWCPQ2fIB8FZPfXQmznOwyrt2WcNXVZp0ol04wngSl_m-2R-WC6uo5NfNP7Rx7IKd8VYy42TIfHh1CkQSrXdAUEKp-CR_XYBSKSnGXIP"/>
+<div>
+<div class="font-medium text-on-surface">Sarah Chen</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">sarah.c@example.com</div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant">CyberDyne Sys</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-success-emerald/10 text-success-emerald border border-success-emerald/20">
+<span class="w-1.5 h-1.5 rounded-full bg-success-emerald mr-1.5"></span> Qualified
+                                    </span>
+</td>
+<td class="py-3 px-4 text-right font-label-md font-medium text-on-surface">$250,000</td>
+<td class="py-3 px-4 text-on-surface-variant text-label-sm">Conference '23</td>
+<td class="py-3 px-4 text-on-surface-variant text-label-sm">Oct 12, 2023</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant hover:text-primary opacity-0 group-hover:opacity-100 transition-all p-1 rounded hover:bg-obsidian-elevated">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: Lost -->
+<tr class="hover:bg-obsidian-elevated/30 transition-colors group opacity-60 hover:opacity-100">
+<td class="py-3 px-4">
+<input class="rounded-sm bg-obsidian-base border-outline-variant text-primary-container focus:ring-primary-container focus:ring-offset-obsidian-surface cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-obsidian-base border border-outline-variant flex items-center justify-center text-label-sm font-label-sm text-on-surface font-bold">JD</div>
+<div>
+<div class="font-medium text-on-surface line-through decoration-outline-variant">John Doe</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">j.doe@example.com</div>
+</div>
+</div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant">Acme Corp</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-label-sm bg-error-rose/10 text-error-rose border border-error-rose/20">
+<span class="w-1.5 h-1.5 rounded-full bg-error-rose mr-1.5"></span> Lost
+                                    </span>
+</td>
+<td class="py-3 px-4 text-right font-label-md font-medium text-on-surface-variant">$15,000</td>
+<td class="py-3 px-4 text-on-surface-variant text-label-sm">Cold Call</td>
+<td class="py-3 px-4 text-on-surface-variant text-label-sm">Sep 28, 2023</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant hover:text-primary opacity-0 group-hover:opacity-100 transition-all p-1 rounded hover:bg-obsidian-elevated">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Padding rows for visual depth if needed -->
+<tr class="hover:bg-obsidian-elevated/30 transition-colors group">
+<td class="py-3 px-4"></td><td class="py-3 px-4"></td><td class="py-3 px-4"></td><td class="py-3 px-4"></td><td class="py-3 px-4"></td><td class="py-3 px-4"></td><td class="py-3 px-4"></td><td class="py-3 px-4"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="border-t border-obsidian-elevated bg-obsidian-surface py-3 px-4 flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant shrink-0">
+<div>Showing 1 to 4 of 2,451 leads</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span>Rows per page:</span>
+<select class="bg-obsidian-base border border-outline-variant rounded py-1 pl-2 pr-6 text-on-surface focus:ring-1 focus:ring-primary-container text-label-sm outline-none">
+<option>20</option>
+<option>50</option>
+<option>100</option>
+</select>
+</div>
+<div class="flex gap-1">
+<button class="p-1 rounded border border-outline-variant hover:bg-obsidian-elevated hover:text-on-surface transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px] block">chevron_left</span>
+</button>
+<button class="p-1 rounded border border-outline-variant hover:bg-obsidian-elevated hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px] block">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="bg-obsidian-base border-t border-outline-variant docked full-width bottom-0 flex justify-between items-center w-full px-4 md:px-margin-desktop py-2 h-8 shrink-0">
+<span class="text-label-sm font-label-sm text-on-surface-variant">The Knower OS v2.4.0 • System Status: <span class="text-success-emerald">Operational</span></span>
+<div class="flex gap-4">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Server Health</a>
+</div>
+</footer>
+</div>
+<!-- Script for simple interactions (simulating checkbox bulk actions) -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+            const masterCheckbox = document.querySelector('thead input[type="checkbox"]');
+            const bulkActions = document.getElementById('bulk-actions');
+
+            function updateBulkActions() {
+                const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+                if (checkedCount > 0) {
+                    bulkActions.classList.remove('translate-y-[-100%]');
+                    bulkActions.querySelector('span').textContent = `${checkedCount} items selected`;
+                } else {
+                    bulkActions.classList.add('translate-y-[-100%]');
+                }
+            }
+
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', () => {
+                    updateBulkActions();
+                    masterCheckbox.checked = Array.from(checkboxes).every(c => c.checked);
+                    masterCheckbox.indeterminate = Array.from(checkboxes).some(c => c.checked) && !masterCheckbox.checked;
+                });
+            });
+
+            masterCheckbox.addEventListener('change', (e) => {
+                checkboxes.forEach(cb => cb.checked = e.target.checked);
+                updateBulkActions();
+            });
+        });
+    </script>
+</body></html>

@@ -3,76 +3,78 @@
 namespace App\Http\Controllers\CRM;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CRM\StoreClientRequest;
+use App\Http\Requests\CRM\UpdateClientRequest;
+use App\Http\Resources\CRM\ClientResource;
 use App\Models\Client;
-use Illuminate\Http\Request;
+use App\Services\CRM\ClientService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class ClientController extends Controller
 {
-    public function index()
+    protected ClientService $clientService;
+
+    public function __construct(ClientService $clientService)
     {
-        $clients = Client::with('company')->latest()->get();
+        $this->clientService = $clientService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Client::class);
+
+        $clients = $this->clientService->getAll();
+        
+        // Load relations if needed
+        $clients->load('company');
 
         return response()->json([
             'success' => true,
             'message' => 'Clients retrieved successfully.',
-            'data' => $clients
+            'data' => ClientResource::collection($clients)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreClientRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'company_id' => 'nullable|exists:companies,id',
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:clients,email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'position' => 'nullable|string|max:100',
-            'status' => 'nullable|in:active,inactive,prospect',
-        ]);
-
-        $client = Client::create($validated);
+        $client = $this->clientService->create($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Client created successfully.',
-            'data' => $client
+            'data' => new ClientResource($client)
         ], 201);
     }
 
-    public function show(Client $client)
+    public function show(Client $client): JsonResponse
     {
+        Gate::authorize('view', $client);
         $client->load(['company', 'projects', 'invoices', 'tickets']);
 
         return response()->json([
             'success' => true,
             'message' => 'Client retrieved successfully.',
-            'data' => $client
+            'data' => new ClientResource($client)
         ]);
     }
 
-    public function update(Request $request, Client $client)
+    public function update(UpdateClientRequest $request, Client $client): JsonResponse
     {
-        $validated = $request->validate([
-            'company_id' => 'nullable|exists:companies,id',
-            'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|max:255|unique:clients,email,' . $client->id,
-            'phone' => 'nullable|string|max:50',
-            'position' => 'nullable|string|max:100',
-            'status' => 'sometimes|required|in:active,inactive,prospect',
-        ]);
-
-        $client->update($validated);
+        $client = $this->clientService->update($client, $request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Client updated successfully.',
-            'data' => $client
+            'data' => new ClientResource($client)
         ]);
     }
 
-    public function destroy(Client $client)
+    public function destroy(Client $client): JsonResponse
     {
-        $client->delete();
+        Gate::authorize('delete', $client);
+
+        $this->clientService->delete($client);
 
         return response()->json([
             'success' => true,

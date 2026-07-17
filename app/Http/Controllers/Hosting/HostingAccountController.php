@@ -3,89 +3,81 @@
 namespace App\Http\Controllers\Hosting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Hosting\StoreHostingAccountRequest;
+use App\Http\Requests\Hosting\UpdateHostingAccountRequest;
+use App\Http\Resources\Hosting\HostingAccountResource;
 use App\Models\HostingAccount;
-use Illuminate\Http\Request;
+use App\Services\Hosting\HostingAccountService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class HostingAccountController extends Controller
 {
-    public function index()
+    protected HostingAccountService $hostingaccountService;
+
+    public function __construct(HostingAccountService $hostingaccountService)
     {
-        $accounts = HostingAccount::with(['client', 'project', 'server'])->latest('id')->get();
+        $this->hostingaccountService = $hostingaccountService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', HostingAccount::class);
+
+        $hostingaccounts = $this->hostingaccountService->getAll();
+        
+        // Load relations if needed
+        $hostingaccounts->load(['client', 'project', 'server']);
 
         return response()->json([
             'success' => true,
-            'message' => 'Hosting accounts retrieved successfully.',
-            'data' => $accounts
+            'message' => 'HostingAccounts retrieved successfully.',
+            'data' => HostingAccountResource::collection($hostingaccounts)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreHostingAccountRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'client_id' => 'nullable|exists:clients,id',
-            'project_id' => 'nullable|exists:projects,id',
-            'server_id' => 'nullable|exists:servers,id',
-            'provider' => 'required|string|max:100',
-            'plan' => 'nullable|string|max:100',
-            'username' => 'nullable|string|max:100',
-            'expiry_date' => 'nullable|date',
-            'status' => 'nullable|in:active,inactive,suspended,expired',
-            'auto_renew' => 'nullable|boolean',
-        ]);
-
-        $account = HostingAccount::create($validated);
+        $hostingaccount = $this->hostingaccountService->create($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Hosting account created successfully.',
-            'data' => $account
+            'message' => 'HostingAccount created successfully.',
+            'data' => new HostingAccountResource($hostingaccount)
         ], 201);
     }
 
-    public function show($id)
+    public function show(HostingAccount $hostingaccount): JsonResponse
     {
-        $account = HostingAccount::with(['client', 'project', 'server'])->findOrFail($id);
+        Gate::authorize('view', $hostingaccount);
 
         return response()->json([
             'success' => true,
-            'message' => 'Hosting account retrieved successfully.',
-            'data' => $account
+            'message' => 'HostingAccount retrieved successfully.',
+            'data' => new HostingAccountResource($hostingaccount)
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateHostingAccountRequest $request, HostingAccount $hostingaccount): JsonResponse
     {
-        $account = HostingAccount::findOrFail($id);
-
-        $validated = $request->validate([
-            'client_id' => 'nullable|exists:clients,id',
-            'project_id' => 'nullable|exists:projects,id',
-            'server_id' => 'nullable|exists:servers,id',
-            'provider' => 'sometimes|required|string|max:100',
-            'plan' => 'nullable|string|max:100',
-            'username' => 'nullable|string|max:100',
-            'expiry_date' => 'nullable|date',
-            'status' => 'sometimes|required|in:active,inactive,suspended,expired',
-            'auto_renew' => 'nullable|boolean',
-        ]);
-
-        $account->update($validated);
+        $hostingaccount = $this->hostingaccountService->update($hostingaccount, $request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Hosting account updated successfully.',
-            'data' => $account
+            'message' => 'HostingAccount updated successfully.',
+            'data' => new HostingAccountResource($hostingaccount)
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(HostingAccount $hostingaccount): JsonResponse
     {
-        $account = HostingAccount::findOrFail($id);
-        $account->delete();
+        Gate::authorize('delete', $hostingaccount);
+
+        $this->hostingaccountService->delete($hostingaccount);
 
         return response()->json([
             'success' => true,
-            'message' => 'Hosting account deleted successfully.',
+            'message' => 'HostingAccount deleted successfully.',
             'data' => null
         ]);
     }

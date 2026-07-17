@@ -1,0 +1,1824 @@
+<?php
+
+namespace App\Http\Controllers\CRM;
+
+use App\Http\Controllers\Controller;
+use App\Models\Client;
+use Illuminate\Http\Request;
+
+class ClientController extends Controller
+{
+    public function index()
+    {
+        $clients = Client::with('company')->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Clients retrieved successfully.',
+            'data' => $clients
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'company_id' => 'nullable|exists:companies,id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:clients,email|max:255',
+            'phone' => 'nullable|string|max:50',
+            'position' => 'nullable|string|max:100',
+            'status' => 'nullable|in:active,inactive,prospect',
+        ]);
+
+        $client = Client::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Client created successfully.',
+            'data' => $client
+        ], 201);
+    }
+
+    public function show(Client $client)
+    {
+        $client->load(['company', 'projects', 'invoices', 'tickets']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Client retrieved successfully.',
+            'data' => $client
+        ]);
+    }
+
+    public function update(Request $request, Client $client)
+    {
+        $validated = $request->validate([
+            'company_id' => 'nullable|exists:companies,id',
+            'name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|max:255|unique:clients,email,' . $client->id,
+            'phone' => 'nullable|string|max:50',
+            'position' => 'nullable|string|max:100',
+            'status' => 'sometimes|required|in:active,inactive,prospect',
+        ]);
+
+        $client->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Client updated successfully.',
+            'data' => $client
+        ]);
+    }
+
+    public function destroy(Client $client)
+    {
+        $client->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Client deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\CRM;
+
+use App\Http\Controllers\Controller;
+use App\Models\Company;
+use Illuminate\Http\Request;
+
+class CompanyController extends Controller
+{
+    public function index()
+    {
+        $companies = Company::withCount('clients')->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Companies retrieved successfully.',
+            'data' => $companies
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'company_name' => 'required|string|max:255',
+            'industry' => 'nullable|string|max:255',
+            'website' => 'nullable|url|max:255',
+            'tax_number' => 'nullable|string|max:100',
+            'address' => 'nullable|string',
+            'city' => 'nullable|string|max:100',
+            'country' => 'nullable|string|max:100',
+            'notes' => 'nullable|string',
+        ]);
+
+        $company = Company::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Company created successfully.',
+            'data' => $company
+        ], 201);
+    }
+
+    public function show(Company $company)
+    {
+        $company->load('clients');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Company retrieved successfully.',
+            'data' => $company
+        ]);
+    }
+
+    public function update(Request $request, Company $company)
+    {
+        $validated = $request->validate([
+            'company_name' => 'sometimes|required|string|max:255',
+            'industry' => 'nullable|string|max:255',
+            'website' => 'nullable|url|max:255',
+            'tax_number' => 'nullable|string|max:100',
+            'address' => 'nullable|string',
+            'city' => 'nullable|string|max:100',
+            'country' => 'nullable|string|max:100',
+            'notes' => 'nullable|string',
+        ]);
+
+        $company->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Company updated successfully.',
+            'data' => $company
+        ]);
+    }
+
+    public function destroy(Company $company)
+    {
+        $company->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Company deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\CRM;
+
+use App\Http\Controllers\Controller;
+use App\Models\Contract;
+use Illuminate\Http\Request;
+
+class ContractController extends Controller
+{
+    public function index()
+    {
+        $contracts = Contract::with(['client', 'quotation'])->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Contracts retrieved successfully.',
+            'data' => $contracts
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'quotation_id' => 'nullable|exists:quotations,id',
+            'contract_number' => 'required|string|unique:contracts,contract_number|max:100',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'status' => 'nullable|in:draft,active,completed,terminated',
+            'file' => 'nullable|string|max:255',
+        ]);
+
+        $contract = Contract::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Contract created successfully.',
+            'data' => $contract
+        ], 201);
+    }
+
+    public function show(Contract $contract)
+    {
+        $contract->load(['client', 'quotation']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Contract retrieved successfully.',
+            'data' => $contract
+        ]);
+    }
+
+    public function update(Request $request, Contract $contract)
+    {
+        $validated = $request->validate([
+            'client_id' => 'sometimes|required|exists:clients,id',
+            'quotation_id' => 'nullable|exists:quotations,id',
+            'contract_number' => 'sometimes|required|string|max:100|unique:contracts,contract_number,' . $contract->id,
+            'start_date' => 'sometimes|required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'status' => 'sometimes|required|in:draft,active,completed,terminated',
+            'file' => 'nullable|string|max:255',
+        ]);
+
+        $contract->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Contract updated successfully.',
+            'data' => $contract
+        ]);
+    }
+
+    public function destroy(Contract $contract)
+    {
+        $contract->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Contract deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\CRM;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CRM\StoreLeadRequest;
+use App\Http\Requests\CRM\UpdateLeadRequest;
+use App\Models\Lead;
+use App\Services\CRM\LeadService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
+
+class LeadController extends Controller
+{
+    protected LeadService $leadService;
+
+    public function __construct(LeadService $leadService)
+    {
+        $this->leadService = $leadService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Lead::class);
+
+        $leads = $this->leadService->getAllLeads();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Leads retrieved successfully.',
+            'data' => $leads
+        ]);
+    }
+
+    public function store(StoreLeadRequest $request): JsonResponse
+    {
+        $lead = $this->leadService->createLead($request->validated());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lead created successfully.',
+            'data' => $lead
+        ], 201);
+    }
+
+    public function show(Lead $lead): JsonResponse
+    {
+        Gate::authorize('view', $lead);
+
+        $lead->load('assignee');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lead retrieved successfully.',
+            'data' => $lead
+        ]);
+    }
+
+    public function update(UpdateLeadRequest $request, Lead $lead): JsonResponse
+    {
+        $lead = $this->leadService->updateLead($lead, $request->validated());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lead updated successfully.',
+            'data' => $lead
+        ]);
+    }
+
+    public function destroy(Lead $lead): JsonResponse
+    {
+        Gate::authorize('delete', $lead);
+
+        $this->leadService->deleteLead($lead);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lead deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\CRM;
+
+use App\Http\Controllers\Controller;
+use App\Models\Quotation;
+use Illuminate\Http\Request;
+
+class QuotationController extends Controller
+{
+    public function index()
+    {
+        $quotations = Quotation::with('client')->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Quotations retrieved successfully.',
+            'data' => $quotations
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'quotation_number' => 'required|string|unique:quotations,quotation_number|max:100',
+            'price' => 'required|numeric|min:0',
+            'currency' => 'nullable|string|max:10',
+            'status' => 'nullable|in:draft,sent,accepted,rejected,expired',
+            'valid_until' => 'nullable|date',
+            'notes' => 'nullable|string',
+        ]);
+
+        $quotation = Quotation::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Quotation created successfully.',
+            'data' => $quotation
+        ], 201);
+    }
+
+    public function show(Quotation $quotation)
+    {
+        $quotation->load(['client', 'contract']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Quotation retrieved successfully.',
+            'data' => $quotation
+        ]);
+    }
+
+    public function update(Request $request, Quotation $quotation)
+    {
+        $validated = $request->validate([
+            'client_id' => 'sometimes|required|exists:clients,id',
+            'quotation_number' => 'sometimes|required|string|max:100|unique:quotations,quotation_number,' . $quotation->id,
+            'price' => 'sometimes|required|numeric|min:0',
+            'currency' => 'nullable|string|max:10',
+            'status' => 'sometimes|required|in:draft,sent,accepted,rejected,expired',
+            'valid_until' => 'nullable|date',
+            'notes' => 'nullable|string',
+        ]);
+
+        $quotation->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Quotation updated successfully.',
+            'data' => $quotation
+        ]);
+    }
+
+    public function destroy(Quotation $quotation)
+    {
+        $quotation->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Quotation deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Projects;
+
+use App\Http\Controllers\Controller;
+use App\Models\Bug;
+use Illuminate\Http\Request;
+
+class BugController extends Controller
+{
+    public function index()
+    {
+        $bugs = Bug::with(['project', 'task', 'reporter', 'assignee'])->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bugs retrieved successfully.',
+            'data' => $bugs
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'project_id' => 'required|exists:projects,id',
+            'task_id' => 'nullable|exists:tasks,id',
+            'assigned_to' => 'nullable|exists:users,id',
+            'severity' => 'nullable|in:low,medium,high,critical',
+            'status' => 'nullable|in:open,in_progress,resolved,closed',
+            'description' => 'required|string',
+            'steps_to_reproduce' => 'nullable|string',
+        ]);
+
+        $validated['reported_by'] = auth()->id();
+        $bug = Bug::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bug reported successfully.',
+            'data' => $bug
+        ], 201);
+    }
+
+    public function show(Bug $bug)
+    {
+        $bug->load(['project', 'task', 'reporter', 'assignee']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bug retrieved successfully.',
+            'data' => $bug
+        ]);
+    }
+
+    public function update(Request $request, Bug $bug)
+    {
+        $validated = $request->validate([
+            'project_id' => 'sometimes|required|exists:projects,id',
+            'task_id' => 'nullable|exists:tasks,id',
+            'assigned_to' => 'nullable|exists:users,id',
+            'severity' => 'sometimes|required|in:low,medium,high,critical',
+            'status' => 'sometimes|required|in:open,in_progress,resolved,closed',
+            'description' => 'sometimes|required|string',
+            'steps_to_reproduce' => 'nullable|string',
+        ]);
+
+        $bug->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bug updated successfully.',
+            'data' => $bug
+        ]);
+    }
+
+    public function destroy(Bug $bug)
+    {
+        $bug->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bug deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Projects;
+
+use App\Http\Controllers\Controller;
+use App\Models\File;
+use Illuminate\Http\Request;
+
+class FileController extends Controller
+{
+    public function index()
+    {
+        $files = File::with(['project', 'uploader'])->latest('id')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Files retrieved successfully.',
+            'data' => $files
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'project_id' => 'required|exists:projects,id',
+            'file_name' => 'required|string|max:255',
+            'file_path' => 'required|string|max:255',
+            'size' => 'nullable|integer',
+            'type' => 'nullable|string|max:100',
+        ]);
+
+        $validated['uploaded_by'] = auth()->id();
+        $file = File::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'File entry logged successfully.',
+            'data' => $file
+        ], 201);
+    }
+
+    public function show($id)
+    {
+        $file = File::with(['project', 'uploader'])->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'File retrieved successfully.',
+            'data' => $file
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $file = File::findOrFail($id);
+        $file->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'File deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Projects;
+
+use App\Http\Controllers\Controller;
+use App\Models\Milestone;
+use Illuminate\Http\Request;
+
+class MilestoneController extends Controller
+{
+    public function index()
+    {
+        $milestones = Milestone::with('project')->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Milestones retrieved successfully.',
+            'data' => $milestones
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'project_id' => 'required|exists:projects,id',
+            'title' => 'required|string|max:255',
+            'deadline' => 'nullable|date',
+            'progress' => 'nullable|integer|between:0,100',
+            'status' => 'nullable|in:pending,in_progress,completed',
+        ]);
+
+        $milestone = Milestone::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Milestone created successfully.',
+            'data' => $milestone
+        ], 201);
+    }
+
+    public function show(Milestone $milestone)
+    {
+        $milestone->load(['project', 'tasks']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Milestone retrieved successfully.',
+            'data' => $milestone
+        ]);
+    }
+
+    public function update(Request $request, Milestone $milestone)
+    {
+        $validated = $request->validate([
+            'project_id' => 'sometimes|required|exists:projects,id',
+            'title' => 'sometimes|required|string|max:255',
+            'deadline' => 'nullable|date',
+            'progress' => 'nullable|integer|between:0,100',
+            'status' => 'sometimes|required|in:pending,in_progress,completed',
+        ]);
+
+        $milestone->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Milestone updated successfully.',
+            'data' => $milestone
+        ]);
+    }
+
+    public function destroy(Milestone $milestone)
+    {
+        $milestone->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Milestone deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Projects;
+
+use App\Http\Controllers\Controller;
+use App\Models\Project;
+use Illuminate\Http\Request;
+
+class ProjectController extends Controller
+{
+    public function index()
+    {
+        $projects = Project::with(['client', 'creator'])->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Projects retrieved successfully.',
+            'data' => $projects
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'type' => 'nullable|string|max:100',
+            'status' => 'nullable|in:planning,active,on_hold,completed,cancelled',
+            'priority' => 'nullable|in:low,medium,high,urgent',
+            'start_date' => 'nullable|date',
+            'deadline' => 'nullable|date|after_or_equal:start_date',
+            'budget' => 'nullable|numeric|min:0',
+            'progress' => 'nullable|integer|between:0,100',
+        ]);
+
+        $validated['created_by'] = auth()->id();
+        $project = Project::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Project created successfully.',
+            'data' => $project
+        ], 201);
+    }
+
+    public function show(Project $project)
+    {
+        $project->load(['client', 'creator', 'milestones', 'tasks.assignee', 'bugs', 'files']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Project retrieved successfully.',
+            'data' => $project
+        ]);
+    }
+
+    public function update(Request $request, Project $project)
+    {
+        $validated = $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
+            'name' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'type' => 'nullable|string|max:100',
+            'status' => 'sometimes|required|in:planning,active,on_hold,completed,cancelled',
+            'priority' => 'sometimes|required|in:low,medium,high,urgent',
+            'start_date' => 'nullable|date',
+            'deadline' => 'nullable|date|after_or_equal:start_date',
+            'budget' => 'nullable|numeric|min:0',
+            'progress' => 'nullable|integer|between:0,100',
+        ]);
+
+        $project->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Project updated successfully.',
+            'data' => $project
+        ]);
+    }
+
+    public function destroy(Project $project)
+    {
+        $project->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Project deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Projects;
+
+use App\Http\Controllers\Controller;
+use App\Models\TaskComment;
+use Illuminate\Http\Request;
+
+class TaskCommentController extends Controller
+{
+    public function index()
+    {
+        $comments = TaskComment::with(['task', 'user'])->latest('id')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task comments retrieved successfully.',
+            'data' => $comments
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'task_id' => 'required|exists:tasks,id',
+            'comment' => 'required|string',
+        ]);
+
+        $validated['user_id'] = auth()->id() ?? 1; // Fallback to 1 for tests or unauth if necessary
+        $comment = TaskComment::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Comment added successfully.',
+            'data' => $comment->load('user')
+        ], 201);
+    }
+
+    public function destroy($id)
+    {
+        $comment = TaskComment::findOrFail($id);
+        $comment->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Comment deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Projects;
+
+use App\Http\Controllers\Controller;
+use App\Models\Task;
+use Illuminate\Http\Request;
+
+class TaskController extends Controller
+{
+    public function index()
+    {
+        $tasks = Task::with(['project', 'milestone', 'assignee'])->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tasks retrieved successfully.',
+            'data' => $tasks
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'project_id' => 'required|exists:projects,id',
+            'milestone_id' => 'nullable|exists:milestones,id',
+            'assigned_to' => 'nullable|exists:users,id',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'nullable|in:todo,in_progress,review,done',
+            'priority' => 'nullable|in:low,medium,high,urgent',
+            'start_date' => 'nullable|date',
+            'due_date' => 'nullable|date|after_or_equal:start_date',
+            'estimated_hours' => 'nullable|numeric|min:0',
+            'actual_hours' => 'nullable|numeric|min:0',
+        ]);
+
+        $task = Task::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task created successfully.',
+            'data' => $task
+        ], 201);
+    }
+
+    public function show(Task $task)
+    {
+        $task->load(['project', 'milestone', 'assignee', 'comments.user', 'bugs']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task retrieved successfully.',
+            'data' => $task
+        ]);
+    }
+
+    public function update(Request $request, Task $task)
+    {
+        $validated = $request->validate([
+            'project_id' => 'sometimes|required|exists:projects,id',
+            'milestone_id' => 'nullable|exists:milestones,id',
+            'assigned_to' => 'nullable|exists:users,id',
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'sometimes|required|in:todo,in_progress,review,done',
+            'priority' => 'sometimes|required|in:low,medium,high,urgent',
+            'start_date' => 'nullable|date',
+            'due_date' => 'nullable|date|after_or_equal:start_date',
+            'estimated_hours' => 'nullable|numeric|min:0',
+            'actual_hours' => 'nullable|numeric|min:0',
+        ]);
+
+        $task->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task updated successfully.',
+            'data' => $task
+        ]);
+    }
+
+    public function destroy(Task $task)
+    {
+        $task->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Finance;
+
+use App\Http\Controllers\Controller;
+use App\Models\Expense;
+use Illuminate\Http\Request;
+
+class ExpenseController extends Controller
+{
+    public function index()
+    {
+        $expenses = Expense::with('creator')->latest('id')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Expenses retrieved successfully.',
+            'data' => $expenses
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'category' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0',
+            'payment_method' => 'nullable|in:cash,bank_transfer,card,other',
+            'notes' => 'nullable|string',
+        ]);
+
+        $validated['created_by'] = auth()->id();
+        $expense = Expense::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Expense created successfully.',
+            'data' => $expense
+        ], 201);
+    }
+
+    public function show($id)
+    {
+        $expense = Expense::with('creator')->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Expense retrieved successfully.',
+            'data' => $expense
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $expense = Expense::findOrFail($id);
+
+        $validated = $request->validate([
+            'category' => 'sometimes|required|string|max:255',
+            'title' => 'sometimes|required|string|max:255',
+            'amount' => 'sometimes|required|numeric|min:0',
+            'payment_method' => 'sometimes|required|in:cash,bank_transfer,card,other',
+            'notes' => 'nullable|string',
+        ]);
+
+        $expense->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Expense updated successfully.',
+            'data' => $expense
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $expense = Expense::findOrFail($id);
+        $expense->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Expense deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Finance;
+
+use App\Http\Controllers\Controller;
+use App\Models\Invoice;
+use Illuminate\Http\Request;
+
+class InvoiceController extends Controller
+{
+    public function index()
+    {
+        $invoices = Invoice::with(['client', 'project'])->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoices retrieved successfully.',
+            'data' => $invoices
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'project_id' => 'nullable|exists:projects,id',
+            'invoice_number' => 'required|string|unique:invoices,invoice_number|max:100',
+            'amount' => 'required|numeric|min:0',
+            'currency' => 'nullable|string|max:10',
+            'status' => 'nullable|in:draft,sent,paid,overdue,cancelled',
+            'due_date' => 'nullable|date',
+            'notes' => 'nullable|string',
+        ]);
+
+        $invoice = Invoice::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice created successfully.',
+            'data' => $invoice
+        ], 201);
+    }
+
+    public function show(Invoice $invoice)
+    {
+        $invoice->load(['client', 'project', 'payments']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice retrieved successfully.',
+            'data' => $invoice
+        ]);
+    }
+
+    public function update(Request $request, Invoice $invoice)
+    {
+        $validated = $request->validate([
+            'client_id' => 'sometimes|required|exists:clients,id',
+            'project_id' => 'nullable|exists:projects,id',
+            'invoice_number' => 'sometimes|required|string|max:100|unique:invoices,invoice_number,' . $invoice->id,
+            'amount' => 'sometimes|required|numeric|min:0',
+            'currency' => 'nullable|string|max:10',
+            'status' => 'sometimes|required|in:draft,sent,paid,overdue,cancelled',
+            'due_date' => 'nullable|date',
+            'notes' => 'nullable|string',
+        ]);
+
+        $invoice->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice updated successfully.',
+            'data' => $invoice
+        ]);
+    }
+
+    public function destroy(Invoice $invoice)
+    {
+        $invoice->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Finance;
+
+use App\Http\Controllers\Controller;
+use App\Models\Payment;
+use App\Models\Invoice;
+use Illuminate\Http\Request;
+
+class PaymentController extends Controller
+{
+    public function index()
+    {
+        $payments = Payment::with('invoice.client')->latest('id')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payments retrieved successfully.',
+            'data' => $payments
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'invoice_id' => 'required|exists:invoices,id',
+            'method' => 'required|in:cash,bank_transfer,vodafone_cash,instapay,paypal,stripe,other',
+            'amount' => 'required|numeric|min:0',
+            'paid_at' => 'nullable|date',
+            'reference' => 'nullable|string|max:255',
+        ]);
+
+        $payment = Payment::create($validated);
+
+        // Auto-update invoice status to paid if payment covers it
+        $invoice = Invoice::findOrFail($validated['invoice_id']);
+        $totalPaid = $invoice->payments()->sum('amount');
+        if ($totalPaid >= $invoice->amount) {
+            $invoice->update(['status' => 'paid']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment recorded successfully.',
+            'data' => $payment
+        ], 201);
+    }
+
+    public function destroy($id)
+    {
+        $payment = Payment::findOrFail($id);
+        $payment->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment record deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Hosting;
+
+use App\Http\Controllers\Controller;
+use App\Models\Domain;
+use Illuminate\Http\Request;
+
+class DomainController extends Controller
+{
+    public function index()
+    {
+        $domains = Domain::with(['client', 'project', 'sslCertificates'])->latest('id')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Domains retrieved successfully.',
+            'data' => $domains
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
+            'project_id' => 'nullable|exists:projects,id',
+            'domain' => 'required|string|unique:domains,domain|max:255',
+            'registrar' => 'nullable|string|max:100',
+            'expiry_date' => 'nullable|date',
+            'auto_renew' => 'nullable|boolean',
+            'status' => 'nullable|in:active,expired,transferred,pending',
+        ]);
+
+        $domain = Domain::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Domain created successfully.',
+            'data' => $domain
+        ], 201);
+    }
+
+    public function show($id)
+    {
+        $domain = Domain::with(['client', 'project', 'sslCertificates'])->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Domain retrieved successfully.',
+            'data' => $domain
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $domain = Domain::findOrFail($id);
+
+        $validated = $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
+            'project_id' => 'nullable|exists:projects,id',
+            'domain' => 'sometimes|required|string|max:255|unique:domains,domain,' . $domain->id,
+            'registrar' => 'nullable|string|max:100',
+            'expiry_date' => 'nullable|date',
+            'auto_renew' => 'nullable|boolean',
+            'status' => 'sometimes|required|in:active,expired,transferred,pending',
+        ]);
+
+        $domain->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Domain updated successfully.',
+            'data' => $domain
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $domain = Domain::findOrFail($id);
+        $domain->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Domain deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Hosting;
+
+use App\Http\Controllers\Controller;
+use App\Models\HostingAccount;
+use Illuminate\Http\Request;
+
+class HostingAccountController extends Controller
+{
+    public function index()
+    {
+        $accounts = HostingAccount::with(['client', 'project', 'server'])->latest('id')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Hosting accounts retrieved successfully.',
+            'data' => $accounts
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
+            'project_id' => 'nullable|exists:projects,id',
+            'server_id' => 'nullable|exists:servers,id',
+            'provider' => 'required|string|max:100',
+            'plan' => 'nullable|string|max:100',
+            'username' => 'nullable|string|max:100',
+            'expiry_date' => 'nullable|date',
+            'status' => 'nullable|in:active,inactive,suspended,expired',
+            'auto_renew' => 'nullable|boolean',
+        ]);
+
+        $account = HostingAccount::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Hosting account created successfully.',
+            'data' => $account
+        ], 201);
+    }
+
+    public function show($id)
+    {
+        $account = HostingAccount::with(['client', 'project', 'server'])->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Hosting account retrieved successfully.',
+            'data' => $account
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $account = HostingAccount::findOrFail($id);
+
+        $validated = $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
+            'project_id' => 'nullable|exists:projects,id',
+            'server_id' => 'nullable|exists:servers,id',
+            'provider' => 'sometimes|required|string|max:100',
+            'plan' => 'nullable|string|max:100',
+            'username' => 'nullable|string|max:100',
+            'expiry_date' => 'nullable|date',
+            'status' => 'sometimes|required|in:active,inactive,suspended,expired',
+            'auto_renew' => 'nullable|boolean',
+        ]);
+
+        $account->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Hosting account updated successfully.',
+            'data' => $account
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $account = HostingAccount::findOrFail($id);
+        $account->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Hosting account deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Hosting;
+
+use App\Http\Controllers\Controller;
+use App\Models\Server;
+use Illuminate\Http\Request;
+
+class ServerController extends Controller
+{
+    public function index()
+    {
+        $servers = Server::withCount('hostingAccounts')->latest('id')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Servers retrieved successfully.',
+            'data' => $servers
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'provider' => 'nullable|string|max:100',
+            'ip' => 'nullable|ip|max:45',
+            'location' => 'nullable|string|max:100',
+            'os' => 'nullable|string|max:100',
+            'status' => 'nullable|in:active,inactive,maintenance',
+            'notes' => 'nullable|string',
+        ]);
+
+        $server = Server::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Server created successfully.',
+            'data' => $server
+        ], 201);
+    }
+
+    public function show($id)
+    {
+        $server = Server::with('hostingAccounts.client')->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Server retrieved successfully.',
+            'data' => $server
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $server = Server::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'provider' => 'nullable|string|max:100',
+            'ip' => 'nullable|ip|max:45',
+            'location' => 'nullable|string|max:100',
+            'os' => 'nullable|string|max:100',
+            'status' => 'sometimes|required|in:active,inactive,maintenance',
+            'notes' => 'nullable|string',
+        ]);
+
+        $server->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Server updated successfully.',
+            'data' => $server
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $server = Server::findOrFail($id);
+        $server->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Server deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Hosting;
+
+use App\Http\Controllers\Controller;
+use App\Models\SslCertificate;
+use Illuminate\Http\Request;
+
+class SslCertificateController extends Controller
+{
+    public function index()
+    {
+        $certs = SslCertificate::with('domain')->latest('id')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'SSL certificates retrieved successfully.',
+            'data' => $certs
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'domain_id' => 'required|exists:domains,id',
+            'provider' => 'nullable|string|max:100',
+            'expiry_date' => 'nullable|date',
+            'status' => 'nullable|in:active,expired,revoked',
+        ]);
+
+        $cert = SslCertificate::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'SSL certificate log created successfully.',
+            'data' => $cert
+        ], 201);
+    }
+
+    public function show($id)
+    {
+        $cert = SslCertificate::with('domain')->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'SSL certificate retrieved successfully.',
+            'data' => $cert
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $cert = SslCertificate::findOrFail($id);
+
+        $validated = $request->validate([
+            'domain_id' => 'sometimes|required|exists:domains,id',
+            'provider' => 'nullable|string|max:100',
+            'expiry_date' => 'nullable|date',
+            'status' => 'sometimes|required|in:active,expired,revoked',
+        ]);
+
+        $cert->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'SSL certificate updated successfully.',
+            'data' => $cert
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $cert = SslCertificate::findOrFail($id);
+        $cert->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'SSL certificate deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Support;
+
+use App\Http\Controllers\Controller;
+use App\Models\Ticket;
+use Illuminate\Http\Request;
+
+class TicketController extends Controller
+{
+    public function index()
+    {
+        $tickets = Ticket::with(['client', 'project', 'assignee'])->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tickets retrieved successfully.',
+            'data' => $tickets
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
+            'project_id' => 'nullable|exists:projects,id',
+            'assigned_to' => 'nullable|exists:users,id',
+            'subject' => 'required|string|max:255',
+            'priority' => 'nullable|in:low,medium,high,urgent',
+            'status' => 'nullable|in:open,in_progress,waiting,resolved,closed',
+        ]);
+
+        $ticket = Ticket::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ticket opened successfully.',
+            'data' => $ticket
+        ], 201);
+    }
+
+    public function show(Ticket $ticket)
+    {
+        $ticket->load(['client', 'project', 'assignee', 'messages.sender']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ticket retrieved successfully.',
+            'data' => $ticket
+        ]);
+    }
+
+    public function update(Request $request, Ticket $ticket)
+    {
+        $validated = $request->validate([
+            'client_id' => 'nullable|exists:clients,id',
+            'project_id' => 'nullable|exists:projects,id',
+            'assigned_to' => 'nullable|exists:users,id',
+            'subject' => 'sometimes|required|string|max:255',
+            'priority' => 'sometimes|required|in:low,medium,high,urgent',
+            'status' => 'sometimes|required|in:open,in_progress,waiting,resolved,closed',
+        ]);
+
+        $ticket->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ticket updated successfully.',
+            'data' => $ticket
+        ]);
+    }
+
+    public function destroy(Ticket $ticket)
+    {
+        $ticket->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ticket closed and deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\Support;
+
+use App\Http\Controllers\Controller;
+use App\Models\TicketMessage;
+use Illuminate\Http\Request;
+
+class TicketMessageController extends Controller
+{
+    public function index()
+    {
+        $messages = TicketMessage::with(['ticket', 'sender'])->latest('id')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ticket messages retrieved successfully.',
+            'data' => $messages
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'ticket_id' => 'required|exists:tickets,id',
+            'message' => 'required|string',
+            'attachment' => 'nullable|string|max:255',
+        ]);
+
+        $validated['sender_id'] = auth()->id();
+        $message = TicketMessage::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Reply posted successfully.',
+            'data' => $message->load('sender')
+        ], 201);
+    }
+
+    public function destroy($id)
+    {
+        $message = TicketMessage::findOrFail($id);
+        $message->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Message deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\HR;
+
+use App\Http\Controllers\Controller;
+use App\Models\Attendance;
+use Illuminate\Http\Request;
+
+class AttendanceController extends Controller
+{
+    public function index()
+    {
+        $attendance = Attendance::with('employee.user')->latest('date')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Attendance records retrieved successfully.',
+            'data' => $attendance
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'date' => 'required|date',
+            'check_in' => 'nullable|date_format:H:i',
+            'check_out' => 'nullable|date_format:H:i|after:check_in',
+            'status' => 'nullable|in:present,absent,late,half_day',
+        ]);
+
+        $attendance = Attendance::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Attendance logged successfully.',
+            'data' => $attendance
+        ], 201);
+    }
+
+    public function destroy($id)
+    {
+        $attendance = Attendance::findOrFail($id);
+        $attendance->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Attendance record deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\HR;
+
+use App\Http\Controllers\Controller;
+use App\Models\Employee;
+use Illuminate\Http\Request;
+
+class EmployeeController extends Controller
+{
+    public function index()
+    {
+        $employees = Employee::with('user')->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Employees retrieved successfully.',
+            'data' => $employees
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id|unique:employees,user_id',
+            'department' => 'nullable|string|max:100',
+            'position' => 'nullable|string|max:100',
+            'salary' => 'nullable|numeric|min:0',
+            'hire_date' => 'nullable|date',
+            'status' => 'nullable|in:active,inactive,on_leave,terminated',
+        ]);
+
+        $employee = Employee::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Employee record created successfully.',
+            'data' => $employee
+        ], 201);
+    }
+
+    public function show(Employee $employee)
+    {
+        $employee->load(['user', 'attendances', 'leaves']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Employee retrieved successfully.',
+            'data' => $employee
+        ]);
+    }
+
+    public function update(Request $request, Employee $employee)
+    {
+        $validated = $request->validate([
+            'user_id' => 'sometimes|required|exists:users,id|unique:employees,user_id,' . $employee->id,
+            'department' => 'nullable|string|max:100',
+            'position' => 'nullable|string|max:100',
+            'salary' => 'nullable|numeric|min:0',
+            'hire_date' => 'nullable|date',
+            'status' => 'sometimes|required|in:active,inactive,on_leave,terminated',
+        ]);
+
+        $employee->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Employee record updated successfully.',
+            'data' => $employee
+        ]);
+    }
+
+    public function destroy(Employee $employee)
+    {
+        $employee->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Employee record deleted successfully.',
+            'data' => null
+        ]);
+    }
+}
+<?php
+
+namespace App\Http\Controllers\HR;
+
+use App\Http\Controllers\Controller;
+use App\Models\Leave;
+use Illuminate\Http\Request;
+
+class LeaveController extends Controller
+{
+    public function index()
+    {
+        $leaves = Leave::with('employee.user')->latest('id')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Leave requests retrieved successfully.',
+            'data' => $leaves
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'type' => 'required|in:annual,sick,emergency,unpaid,other',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'status' => 'nullable|in:pending,approved,rejected',
+            'reason' => 'nullable|string',
+        ]);
+
+        $leave = Leave::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Leave requested successfully.',
+            'data' => $leave
+        ], 201);
+    }
+
+    public function show($id)
+    {
+        $leave = Leave::with('employee.user')->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Leave request details retrieved.',
+            'data' => $leave
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $leave = Leave::findOrFail($id);
+
+        $validated = $request->validate([
+            'type' => 'sometimes|required|in:annual,sick,emergency,unpaid,other',
+            'start_date' => 'sometimes|required|date',
+            'end_date' => 'sometimes|required|date|after_or_equal:start_date',
+            'status' => 'sometimes|required|in:pending,approved,rejected',
+            'reason' => 'nullable|string',
+        ]);
+
+        $leave->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Leave request updated successfully.',
+            'data' => $leave
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $leave = Leave::findOrFail($id);
+        $leave->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Leave request deleted successfully.',
+            'data' => null
+        ]);
+    }
+}

@@ -3,14 +3,27 @@
 namespace App\Http\Controllers\CRM;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CRM\StoreLeadRequest;
+use App\Http\Requests\CRM\UpdateLeadRequest;
 use App\Models\Lead;
-use Illuminate\Http\Request;
+use App\Services\CRM\LeadService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class LeadController extends Controller
 {
-    public function index()
+    protected LeadService $leadService;
+
+    public function __construct(LeadService $leadService)
     {
-        $leads = Lead::with('assignee')->latest()->get();
+        $this->leadService = $leadService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Lead::class);
+
+        $leads = $this->leadService->getAllLeads();
 
         return response()->json([
             'success' => true,
@@ -19,20 +32,9 @@ class LeadController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreLeadRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'source' => 'nullable|string|max:100',
-            'budget' => 'nullable|numeric|min:0',
-            'status' => 'nullable|in:new,contacted,qualified,lost,converted',
-            'assigned_to' => 'nullable|exists:users,id',
-            'notes' => 'nullable|string',
-        ]);
-
-        $lead = Lead::create($validated);
+        $lead = $this->leadService->createLead($request->validated());
 
         return response()->json([
             'success' => true,
@@ -41,8 +43,10 @@ class LeadController extends Controller
         ], 201);
     }
 
-    public function show(Lead $lead)
+    public function show(Lead $lead): JsonResponse
     {
+        Gate::authorize('view', $lead);
+
         $lead->load('assignee');
 
         return response()->json([
@@ -52,20 +56,9 @@ class LeadController extends Controller
         ]);
     }
 
-    public function update(Request $request, Lead $lead)
+    public function update(UpdateLeadRequest $request, Lead $lead): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'source' => 'nullable|string|max:100',
-            'budget' => 'nullable|numeric|min:0',
-            'status' => 'sometimes|required|in:new,contacted,qualified,lost,converted',
-            'assigned_to' => 'nullable|exists:users,id',
-            'notes' => 'nullable|string',
-        ]);
-
-        $lead->update($validated);
+        $lead = $this->leadService->updateLead($lead, $request->validated());
 
         return response()->json([
             'success' => true,
@@ -74,9 +67,11 @@ class LeadController extends Controller
         ]);
     }
 
-    public function destroy(Lead $lead)
+    public function destroy(Lead $lead): JsonResponse
     {
-        $lead->delete();
+        Gate::authorize('delete', $lead);
+
+        $this->leadService->deleteLead($lead);
 
         return response()->json([
             'success' => true,

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Knower OS - Command Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#3a494a",
+                      "on-tertiary-fixed-variant": "#6900b3",
+                      "on-surface-variant": "#b9caca",
+                      "on-tertiary-container": "#872fd5",
+                      "surface-container": "#171f33",
+                      "tertiary-fixed-dim": "#ddb7ff",
+                      "on-background": "#dae2fd",
+                      "background": "#0b1326",
+                      "on-primary-container": "#006c71",
+                      "on-tertiary-fixed": "#2c0051",
+                      "primary": "#e9feff",
+                      "surface-tint": "#00dce5",
+                      "surface-container-lowest": "#060e20",
+                      "surface-bright": "#31394d",
+                      "on-primary-fixed": "#002021",
+                      "warning-amber": "#F59E0B",
+                      "on-error-container": "#ffdad6",
+                      "surface-variant": "#2d3449",
+                      "error-container": "#93000a",
+                      "error-rose": "#F43F5E",
+                      "surface-container-high": "#222a3d",
+                      "primary-container": "#00f5ff",
+                      "on-secondary": "#003731",
+                      "surface": "#0b1326",
+                      "obsidian-elevated": "#1E293B",
+                      "surface-container-low": "#131b2e",
+                      "on-secondary-fixed-variant": "#005047",
+                      "tertiary-fixed": "#f0dbff",
+                      "secondary-fixed-dim": "#3cddc7",
+                      "surface-container-highest": "#2d3449",
+                      "on-secondary-fixed": "#00201c",
+                      "info-cyan": "#06B6D4",
+                      "on-primary": "#003739",
+                      "inverse-on-surface": "#283044",
+                      "on-error": "#690005",
+                      "error": "#ffb4ab",
+                      "primary-fixed-dim": "#00dce5",
+                      "tertiary-container": "#edd4ff",
+                      "primary-fixed": "#63f7ff",
+                      "inverse-primary": "#00696e",
+                      "on-primary-fixed-variant": "#004f53",
+                      "obsidian-base": "#020617",
+                      "obsidian-surface": "#0F172A",
+                      "surface-dim": "#0b1326",
+                      "on-secondary-container": "#004d44",
+                      "on-tertiary": "#490080",
+                      "success-emerald": "#10B981",
+                      "inverse-surface": "#dae2fd",
+                      "on-surface": "#dae2fd",
+                      "tertiary": "#fff8fd",
+                      "secondary-container": "#03c6b2",
+                      "outline": "#849495",
+                      "ai-purple": "#A855F7",
+                      "secondary": "#44e2cd",
+                      "secondary-fixed": "#62fae3"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "64px",
+                      "base": "4px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "container-max": "1440px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "label-sm": ["JetBrains Mono"],
+                      "headline-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "label-md": ["JetBrains Mono"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { background-color: #020617; color: #dae2fd; } /* Defaulting to obsidian-base and on-surface */
+        .glass-panel { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+        /* Hide scrollbar for clean mobile look */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-obsidian-base text-on-surface font-body-sm antialiased h-screen flex flex-col overflow-hidden">
+<!-- Top App Bar (Mobile View of TopNavBar logic) -->
+<header class="bg-obsidian-base/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm fixed top-0 w-full z-50 flex items-center justify-between px-margin-mobile h-16">
+<div class="flex items-center gap-3">
+<button class="md:hidden text-on-surface-variant hover:text-on-surface active:scale-95 duration-150 p-2 -ml-2">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<div class="font-headline-md text-headline-md font-bold tracking-tighter text-primary-container truncate">
+                The Knower OS
+            </div>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant hover:text-on-surface active:scale-95 duration-150 p-2 rounded-full hover:bg-surface-container-highest/50">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface active:scale-95 duration-150 p-2 rounded-full hover:bg-surface-container-highest/50 relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary-container rounded-full animate-pulse"></span>
+</button>
+<img alt="User profile" class="w-8 h-8 rounded-full ml-1 border border-outline-variant/50 object-cover" data-alt="A macro shot of a sleek, minimalist glowing cyan orb against a deep obsidian black background, signifying a user profile avatar in a high-tech interface. The lighting is focused and cinematic, creating soft reflections on the orb's surface. High contrast, sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT6udN-2sxp9HPsjqEz_Nyij3NHNbx83LyuMX9ldwVnvIvIWPdCOGbGN04zi2L1wpGbbHbOEVBiy9wZPVOF4cUsqrQ9fp29eqxiKKVOimdKBcREAEZ9i8oAoAEgim9bPH5lnpIUTXvcWQEP4GvAgi7qyJBtA3Sz8PH-hJaNyF3JH3OnCeiaNKd4XJ5Vy-ZJtqC_qrUCazT7rD3ofiwNhHaKzCzV3vXmAeWyQRCGd4eO-T5CLldyeMrBPyI42yQzDs1HPATxgO2lmRh"/>
+</div>
+</header>
+<!-- Main Content Canvas (Scrollable) -->
+<main class="flex-1 overflow-y-auto pt-20 pb-24 px-margin-mobile flex flex-col gap-6">
+<!-- Header Section -->
+<div class="flex flex-col gap-1 mt-2">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Dashboard</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">System status and quick actions.</p>
+</div>
+<!-- KPI Grid (Mobile: 1 col, md: 2 col) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- KPI Card 1 -->
+<div class="bg-obsidian-surface border border-obsidian-elevated rounded-xl p-4 flex flex-col gap-3 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary-container/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Node Health</span>
+<span class="material-symbols-outlined text-success-emerald text-sm" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-headline-md text-headline-md text-on-surface">99.9%</span>
+<span class="font-label-sm text-label-sm text-success-emerald mb-1 flex items-center"><span class="material-symbols-outlined text-[10px]" data-icon="arrow_upward">arrow_upward</span> 0.1%</span>
+</div>
+<!-- Sparkline Placeholder (CSS based) -->
+<div class="w-full h-8 flex items-end gap-1 mt-2">
+<div class="w-full bg-obsidian-elevated h-1/4 rounded-t-sm"></div>
+<div class="w-full bg-obsidian-elevated h-2/4 rounded-t-sm"></div>
+<div class="w-full bg-obsidian-elevated h-1/4 rounded-t-sm"></div>
+<div class="w-full bg-obsidian-elevated h-3/4 rounded-t-sm"></div>
+<div class="w-full bg-primary-container/40 h-4/4 rounded-t-sm relative"><div class="absolute -top-1 -right-1 w-2 h-2 bg-primary-container rounded-full shadow-[0_0_8px_rgba(0,245,255,0.8)]"></div></div>
+</div>
+</div>
+<!-- KPI Card 2 -->
+<div class="bg-obsidian-surface border border-obsidian-elevated rounded-xl p-4 flex flex-col gap-3 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-ai-purple/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Active Workflows</span>
+<span class="material-symbols-outlined text-ai-purple text-sm" data-icon="account_tree">account_tree</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="font-headline-md text-headline-md text-on-surface">1,042</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-1">Running</span>
+</div>
+<!-- Sparkline Placeholder -->
+<div class="w-full h-8 flex items-end gap-1 mt-2">
+<div class="w-full bg-obsidian-elevated h-2/4 rounded-t-sm"></div>
+<div class="w-full bg-obsidian-elevated h-1/4 rounded-t-sm"></div>
+<div class="w-full bg-obsidian-elevated h-3/4 rounded-t-sm"></div>
+<div class="w-full bg-obsidian-elevated h-2/4 rounded-t-sm"></div>
+<div class="w-full bg-ai-purple/40 h-3/4 rounded-t-sm relative"><div class="absolute -top-1 -right-1 w-2 h-2 bg-ai-purple rounded-full shadow-[0_0_8px_rgba(168,85,247,0.8)]"></div></div>
+</div>
+</div>
+<!-- KPI Card 3 -->
+<div class="bg-obsidian-surface border border-obsidian-elevated rounded-xl p-4 flex flex-col gap-3 md:col-span-2">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Network Traffic</span>
+<span class="material-symbols-outlined text-info-cyan text-sm" data-icon="router">router</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-on-surface">45.2</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">TB/s</span>
+</div>
+<div class="w-full h-1 bg-obsidian-elevated rounded-full mt-2 overflow-hidden">
+<div class="h-full bg-gradient-to-r from-info-cyan to-primary-container w-[75%] rounded-full relative">
+<div class="absolute right-0 top-0 bottom-0 w-10 bg-white/20 animate-[pulse_2s_ease-in-out_infinite]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Actions Bento -->
+<div class="flex flex-col gap-4 mt-2">
+<h2 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Quick Actions</h2>
+<div class="grid grid-cols-2 gap-3">
+<button class="bg-obsidian-surface border border-obsidian-elevated rounded-xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-obsidian-elevated transition-colors active:scale-95 duration-150">
+<div class="w-10 h-10 rounded-full bg-primary-container/10 text-primary-container flex items-center justify-center mb-1">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface text-center">New Query</span>
+</button>
+<button class="bg-obsidian-surface border border-obsidian-elevated rounded-xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-obsidian-elevated transition-colors active:scale-95 duration-150">
+<div class="w-10 h-10 rounded-full bg-ai-purple/10 text-ai-purple flex items-center justify-center mb-1">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface text-center">Deploy Node</span>
+</button>
+<button class="bg-obsidian-surface border border-obsidian-elevated rounded-xl p-4 flex flex-col items-center justify-center gap-2 hover:bg-obsidian-elevated transition-colors active:scale-95 duration-150 col-span-2 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_3s_infinite]"></div>
+<div class="flex items-center gap-3 w-full justify-center">
+<span class="material-symbols-outlined text-warning-amber" data-icon="security">security</span>
+<span class="font-label-md text-label-md text-on-surface">Run Security Audit</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Recent Activity List -->
+<div class="flex flex-col gap-4 mt-2">
+<div class="flex justify-between items-end">
+<h2 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Activity Feed</h2>
+<a class="font-label-sm text-label-sm text-primary-container hover:underline" href="#">View All</a>
+</div>
+<div class="bg-obsidian-surface border border-obsidian-elevated rounded-xl overflow-hidden divide-y divide-obsidian-elevated">
+<div class="p-4 flex items-start gap-3 hover:bg-obsidian-elevated/50 transition-colors">
+<div class="mt-0.5">
+<span class="material-symbols-outlined text-ai-purple text-[18px]" data-icon="bolt">bolt</span>
+</div>
+<div class="flex-1 flex flex-col gap-1">
+<p class="font-body-sm text-body-sm text-on-surface">Model fine-tuning completed</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Model X-745 • 2m ago</p>
+</div>
+</div>
+<div class="p-4 flex items-start gap-3 hover:bg-obsidian-elevated/50 transition-colors">
+<div class="mt-0.5">
+<span class="material-symbols-outlined text-warning-amber text-[18px]" data-icon="warning">warning</span>
+</div>
+<div class="flex-1 flex flex-col gap-1">
+<p class="font-body-sm text-body-sm text-on-surface">Spike in latency detected</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">US-East-1 • 15m ago</p>
+</div>
+</div>
+<div class="p-4 flex items-start gap-3 hover:bg-obsidian-elevated/50 transition-colors">
+<div class="mt-0.5">
+<span class="material-symbols-outlined text-success-emerald text-[18px]" data-icon="verified_user">verified_user</span>
+</div>
+<div class="flex-1 flex flex-col gap-1">
+<p class="font-body-sm text-body-sm text-on-surface">Compliance report generated</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">System • 1h ago</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Spacer for FAB if needed, though suppressed on primary dashboard mobile usually -->
+<div class="h-8"></div>
+</main>
+<!-- Floating Action Button (Contextual: Quick Command) -->
+<button class="fixed bottom-24 right-4 bg-ai-purple text-white w-14 h-14 rounded-full shadow-[0_4px_24px_rgba(168,85,247,0.4)] flex items-center justify-center active:scale-95 duration-200 z-40 md:hidden">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<!-- Bottom Nav Bar (Mobile substitution for Sidebar/TopNav) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-obsidian-base/90 backdrop-blur-xl border-t border-outline-variant/20 h-20 px-2 flex justify-around items-center z-50 pb-safe">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center w-16 h-full gap-1 group" href="#">
+<div class="px-4 py-1 rounded-full bg-primary-container/20 group-active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined text-primary-container" data-icon="dashboard" data-weight="fill">dashboard</span>
+</div>
+<span class="font-label-sm text-[10px] text-primary-container font-medium">Dashboard</span>
+</a>
+<!-- Workflows -->
+<a class="flex flex-col items-center justify-center w-16 h-full gap-1 group" href="#">
+<div class="px-4 py-1 rounded-full group-hover:bg-surface-container-highest/50 group-active:scale-95 transition-all duration-150">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-on-surface" data-icon="account_tree">account_tree</span>
+</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant group-hover:text-on-surface">Workflows</span>
+</a>
+<!-- Intelligence -->
+<a class="flex flex-col items-center justify-center w-16 h-full gap-1 group" href="#">
+<div class="px-4 py-1 rounded-full group-hover:bg-surface-container-highest/50 group-active:scale-95 transition-all duration-150">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-on-surface" data-icon="psychology">psychology</span>
+</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant group-hover:text-on-surface">Intel</span>
+</a>
+<!-- Vault -->
+<a class="flex flex-col items-center justify-center w-16 h-full gap-1 group" href="#">
+<div class="px-4 py-1 rounded-full group-hover:bg-surface-container-highest/50 group-active:scale-95 transition-all duration-150">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-on-surface" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant group-hover:text-on-surface">Vault</span>
+</a>
+</nav>
+<style>
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        /* Safe area padding for newer iOS devices */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        }
+    </style>
+</body></html>

@@ -49,6 +49,13 @@ use App\Http\Controllers\Settings\SettingsController;
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 use App\Http\Controllers\DashboardController;
 
+// ─── Core / Auth ─────────────────────────────────────────────────────────────────
+use App\Http\Controllers\Core\RoleController;
+use App\Http\Controllers\Core\WorkspaceController;
+use App\Http\Controllers\Core\SecurityController;
+use App\Http\Controllers\Core\ApiTokenController;
+use App\Http\Controllers\Core\AuditLogController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes - The Knower OS
@@ -57,6 +64,26 @@ use App\Http\Controllers\DashboardController;
 */
 
 Route::prefix('v1')->group(function () {
+
+    // ── Core / Admin ──────────────────────────────────────────────────────────
+    Route::get('permissions', [RoleController::class, 'permissions']);
+    Route::apiResource('roles', RoleController::class);
+    
+    Route::post('workspaces/{workspace}/switch', [WorkspaceController::class, 'switch']);
+    Route::apiResource('workspaces', WorkspaceController::class);
+
+    // Security & Auth
+    Route::get('security/sessions', [SecurityController::class, 'sessions']);
+    Route::delete('security/sessions/{id}', [SecurityController::class, 'revokeSession']);
+    Route::post('security/2fa/generate', [SecurityController::class, 'generate2FA']);
+    Route::post('security/2fa/enable', [SecurityController::class, 'enable2FA']);
+    Route::post('security/2fa/disable', [SecurityController::class, 'disable2FA']);
+
+    // API Tokens
+    Route::apiResource('api-tokens', ApiTokenController::class)->only(['index', 'store', 'destroy']);
+
+    // Audit Logs
+    Route::get('audit-logs', [AuditLogController::class, 'index']);
 
     // ── Dashboard ─────────────────────────────────────────────────────────────
     Route::get('/dashboard',         [DashboardController::class, 'index']);

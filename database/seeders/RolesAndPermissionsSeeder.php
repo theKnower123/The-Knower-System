@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use App\Models\User;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -14,174 +13,71 @@ class RolesAndPermissionsSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // ─── Define Permissions per Module ───────────────────────────────────
+        // Create core permissions
         $permissions = [
-            // CRM
-            'view leads', 'create leads', 'edit leads', 'delete leads',
-            'view clients', 'create clients', 'edit clients', 'delete clients',
-            'view companies', 'create companies', 'edit companies', 'delete companies',
-            'view quotations', 'create quotations', 'edit quotations', 'delete quotations',
-            'view contracts', 'create contracts', 'edit contracts', 'delete contracts',
-
-            // Projects
-            'view projects', 'create projects', 'edit projects', 'delete projects',
-            'view milestones', 'create milestones', 'edit milestones', 'delete milestones',
-            'view tasks', 'create tasks', 'edit tasks', 'delete tasks',
-            'view bugs', 'create bugs', 'edit bugs', 'delete bugs',
-            'view files', 'upload files', 'delete files',
-
-            // Finance
-            'view invoices', 'create invoices', 'edit invoices', 'delete invoices',
-            'view payments', 'create payments',
-            'view expenses', 'create expenses', 'edit expenses', 'delete expenses',
-            'view finance reports',
-
-            // Hosting
-            'view domains', 'create domains', 'edit domains', 'delete domains',
-            'view hosting', 'create hosting', 'edit hosting', 'delete hosting',
-            'view servers', 'create servers', 'edit servers', 'delete servers',
-            'view ssl', 'create ssl', 'edit ssl', 'delete ssl',
-
-            // Support
-            'view tickets', 'create tickets', 'edit tickets', 'delete tickets',
-            'reply tickets',
-
-            // HR
-            'view employees', 'create employees', 'edit employees', 'delete employees',
-            'view attendance', 'manage attendance',
-            'view leaves', 'manage leaves',
-            'view payroll', 'manage payroll',
-
-            // Reports
-            'view reports',
-
-            // Settings
-            'view settings', 'manage settings',
-
-            // Users & Roles
-            'view users', 'create users', 'edit users', 'delete users',
-            'view roles', 'create roles', 'edit roles', 'delete roles',
+            'view_users', 'create_users', 'edit_users', 'delete_users',
+            'view_roles', 'create_roles', 'edit_roles', 'delete_roles',
+            'view_companies', 'create_companies', 'edit_companies', 'delete_companies',
+            'view_clients', 'create_clients', 'edit_clients', 'delete_clients',
+            'view_leads', 'create_leads', 'edit_leads', 'delete_leads',
+            'view_contracts', 'create_contracts', 'edit_contracts', 'delete_contracts',
+            'view_quotations', 'create_quotations', 'edit_quotations', 'delete_quotations',
+            'view_projects', 'create_projects', 'edit_projects', 'delete_projects',
+            'view_tasks', 'create_tasks', 'edit_tasks', 'delete_tasks',
+            'view_bugs', 'create_bugs', 'edit_bugs', 'delete_bugs',
+            'view_invoices', 'create_invoices', 'edit_invoices', 'delete_invoices',
+            'view_payments', 'create_payments', 'edit_payments', 'delete_payments',
+            'view_expenses', 'create_expenses', 'edit_expenses', 'delete_expenses',
+            'view_servers', 'create_servers', 'edit_servers', 'delete_servers',
+            'view_tickets', 'create_tickets', 'edit_tickets', 'delete_tickets',
+            'view_employees', 'create_employees', 'edit_employees', 'delete_employees',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // ─── Create Roles ─────────────────────────────────────────────────────
-        $superAdmin   = Role::firstOrCreate(['name' => 'Super Admin']);
-        $ceo          = Role::firstOrCreate(['name' => 'CEO']);
-        $sales        = Role::firstOrCreate(['name' => 'Sales']);
-        $pm           = Role::firstOrCreate(['name' => 'Project Manager']);
-        $teamLeader   = Role::firstOrCreate(['name' => 'Team Leader']);
-        $developer    = Role::firstOrCreate(['name' => 'Software Developer']);
-        $designer     = Role::firstOrCreate(['name' => 'UI/UX Designer']);
-        $qa           = Role::firstOrCreate(['name' => 'QA Tester']);
-        $accountant   = Role::firstOrCreate(['name' => 'Accountant']);
-        $hr           = Role::firstOrCreate(['name' => 'HR']);
-        $support      = Role::firstOrCreate(['name' => 'Support']);
-        $client       = Role::firstOrCreate(['name' => 'Client']);
+        // Create Super Admin and assign all permissions
+        $superAdmin = Role::firstOrCreate(['name' => 'Super Admin']);
+        // Super Admin bypasses permissions via Gate::before in AuthServiceProvider
 
-        // ─── Assign Permissions to Roles ─────────────────────────────────────
+        // Create Organization Admin
+        $orgAdmin = Role::firstOrCreate(['name' => 'Organization Admin']);
+        $orgAdmin->givePermissionTo(Permission::all());
 
-        // CEO — full read + reports
-        $ceo->syncPermissions([
-            'view clients', 'view companies', 'view leads', 'view quotations', 'view contracts',
-            'view projects', 'view milestones', 'view tasks', 'view bugs', 'view files',
-            'view invoices', 'view payments', 'view expenses', 'view finance reports',
-            'view domains', 'view hosting', 'view servers',
-            'view employees', 'view payroll',
-            'view reports', 'view users',
+        // Create Project Manager
+        $pm = Role::firstOrCreate(['name' => 'Project Manager']);
+        $pm->givePermissionTo([
+            'view_projects', 'create_projects', 'edit_projects', 'delete_projects',
+            'view_tasks', 'create_tasks', 'edit_tasks', 'delete_tasks',
+            'view_bugs', 'create_bugs', 'edit_bugs', 'delete_bugs',
+            'view_clients', 'view_leads'
         ]);
 
-        // Sales
-        $sales->syncPermissions([
-            'view leads', 'create leads', 'edit leads',
-            'view clients', 'create clients', 'edit clients',
-            'view companies', 'create companies', 'edit companies',
-            'view quotations', 'create quotations', 'edit quotations',
+        // Create Developer / Staff
+        $dev = Role::firstOrCreate(['name' => 'Developer']);
+        $dev->givePermissionTo([
+            'view_projects', 'view_tasks', 'edit_tasks', 'view_bugs', 'create_bugs', 'edit_bugs'
         ]);
 
-        // Project Manager
-        $pm->syncPermissions([
-            'view projects', 'create projects', 'edit projects',
-            'view milestones', 'create milestones', 'edit milestones',
-            'view tasks', 'create tasks', 'edit tasks', 'delete tasks',
-            'view bugs', 'edit bugs',
-            'view files', 'upload files',
-            'view clients',
+        // Create Accountant
+        $accountant = Role::firstOrCreate(['name' => 'Accountant']);
+        $accountant->givePermissionTo([
+            'view_invoices', 'create_invoices', 'edit_invoices', 'delete_invoices',
+            'view_payments', 'create_payments', 'edit_payments', 'delete_payments',
+            'view_expenses', 'create_expenses', 'edit_expenses', 'delete_expenses',
+            'view_clients', 'view_projects'
         ]);
 
-        // Team Leader
-        $teamLeader->syncPermissions([
-            'view projects', 'view milestones',
-            'view tasks', 'edit tasks',
-            'view bugs', 'edit bugs',
-            'view files', 'upload files',
+        // Create HR Manager
+        $hr = Role::firstOrCreate(['name' => 'HR Manager']);
+        $hr->givePermissionTo([
+            'view_employees', 'create_employees', 'edit_employees', 'delete_employees',
+            'view_users'
         ]);
 
-        // Developer
-        $developer->syncPermissions([
-            'view tasks', 'edit tasks',
-            'view bugs', 'create bugs',
-            'view files', 'upload files',
-        ]);
-
-        // Designer
-        $designer->syncPermissions([
-            'view tasks', 'edit tasks',
-            'view files', 'upload files',
-        ]);
-
-        // QA
-        $qa->syncPermissions([
-            'view tasks',
-            'view bugs', 'create bugs', 'edit bugs',
-            'view files',
-        ]);
-
-        // Accountant
-        $accountant->syncPermissions([
-            'view invoices', 'create invoices', 'edit invoices',
-            'view payments', 'create payments',
-            'view expenses', 'create expenses', 'edit expenses',
-            'view finance reports',
-        ]);
-
-        // HR
-        $hr->syncPermissions([
-            'view employees', 'create employees', 'edit employees',
-            'view attendance', 'manage attendance',
-            'view leaves', 'manage leaves',
-            'view payroll', 'manage payroll',
-        ]);
-
-        // Support
-        $support->syncPermissions([
-            'view tickets', 'create tickets', 'edit tickets',
-            'reply tickets',
-        ]);
-
-        // Client — very restricted
-        $client->syncPermissions([
-            'view projects',
-            'view invoices',
-            'view files',
-            'view tickets', 'create tickets', 'reply tickets',
-        ]);
-
-        // ─── Create Super Admin User ──────────────────────────────────────────
-        $adminUser = User::firstOrCreate(
-            ['email' => 'admin@theknowersystem.com'],
-            [
-                'name'     => 'Super Admin',
-                'password' => bcrypt('Admin@123456'),
-                'status'   => 'active',
-            ]
-        );
-        $adminUser->assignRole('Super Admin');
-
-        $this->command->info('✅ Roles, Permissions & Super Admin created successfully.');
-        $this->command->info('📧 Email: admin@theknowersystem.com');
-        $this->command->info('🔑 Password: Admin@123456');
+        // Create Client Role
+        $client = Role::firstOrCreate(['name' => 'Client']);
+        // Client permissions are inherently restricted by policies to their own data
     }
 }

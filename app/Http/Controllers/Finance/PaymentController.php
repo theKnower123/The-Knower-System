@@ -3,57 +3,81 @@
 namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Finance\StorePaymentRequest;
+use App\Http\Requests\Finance\UpdatePaymentRequest;
+use App\Http\Resources\Finance\PaymentResource;
 use App\Models\Payment;
-use App\Models\Invoice;
-use Illuminate\Http\Request;
+use App\Services\Finance\PaymentService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class PaymentController extends Controller
 {
-    public function index()
+    protected PaymentService $paymentService;
+
+    public function __construct(PaymentService $paymentService)
     {
-        $payments = Payment::with('invoice.client')->latest('id')->get();
+        $this->paymentService = $paymentService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Payment::class);
+
+        $payments = $this->paymentService->getAll();
+        
+        // Load relations if needed
+        $payments->load('invoice.client');
 
         return response()->json([
             'success' => true,
             'message' => 'Payments retrieved successfully.',
-            'data' => $payments
+            'data' => PaymentResource::collection($payments)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StorePaymentRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'invoice_id' => 'required|exists:invoices,id',
-            'method' => 'required|in:cash,bank_transfer,vodafone_cash,instapay,paypal,stripe,other',
-            'amount' => 'required|numeric|min:0',
-            'paid_at' => 'nullable|date',
-            'reference' => 'nullable|string|max:255',
-        ]);
-
-        $payment = Payment::create($validated);
-
-        // Auto-update invoice status to paid if payment covers it
-        $invoice = Invoice::findOrFail($validated['invoice_id']);
-        $totalPaid = $invoice->payments()->sum('amount');
-        if ($totalPaid >= $invoice->amount) {
-            $invoice->update(['status' => 'paid']);
-        }
+        $payment = $this->paymentService->create($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Payment recorded successfully.',
-            'data' => $payment
+            'message' => 'Payment created successfully.',
+            'data' => new PaymentResource($payment)
         ], 201);
     }
 
-    public function destroy($id)
+    public function show(Payment $payment): JsonResponse
     {
-        $payment = Payment::findOrFail($id);
-        $payment->delete();
+        Gate::authorize('view', $payment);
 
         return response()->json([
             'success' => true,
-            'message' => 'Payment record deleted successfully.',
+            'message' => 'Payment retrieved successfully.',
+            'data' => new PaymentResource($payment)
+        ]);
+    }
+
+    public function update(UpdatePaymentRequest $request, Payment $payment): JsonResponse
+    {
+        $payment = $this->paymentService->update($payment, $request->validated());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment updated successfully.',
+            'data' => new PaymentResource($payment)
+        ]);
+    }
+
+    public function destroy(Payment $payment): JsonResponse
+    {
+        Gate::authorize('delete', $payment);
+
+        $this->paymentService->delete($payment);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment deleted successfully.',
             'data' => null
         ]);
     }

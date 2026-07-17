@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Knower OS - AI Intelligence Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#3a494a",
+                        "on-tertiary-fixed-variant": "#6900b3",
+                        "on-surface-variant": "#b9caca",
+                        "on-tertiary-container": "#872fd5",
+                        "surface-container": "#171f33",
+                        "tertiary-fixed-dim": "#ddb7ff",
+                        "on-background": "#dae2fd",
+                        "background": "#0b1326",
+                        "on-primary-container": "#006c71",
+                        "on-tertiary-fixed": "#2c0051",
+                        "primary": "#e9feff",
+                        "surface-tint": "#00dce5",
+                        "surface-container-lowest": "#060e20",
+                        "surface-bright": "#31394d",
+                        "on-primary-fixed": "#002021",
+                        "warning-amber": "#F59E0B",
+                        "on-error-container": "#ffdad6",
+                        "surface-variant": "#2d3449",
+                        "error-container": "#93000a",
+                        "error-rose": "#F43F5E",
+                        "surface-container-high": "#222a3d",
+                        "primary-container": "#00f5ff",
+                        "on-secondary": "#003731",
+                        "surface": "#0b1326",
+                        "obsidian-elevated": "#1E293B",
+                        "surface-container-low": "#131b2e",
+                        "on-secondary-fixed-variant": "#005047",
+                        "tertiary-fixed": "#f0dbff",
+                        "secondary-fixed-dim": "#3cddc7",
+                        "surface-container-highest": "#2d3449",
+                        "on-secondary-fixed": "#00201c",
+                        "info-cyan": "#06B6D4",
+                        "on-primary": "#003739",
+                        "inverse-on-surface": "#283044",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "primary-fixed-dim": "#00dce5",
+                        "tertiary-container": "#edd4ff",
+                        "primary-fixed": "#63f7ff",
+                        "inverse-primary": "#00696e",
+                        "on-primary-fixed-variant": "#004f53",
+                        "obsidian-base": "#020617",
+                        "obsidian-surface": "#0F172A",
+                        "surface-dim": "#0b1326",
+                        "on-secondary-container": "#004d44",
+                        "on-tertiary": "#490080",
+                        "success-emerald": "#10B981",
+                        "inverse-surface": "#dae2fd",
+                        "on-surface": "#dae2fd",
+                        "tertiary": "#fff8fd",
+                        "secondary-container": "#03c6b2",
+                        "outline": "#849495",
+                        "ai-purple": "#A855F7",
+                        "secondary": "#44e2cd",
+                        "secondary-fixed": "#62fae3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(30, 41, 59, 1);
+        }
+        .ai-glow {
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-obsidian-base text-on-surface font-body-md min-h-screen flex flex-col pt-16 pb-20">
+<!-- TopNavBar (Mobile Shell) -->
+<header class="fixed top-0 w-full z-50 bg-obsidian-base/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
+<div class="flex items-center justify-between px-margin-mobile h-16 w-full max-w-container-max mx-auto">
+<span class="font-headline-md text-headline-md font-bold tracking-tighter text-primary-container">The Knower OS</span>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-highest/50 transition-all active:scale-95 duration-150 p-2 rounded-full">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-highest/50 transition-all active:scale-95 duration-150 p-2 rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A small circular avatar placeholder for a user profile in a high-tech dark interface. The lighting should be subtle but sharp, suggesting a neon cyan rim light against a deep obsidian background. Minimalist details." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnPTMR-d3kw54F7A3Kudq3yFY2mS7-ahmGvmPws8Lk2mPVNPMGCISLghTvkV7_6jBPMIbRDYU4yEPWbw5Y8P8lbQbIKUEDjbWNsHk_vhy2IR5Hs0QF_gYYHvFR4AAEM9XOltloX85LEKAdEi2VMp1ZkEHSmkdET8WBF4KmSc7Dm26fFSo2tZ_8QNrACqW5Cwm06JLQFlFYbbNQWgkTlgrPRBP01Gn-okJ7ZmuKEdsqKdemNvDplSFMDX2U3-sqz4Qy2IGuWZWMrs20"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-margin-mobile py-6 flex flex-col gap-6 w-full max-w-container-max mx-auto overflow-y-auto">
+<!-- Header -->
+<div class="flex flex-col gap-2">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Intelligence Hub</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Active Agent: Nexus-7 (Deep Analysis Mode)</p>
+</div>
+<!-- Chat Container -->
+<div class="glass-panel rounded-xl flex flex-col flex-1 min-h-[400px] overflow-hidden">
+<!-- Chat Header -->
+<div class="p-4 border-b border-obsidian-elevated flex justify-between items-center bg-obsidian-surface">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-ai-purple">psychology</span>
+<span class="font-label-md text-label-md text-on-surface">Session #A4B9</span>
+</div>
+<button class="text-on-surface-variant p-1">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<!-- Chat Messages Area -->
+<div class="flex-1 p-4 overflow-y-auto flex flex-col gap-4">
+<!-- User Message -->
+<div class="self-end max-w-[85%] bg-obsidian-elevated rounded-l-xl rounded-tr-xl p-3 border border-outline-variant/30">
+<p class="font-body-sm text-body-sm text-on-surface">Analyze the recent anomaly detection logs from Node Alpha.</p>
+</div>
+<!-- AI Response -->
+<div class="self-start max-w-[90%] bg-surface-container rounded-r-xl rounded-tl-xl p-3 border border-ai-purple/30 ai-glow relative">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-ai-purple" style="font-size: 16px;">robot_2</span>
+<span class="font-label-sm text-label-sm text-ai-purple">Nexus-7</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mb-3">Analysis complete. I've identified a persistent pattern of unauthorized access attempts originating from sub-network Theta. Recommended action: Isolate Node Alpha.</p>
+<div class="bg-obsidian-base rounded p-2 border border-outline-variant/50">
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-1">DATA FRAGMENT:</span>
+<code class="font-label-sm text-label-sm text-primary-container block break-all">ERR_CODE: 0x4B2A // SRC_IP: 192.168.1.104 // STAT: CRITICAL</code>
+</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-4 border-t border-obsidian-elevated bg-obsidian-surface">
+<div class="relative flex items-center">
+<input class="w-full bg-obsidian-base border border-obsidian-elevated rounded-lg py-3 pl-4 pr-12 font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container/20 transition-all" placeholder="Command sequence..." type="text"/>
+<button class="absolute right-2 p-2 text-primary-container hover:bg-obsidian-elevated rounded-full transition-colors">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+<div class="flex items-center gap-2 mt-3 overflow-x-auto pb-1 hide-scrollbar">
+<button class="flex items-center gap-1 px-3 py-1 bg-obsidian-elevated rounded-full border border-outline-variant/50 whitespace-nowrap">
+<span class="material-symbols-outlined text-info-cyan" style="font-size: 14px;">bolt</span>
+<span class="font-label-sm text-label-sm text-info-cyan">Quick Diagnostic</span>
+</button>
+<button class="flex items-center gap-1 px-3 py-1 bg-obsidian-elevated rounded-full border border-outline-variant/50 whitespace-nowrap">
+<span class="material-symbols-outlined text-warning-amber" style="font-size: 14px;">warning</span>
+<span class="font-label-sm text-label-sm text-warning-amber">Lockdown Protocol</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-obsidian-surface border-t border-outline-variant/20 shadow-[0_-4px_20px_rgba(0,0,0,0.5)] z-50">
+<div class="flex justify-around items-center h-16">
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+<span class="font-label-sm text-label-sm text-[10px]">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-ai-purple bg-primary-container/5 relative border-t-2 border-ai-purple" href="#">
+<span class="material-symbols-outlined mb-1" data-weight="fill" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="font-label-sm text-label-sm text-[10px]">Intelligence</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">account_tree</span>
+<span class="font-label-sm text-label-sm text-[10px]">Workflows</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">hub</span>
+<span class="font-label-sm text-label-sm text-[10px]">Nodes</span>
+</a>
+</div>
+</nav>
+<style>
+        /* Hide scrollbar for horizontal scrolling areas */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

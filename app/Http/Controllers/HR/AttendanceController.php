@@ -3,49 +3,81 @@
 namespace App\Http\Controllers\HR;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\StoreAttendanceRequest;
+use App\Http\Requests\HR\UpdateAttendanceRequest;
+use App\Http\Resources\HR\AttendanceResource;
 use App\Models\Attendance;
-use Illuminate\Http\Request;
+use App\Services\HR\AttendanceService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class AttendanceController extends Controller
 {
-    public function index()
+    protected AttendanceService $attendanceService;
+
+    public function __construct(AttendanceService $attendanceService)
     {
-        $attendance = Attendance::with('employee.user')->latest('date')->get();
+        $this->attendanceService = $attendanceService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Attendance::class);
+
+        $attendances = $this->attendanceService->getAll();
+        
+        // Load relations if needed
+        $attendances->load('employee.user');
 
         return response()->json([
             'success' => true,
-            'message' => 'Attendance records retrieved successfully.',
-            'data' => $attendance
+            'message' => 'Attendances retrieved successfully.',
+            'data' => AttendanceResource::collection($attendances)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreAttendanceRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'employee_id' => 'required|exists:employees,id',
-            'date' => 'required|date',
-            'check_in' => 'nullable|date_format:H:i',
-            'check_out' => 'nullable|date_format:H:i|after:check_in',
-            'status' => 'nullable|in:present,absent,late,half_day',
-        ]);
-
-        $attendance = Attendance::create($validated);
+        $attendance = $this->attendanceService->create($request->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Attendance logged successfully.',
-            'data' => $attendance
+            'message' => 'Attendance created successfully.',
+            'data' => new AttendanceResource($attendance)
         ], 201);
     }
 
-    public function destroy($id)
+    public function show(Attendance $attendance): JsonResponse
     {
-        $attendance = Attendance::findOrFail($id);
-        $attendance->delete();
+        Gate::authorize('view', $attendance);
 
         return response()->json([
             'success' => true,
-            'message' => 'Attendance record deleted successfully.',
+            'message' => 'Attendance retrieved successfully.',
+            'data' => new AttendanceResource($attendance)
+        ]);
+    }
+
+    public function update(UpdateAttendanceRequest $request, Attendance $attendance): JsonResponse
+    {
+        $attendance = $this->attendanceService->update($attendance, $request->validated());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Attendance updated successfully.',
+            'data' => new AttendanceResource($attendance)
+        ]);
+    }
+
+    public function destroy(Attendance $attendance): JsonResponse
+    {
+        Gate::authorize('delete', $attendance);
+
+        $this->attendanceService->delete($attendance);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Attendance deleted successfully.',
             'data' => null
         ]);
     }

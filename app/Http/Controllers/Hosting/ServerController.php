@@ -3,81 +3,77 @@
 namespace App\Http\Controllers\Hosting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Hosting\StoreServerRequest;
+use App\Http\Requests\Hosting\UpdateServerRequest;
+use App\Http\Resources\Hosting\ServerResource;
 use App\Models\Server;
-use Illuminate\Http\Request;
+use App\Services\Hosting\ServerService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class ServerController extends Controller
 {
-    public function index()
+    protected ServerService $serverService;
+
+    public function __construct(ServerService $serverService)
     {
-        $servers = Server::withCount('hostingAccounts')->latest('id')->get();
+        $this->serverService = $serverService;
+    }
+
+    public function index(): JsonResponse
+    {
+        Gate::authorize('viewAny', Server::class);
+
+        $servers = $this->serverService->getAll();
+        
+        // Load relations if needed
+        $servers->load('hostingAccounts.client');
 
         return response()->json([
             'success' => true,
             'message' => 'Servers retrieved successfully.',
-            'data' => $servers
+            'data' => ServerResource::collection($servers)
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreServerRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'provider' => 'nullable|string|max:100',
-            'ip' => 'nullable|ip|max:45',
-            'location' => 'nullable|string|max:100',
-            'os' => 'nullable|string|max:100',
-            'status' => 'nullable|in:active,inactive,maintenance',
-            'notes' => 'nullable|string',
-        ]);
-
-        $server = Server::create($validated);
+        $server = $this->serverService->create($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Server created successfully.',
-            'data' => $server
+            'data' => new ServerResource($server)
         ], 201);
     }
 
-    public function show($id)
+    public function show(Server $server): JsonResponse
     {
-        $server = Server::with('hostingAccounts.client')->findOrFail($id);
+        Gate::authorize('view', $server);
 
         return response()->json([
             'success' => true,
             'message' => 'Server retrieved successfully.',
-            'data' => $server
+            'data' => new ServerResource($server)
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateServerRequest $request, Server $server): JsonResponse
     {
-        $server = Server::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'provider' => 'nullable|string|max:100',
-            'ip' => 'nullable|ip|max:45',
-            'location' => 'nullable|string|max:100',
-            'os' => 'nullable|string|max:100',
-            'status' => 'sometimes|required|in:active,inactive,maintenance',
-            'notes' => 'nullable|string',
-        ]);
-
-        $server->update($validated);
+        $server = $this->serverService->update($server, $request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Server updated successfully.',
-            'data' => $server
+            'data' => new ServerResource($server)
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(Server $server): JsonResponse
     {
-        $server = Server::findOrFail($id);
-        $server->delete();
+        Gate::authorize('delete', $server);
+
+        $this->serverService->delete($server);
 
         return response()->json([
             'success' => true,

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notification Center - The Knower OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed": "#2c0051",
+                      "on-tertiary": "#490080",
+                      "error-container": "#93000a",
+                      "secondary": "#44e2cd",
+                      "surface-container-high": "#222a3d",
+                      "secondary-fixed-dim": "#3cddc7",
+                      "outline-variant": "#3a494a",
+                      "on-secondary-fixed": "#00201c",
+                      "obsidian-surface": "#0F172A",
+                      "outline": "#849495",
+                      "surface-container-low": "#131b2e",
+                      "primary-container": "#00f5ff",
+                      "tertiary-fixed": "#f0dbff",
+                      "inverse-on-surface": "#283044",
+                      "on-primary-container": "#006c71",
+                      "success-emerald": "#10B981",
+                      "on-error-container": "#ffdad6",
+                      "on-error": "#690005",
+                      "primary-fixed": "#63f7ff",
+                      "error": "#ffb4ab",
+                      "inverse-primary": "#00696e",
+                      "on-primary-fixed-variant": "#004f53",
+                      "tertiary-container": "#edd4ff",
+                      "ai-purple": "#A855F7",
+                      "surface": "#0b1326",
+                      "on-background": "#dae2fd",
+                      "on-primary": "#003739",
+                      "on-tertiary-container": "#872fd5",
+                      "obsidian-elevated": "#1E293B",
+                      "surface-tint": "#00dce5",
+                      "surface-container-highest": "#2d3449",
+                      "surface-container": "#171f33",
+                      "primary-fixed-dim": "#00dce5",
+                      "surface-container-lowest": "#060e20",
+                      "surface-dim": "#0b1326",
+                      "secondary-container": "#03c6b2",
+                      "background": "#0b1326",
+                      "warning-amber": "#F59E0B",
+                      "surface-variant": "#2d3449",
+                      "obsidian-base": "#020617",
+                      "primary": "#e9feff",
+                      "on-surface-variant": "#b9caca",
+                      "on-secondary-fixed-variant": "#005047",
+                      "surface-bright": "#31394d",
+                      "on-tertiary-fixed-variant": "#6900b3",
+                      "inverse-surface": "#dae2fd",
+                      "on-primary-fixed": "#002021",
+                      "tertiary-fixed-dim": "#ddb7ff",
+                      "on-surface": "#dae2fd",
+                      "on-secondary-container": "#004d44",
+                      "on-secondary": "#003731",
+                      "error-rose": "#F43F5E",
+                      "secondary-fixed": "#62fae3",
+                      "info-cyan": "#06B6D4",
+                      "tertiary": "#fff8fd"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "64px",
+                      "margin-mobile": "16px",
+                      "container-max": "1440px",
+                      "base": "4px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+<body class="bg-obsidian-base text-on-surface min-h-screen flex flex-col md:flex-row antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col h-screen left-0 w-64 bg-obsidian-base dark:bg-obsidian-base border-r border-outline-variant py-6 px-4 flex-shrink-0 sticky top-0">
+<div class="mb-8 px-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-obsidian-elevated flex items-center justify-center border border-outline-variant">
+<img alt="Organization Workspace Logo" class="w-6 h-6 object-contain" data-alt="A sleek, minimalist geometric logo representing a stylized letter 'K' in vibrant cyan against a deep obsidian background, conveying advanced technology and enterprise security. The design is precise and sharp, fitting a professional software suite." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdKkIhYraPCHcjQFpefVWf-hGJvct2N-Rbe6j9qjnQuzuLgJy0gPCpcz7OxVA90CfZn6F2lgKS162g19-T5hdYQbVmz_ekYe2pa0BxBEhFtLgSnT_9Bghu-wv1YLQRZ9xvGjnxAvN8JICbCGKsK5ierZe-3DP86Qv2v1zCfW1VfkH8XHETwa-BlhGP7pT-8xFUj6MrgBkAsvZobxVPb-x-5pwIfzlZYb-d6F8N9grhBb5WxyW4IW0rlBp7jZBf4sHHGzDSrwaLKcDQ"/>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary leading-none">The Knower OS</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-1">Enterprise Suite</p>
+</div>
+</div>
+<button class="mb-6 w-full py-2 px-4 rounded-DEFAULT bg-obsidian-elevated hover:bg-surface-variant border border-outline-variant text-primary font-label-md text-label-md flex items-center justify-center gap-2 transition-colors duration-200">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            New Workspace
+        </button>
+<ul class="flex-1 space-y-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="text-label-md font-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="group">group</span>
+<span class="text-label-md font-label-md">CRM</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="tactic">tactic</span>
+<span class="text-label-md font-label-md">Projects</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="payments">payments</span>
+<span class="text-label-md font-label-md">Finance</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="monitoring">monitoring</span>
+<span class="text-label-md font-label-md">Analytics</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto pt-6 border-t border-outline-variant space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+<span class="text-label-md font-label-md">Help</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-DEFAULT text-on-surface-variant font-medium hover:bg-obsidian-elevated hover:text-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_circle">account_circle</span>
+<span class="text-label-md font-label-md">User Profile</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky top-0 z-40 bg-obsidian-surface/80 dark:bg-obsidian-surface/80 backdrop-blur-md shadow-sm border-b border-outline-variant">
+<div class="flex items-center gap-6">
+<!-- Mobile Menu Button -->
+<button class="md:hidden text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">List</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Kanban</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Timeline</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="bg-obsidian-base border border-outline-variant text-body-sm font-body-sm rounded-full py-1.5 pl-9 pr-4 text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container/50 w-48 transition-all" placeholder="Search..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button aria-label="Notifications" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-obsidian-elevated text-primary transition-colors relative">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error-rose rounded-full"></span>
+</button>
+<button aria-label="Language" class="hidden sm:flex w-8 h-8 items-center justify-center rounded-full hover:bg-obsidian-elevated text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="language">language</span>
+</button>
+<button aria-label="Terminal" class="hidden sm:flex w-8 h-8 items-center justify-center rounded-full hover:bg-obsidian-elevated text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="terminal">terminal</span>
+</button>
+</div>
+<button class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-DEFAULT bg-obsidian-elevated border border-outline-variant text-primary text-label-sm font-label-sm hover:border-primary-container transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span>
+                    New Task
+                </button>
+<button class="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-DEFAULT bg-ai-purple/10 border border-ai-purple/30 text-ai-purple text-label-sm font-label-sm hover:bg-ai-purple/20 transition-colors">
+<span class="material-symbols-outlined text-[16px]">auto_awesome</span>
+                    AI Assistant
+                </button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant ml-2">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A small, professional portrait photo of a user avatar, featuring a confident person against a neutral dark grey background, lit with soft, flattering light suitable for a modern enterprise software interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3gzW_igi8tx6l24AKfpxnVu4x5tkAQhtxWhYgpEPwahD8ztMJDOMp16NPzdyycKfRmkaLpRu0Y2-Rh6sYDJrSdlhCzdxuQGgwQcqN24gD3ru-weyebGjXafNjhVdoFDc1SZvZJOSXmGy3DV711si-xQhWCSyRew_cnAtfFZHTkXY4hTkhE4LpLCHZ340-KUr0SVwIbSEzyyP8ygf-y-llaj9Qung04Kjw6rDtlzMvuejEMeI_7TLfBxMrsAwkW6l-WATeFPxi47qw"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 w-full max-w-[container-max] mx-auto px-margin-mobile md:px-margin-desktop py-8">
+<div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<h2 class="text-headline-lg font-headline-lg md:text-display-lg md:font-display-lg text-primary tracking-tight">Notification Center</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-2">Manage your activity, alerts, and system updates.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded-DEFAULT bg-obsidian-elevated border border-outline-variant text-on-surface text-label-md font-label-md hover:text-primary hover:border-outline transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+                        Mark all as read
+                    </button>
+<button class="w-10 h-10 rounded-DEFAULT bg-obsidian-elevated border border-outline-variant text-on-surface flex items-center justify-center hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-gutter">
+<!-- Left Sidebar Filters -->
+<div class="lg:col-span-1 space-y-2">
+<button class="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-obsidian-elevated border border-outline-variant text-primary font-medium text-body-sm transition-colors text-left">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[20px]">inbox</span>
+<span>All Notifications</span>
+</div>
+<span class="bg-obsidian-base px-2 py-0.5 rounded text-label-sm font-label-sm">24</span>
+</button>
+<button class="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-transparent hover:bg-obsidian-elevated/50 border border-transparent text-on-surface-variant hover:text-on-surface font-medium text-body-sm transition-colors text-left">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[20px]">alternate_email</span>
+<span>Mentions</span>
+</div>
+<span class="bg-obsidian-elevated px-2 py-0.5 rounded text-label-sm font-label-sm">3</span>
+</button>
+<button class="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-transparent hover:bg-obsidian-elevated/50 border border-transparent text-on-surface-variant hover:text-on-surface font-medium text-body-sm transition-colors text-left">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[20px]">error</span>
+<span>Alerts</span>
+</div>
+<span class="bg-error-rose/20 text-error-rose px-2 py-0.5 rounded text-label-sm font-label-sm">2</span>
+</button>
+<button class="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-transparent hover:bg-obsidian-elevated/50 border border-transparent text-on-surface-variant hover:text-on-surface font-medium text-body-sm transition-colors text-left">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[20px]">memory</span>
+<span>System</span>
+</div>
+</button>
+</div>
+<!-- Feed List -->
+<div class="lg:col-span-3 space-y-4">
+<!-- Notification Card - Unread Alert -->
+<div class="relative p-5 rounded-xl bg-obsidian-surface border border-outline-variant shadow-sm hover:border-outline transition-colors group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error-rose rounded-l-xl"></div>
+<div class="flex items-start gap-4 ml-2">
+<div class="w-10 h-10 rounded-full bg-error-rose/10 flex items-center justify-center flex-shrink-0 mt-1">
+<span class="material-symbols-outlined text-error-rose" data-weight="fill">warning</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-error-rose uppercase tracking-wider">High Alert</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">2 mins ago</span>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+<h4 class="text-body-md font-body-md font-medium text-primary mb-1">Database Cluster Alpha - Storage Capacity Critical</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-3">Storage usage has exceeded 95% on primary volume. Immediate action required to prevent data loss or service interruption.</p>
+<div class="flex items-center gap-3">
+<button class="px-3 py-1.5 rounded bg-error-rose/20 text-error-rose text-label-sm font-label-sm hover:bg-error-rose/30 transition-colors border border-error-rose/30">View Dashboard</button>
+<button class="px-3 py-1.5 rounded bg-obsidian-elevated text-on-surface text-label-sm font-label-sm hover:text-primary transition-colors border border-outline-variant">Acknowledge</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Notification Card - Unread Mention -->
+<div class="relative p-5 rounded-xl bg-obsidian-surface border border-outline-variant shadow-sm hover:border-outline transition-colors group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-info-cyan rounded-l-xl"></div>
+<div class="flex items-start gap-4 ml-2">
+<div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mt-1 border border-outline-variant">
+<img alt="Sarah Chen" class="w-full h-full object-cover" data-alt="Avatar photo of a female colleague smiling warmly, professional attire, dark moody background with subtle cyan rim lighting to match the UI theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKpQZGph9Zpg4fbbhP4JNbkiAVr0E84yd9S6cNTKBfOQtkVLypY5tBvqL0Cj95IUQLu8OR5GgRPqJcNb2JVd1AqpMkTjgZr8OUKjpa24hE_QNCt8PZLIW6QOPdmVwqIfn-AI7HwRVsTqOl7oZceBlOQ16kCa33DYrlKRvoK2XWVDFZJB_6Z4jhYD6Q1pyaq0MYN3e6OEVQIdmH0wR_U3OBicPWR0lFZ4Tbij7zp8uYo6PD4rn573_B1yW-NsiEPR3GJQghpzJgc4ef"/>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-info-cyan uppercase tracking-wider">Mention</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">15 mins ago</span>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+<h4 class="text-body-md font-body-md font-medium text-primary mb-1">Sarah Chen mentioned you in PR #4092</h4>
+<div class="p-3 rounded-lg bg-obsidian-base border border-outline-variant mb-3">
+<p class="text-body-sm font-body-sm text-on-surface-variant"><span class="text-info-cyan">@alex</span> Can you review the new caching logic here? I think it addresses the latency issue we discussed yesterday.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-3 py-1.5 rounded bg-obsidian-elevated text-on-surface text-label-sm font-label-sm hover:text-primary transition-colors border border-outline-variant">Review PR</button>
+<button class="px-3 py-1.5 rounded text-on-surface-variant text-label-sm font-label-sm hover:text-on-surface transition-colors">Reply</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Divider -->
+<div class="flex items-center py-2">
+<div class="h-px bg-outline-variant flex-1"></div>
+<span class="px-3 text-label-sm font-label-sm text-outline">Earlier Today</span>
+<div class="h-px bg-outline-variant flex-1"></div>
+</div>
+<!-- Notification Card - Read System -->
+<div class="p-5 rounded-xl bg-obsidian-base border border-outline-variant shadow-sm hover:border-outline transition-colors group opacity-75 hover:opacity-100">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center flex-shrink-0 mt-1">
+<span class="material-symbols-outlined text-on-surface-variant">update</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">System</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">3 hours ago</span>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+<h4 class="text-body-md font-body-md font-medium text-on-surface mb-1">Knower OS v2.4.1 Deployment Successful</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">The latest minor update has been rolled out to your workspace. Includes performance improvements for Analytics and minor bug fixes.</p>
+<a class="inline-block mt-2 text-label-sm font-label-sm text-primary-container hover:text-primary transition-colors" href="#">View Release Notes →</a>
+</div>
+</div>
+</div>
+<!-- Notification Card - Read AI Insight -->
+<div class="p-5 rounded-xl bg-obsidian-base border border-outline-variant shadow-sm hover:border-outline transition-colors group opacity-75 hover:opacity-100">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-full bg-ai-purple/10 border border-ai-purple/30 flex items-center justify-center flex-shrink-0 mt-1">
+<span class="material-symbols-outlined text-ai-purple">auto_awesome</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-ai-purple uppercase tracking-wider">AI Insight</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">5 hours ago</span>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+<h4 class="text-body-md font-body-md font-medium text-on-surface mb-1">Unusual pattern detected in Q3 Revenue Forecast</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">The Knower AI has identified a 12% variance from historical trends in the latest pipeline data for Q3.</p>
+<a class="inline-block mt-2 text-label-sm font-label-sm text-ai-purple hover:text-primary transition-colors" href="#">Analyze Data →</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="flex justify-between items-center w-full px-margin-desktop py-2 h-8 bg-obsidian-base dark:bg-obsidian-base border-t border-outline-variant mt-auto">
+<div class="text-label-sm font-label-sm text-on-surface-variant">
+                The Knower OS v2.4.0 • System Status: <span class="text-success-emerald">Operational</span>
+</div>
+<div class="flex gap-4">
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+<a class="text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Server Health</a>
+</div>
+</footer>
+</div>
+</body></html>
