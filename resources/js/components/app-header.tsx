@@ -25,7 +25,8 @@ export function AppHeader() {
   const locale = useLocaleStore((s) => s.locale);
   const setLocale = useLocaleStore((s) => s.setLocale);
   const notifications = useCollection("notifications");
-  const unread = notifications.filter((n) => !n.read).length;
+  const notifArray = Array.isArray(notifications) ? notifications : [];
+  const unread = notifArray.filter((n) => !n.read).length;
 
   const switchLocale = () => {
     const next = locale === "en" ? "ar" : "en";
@@ -70,12 +71,12 @@ export function AppHeader() {
           </div>
           <DropdownMenuSeparator />
           <div className="max-h-[300px] overflow-y-auto">
-            {notifications.length === 0 ? (
+            {notifArray.length === 0 ? (
               <div className="p-4 text-center text-sm text-muted-foreground">
                 {t("common.empty", "Nothing here yet")}
               </div>
             ) : (
-              notifications.slice(0, 5).map((n) => (
+              notifArray.slice(0, 5).map((n) => (
                 <DropdownMenuItem key={n.id} className="flex flex-col items-start gap-1 p-3">
                   <div className="flex w-full justify-between items-center gap-2">
                     <span className="font-medium text-sm">{n.title}</span>

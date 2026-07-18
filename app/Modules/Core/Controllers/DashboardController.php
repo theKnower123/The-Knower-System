@@ -3,6 +3,7 @@
 namespace App\Modules\Core\Controllers;
 
 use Inertia\Inertia;
+use App\Http\Controllers\Controller;
 use App\Modules\CRM\Models\Client;
 use App\Modules\Projects\Models\Project;
 use App\Modules\Projects\Models\Task;

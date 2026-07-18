@@ -26,8 +26,6 @@ class ClientController extends Controller
 
         $clients = $this->clientService->getAll();
         
-        // Load relations if needed
-        $clients->load('company');
 
         return response()->json([
             'success' => true,
@@ -50,7 +48,7 @@ class ClientController extends Controller
     public function show(Client $client): JsonResponse
     {
         Gate::authorize('view', $client);
-        $client->load(['company', 'projects', 'invoices', 'tickets']);
+        $client->load(['projects', 'invoices', 'tickets']);
 
         return response()->json([
             'success' => true,

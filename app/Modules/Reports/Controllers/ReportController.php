@@ -84,7 +84,6 @@ class ReportController extends Controller
         ];
 
         $clients = Client::withCount(['projects', 'invoices', 'tickets'])
-            ->with('company')
             ->latest()
             ->get();
 

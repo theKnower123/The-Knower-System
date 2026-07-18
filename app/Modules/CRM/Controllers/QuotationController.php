@@ -44,7 +44,7 @@ class QuotationController extends Controller
         Gate::authorize('view', $quotation);
         return response()->json([
             'success' => true,
-            'data' => new QuotationResource($quotation->load(['company', 'contact', 'lead', 'historyVersions']))
+            'data' => new QuotationResource($quotation->load(['contact', 'lead', 'historyVersions']))
         ]);
     }
 

@@ -1,5 +1,6 @@
 // Connected backend store using React Query and Axios
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import * as seed from "./data";
 
@@ -50,15 +51,18 @@ const endpointMap: Record<string, string> = {
   timeLogs: "time-logs",
 };
 
-import { QueryClient } from "@tanstack/react-query";
-
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5,
+      // staleTime = 0: data is always considered stale, so invalidateQueries
+      // will trigger an immediate background refetch whenever called.
+      staleTime: 0,
+      // Keep cached data in memory for 2 minutes while navigating between pages.
+      gcTime: 1000 * 60 * 2,
     },
   },
 });
+
 export function useCollection<K extends keyof typeof endpointMap>(key: K): any[] {
   const { data } = useQuery({
     queryKey: [key],
@@ -72,9 +76,18 @@ export function useCollection<K extends keyof typeof endpointMap>(key: K): any[]
   return data;
 }
 
+async function invalidate(key: string) {
+  // refetchType: 'all' forces an immediate refetch even for queries
+  // that are currently mounted and active in the UI.
+  await queryClient.invalidateQueries({
+    queryKey: [key],
+    refetchType: "all",
+  });
+}
+
 export async function add<K extends keyof typeof endpointMap>(key: K, item: any) {
   const res = await api.post(`/${endpointMap[key as string]}`, item);
-  queryClient.invalidateQueries({ queryKey: [key] });
+  await invalidate(key as string);
   return res.data;
 }
 
@@ -84,12 +97,13 @@ export async function update<K extends keyof typeof endpointMap>(
   patch: any,
 ) {
   const res = await api.put(`/${endpointMap[key as string]}/${id}`, patch);
-  queryClient.invalidateQueries({ queryKey: [key] });
+  await invalidate(key as string);
   return res.data;
 }
 
 export async function remove<K extends keyof typeof endpointMap>(key: K, id: string | number) {
   const res = await api.delete(`/${endpointMap[key as string]}/${id}`);
-  queryClient.invalidateQueries({ queryKey: [key] });
+  await invalidate(key as string);
   return res.data;
 }
+
