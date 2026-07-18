@@ -29,8 +29,6 @@ class Lead extends Model
         return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
 
-    public function company(): BelongsTo { return $this->belongsTo(Company::class); }
-    public function contact(): BelongsTo { return $this->belongsTo(Contact::class); }
     public function assignee(): BelongsTo { return $this->belongsTo(User::class, 'assigned_to'); }
     public function creator(): BelongsTo { return $this->belongsTo(User::class, 'created_by'); }
     public function updater(): BelongsTo { return $this->belongsTo(User::class, 'updated_by'); }

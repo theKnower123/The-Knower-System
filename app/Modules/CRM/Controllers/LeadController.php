@@ -44,7 +44,7 @@ class LeadController extends Controller
         Gate::authorize('view', $lead);
         return response()->json([
             'success' => true,
-            'data' => new LeadResource($lead->load(['company', 'contact', 'assignee']))
+            'data' => new LeadResource($lead->load(['assignee']))
         ]);
     }
 

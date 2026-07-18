@@ -8,12 +8,17 @@ class LeadService
 {
     public function getAll()
     {
-        return Lead::with(['company', 'contact', 'assignee'])->latest()->paginate(25);
+        return Lead::with(['assignee'])->latest()->paginate(25);
     }
 
     public function create(array $data): Lead
     {
         $data['created_by'] = Auth::id();
+
+        $data['lead_value'] = $data['budget'] ?? $data['lead_value'] ?? 0;
+        $data['pipeline_stage'] = $data['status'] ?? 'new';
+        $data['lead_source'] = $data['source'] ?? 'website';
+
         return Lead::create($data);
     }
 

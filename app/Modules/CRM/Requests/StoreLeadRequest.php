@@ -11,16 +11,18 @@ class StoreLeadRequest extends FormRequest
     public function authorize() { return true; }
     public function rules() {
         return [
-            'title' => 'required|string|max:255',
-            'company_id' => 'nullable|exists:companies,id',
-            'contact_id' => 'nullable|exists:contacts,id',
-            'assigned_to' => 'nullable|exists:users,id',
-            'pipeline_stage' => ['nullable', new Enum(LeadPipelineStage::class)],
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:255',
+            'source' => 'nullable|string',
+            'budget' => 'nullable|numeric|min:0',
+            'status' => 'required|string|in:new,contacted,qualified,won,lost',
+            
+            // Allow backend mapping
+            'title' => 'nullable|string|max:255',
+            'pipeline_stage' => 'nullable|string',
             'lead_value' => 'nullable|numeric|min:0',
-            'probability' => 'nullable|integer|min:0|max:100',
-            'expected_close_date' => 'nullable|date',
-            'lead_source' => ['nullable', new Enum(LeadSource::class)],
-            'lost_reason' => 'required_if:pipeline_stage,lost|nullable|string',
+            'lead_source' => 'nullable|string',
         ];
     }
 }

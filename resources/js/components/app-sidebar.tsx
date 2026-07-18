@@ -30,6 +30,8 @@ import {
   HardDrive,
   Trophy,
   Clock,
+  Briefcase,
+  FileBadge,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
@@ -66,8 +68,6 @@ const groups: Group[] = [
     items: [
       { to: "/crm/leads", labelKey: "nav.leads", icon: UserSquare2, perm: "lead.manage" },
       { to: "/crm/clients", labelKey: "nav.clients", icon: Users, perm: "client.manage" },
-      { to: "/crm/companies", labelKey: "nav.companies", icon: Building2, perm: "company.manage" },
-      { to: "/crm/contacts", labelKey: "nav.contacts", icon: ContactIcon, perm: "client.manage" },
       { to: "/crm/meetings", labelKey: "nav.meetings", icon: Video, perm: "crm.view" },
       { to: "/crm/quotations", labelKey: "nav.quotations", icon: FileText, perm: "quotation.manage" },
       { to: "/crm/contracts", labelKey: "nav.contracts", icon: Handshake, perm: "contract.manage" },
@@ -106,6 +106,8 @@ const groups: Group[] = [
     items: [
       { to: "/hr/employees", labelKey: "nav.employees", icon: UserCircle, perm: "hr.view" },
       { to: "/hr/departments", labelKey: "nav.departments", icon: Network, perm: "hr.view" },
+      { to: "/hr/jobs", labelKey: "nav.jobPostings", icon: Briefcase, perm: "hr.view" },
+      { to: "/hr/applications", labelKey: "nav.applications", icon: FileBadge, perm: "hr.view" },
       { to: "/hr/attendance", labelKey: "nav.attendance", icon: Calendar, perm: "attendance.manage" },
       { to: "/hr/leaves", labelKey: "nav.leaves", icon: ClipboardList, perm: "leave.manage" },
       { to: "/hr/payroll", labelKey: "nav.payroll", icon: Banknote, perm: "payroll.manage" },

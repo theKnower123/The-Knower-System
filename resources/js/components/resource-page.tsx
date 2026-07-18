@@ -57,7 +57,7 @@ export function ResourcePage<T extends { id: string }>({
                   <DialogHeader>
                     <DialogTitle>{newLabel}</DialogTitle>
                     <DialogDescription>
-                      Fill the details below. Everything is stored in-memory.
+                      Fill the details below.
                     </DialogDescription>
                   </DialogHeader>
                   {renderForm ? (

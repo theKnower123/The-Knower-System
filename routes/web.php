@@ -19,8 +19,6 @@ Route::get('/forgot-password', function () {
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', function () { return Inertia::render('Dashboard'); });
     Route::get('/crm/clients', function () { return Inertia::render('CrmClients'); });
-    Route::get('/crm/companies', function () { return Inertia::render('CrmCompanies'); });
-    Route::get('/crm/contacts', function () { return Inertia::render('CrmContacts'); });
     Route::get('/crm/contracts', function () { return Inertia::render('CrmContracts'); });
     Route::get('/crm/leads', function () { return Inertia::render('CrmLeads'); });
     Route::get('/crm/meetings', function () { return Inertia::render('CrmMeetings'); });
@@ -46,6 +44,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/hr/leaves', function () { return Inertia::render('HrLeaves'); });
     Route::get('/hr/payroll', function () { return Inertia::render('HrPayroll'); });
     Route::get('/hr/departments', function () { return Inertia::render('HrDepartments'); });
+    Route::get('/hr/jobs', function () { return Inertia::render('HrJobs'); });
+    Route::get('/hr/applications', function () { return Inertia::render('HrApplications'); });
     Route::get('/reports', function () { return Inertia::render('Reports'); });
     Route::get('/ai', function () { return Inertia::render('Ai'); });
     Route::get('/settings', function () { return Inertia::render('Settings'); });

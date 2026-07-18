@@ -13,8 +13,6 @@ class Client extends Model
         'company_id', 'name', 'email', 'phone', 'position', 'status',
     ];
 
-    public function company()       { return $this->belongsTo(Company::class); 
-}
     public function projects()      { return $this->hasMany(Project::class); 
 }
     public function invoices()      { return $this->hasMany(Invoice::class); 

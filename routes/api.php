@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 // ─── CRM ─────────────────────────────────────────────────────────────────────
 use App\Modules\CRM\Controllers\LeadController;
 use App\Modules\CRM\Controllers\ClientController;
-use App\Modules\CRM\Controllers\CompanyController;
 use App\Modules\CRM\Controllers\ContactController;
 use App\Modules\CRM\Controllers\QuotationController;
 use App\Modules\CRM\Controllers\ContractController;
@@ -38,6 +37,8 @@ use App\Modules\HR\Controllers\EmployeeController;
 use App\Modules\HR\Controllers\DepartmentController;
 use App\Modules\HR\Controllers\AttendanceController;
 use App\Modules\HR\Controllers\LeaveController;
+use App\Modules\HR\Controllers\JobPostingController;
+use App\Modules\HR\Controllers\JobApplicationController;
 
 // ─── Reports ──────────────────────────────────────────────────────────────────
 use App\Modules\Reports\Controllers\ReportController;
@@ -69,6 +70,10 @@ Route::prefix('v1')->group(function () {
 
     // ── Auth ──────────────────────────────────────────────────────────────────
     Route::post('auth/login', [\App\Modules\Auth\Controllers\AuthController::class, 'login']);
+
+    // ── Public Jobs (Landing Page) ────────────────────────────────────────────
+    Route::get('job-postings/active', [JobPostingController::class, 'active']);
+    Route::post('job-applications', [JobApplicationController::class, 'store']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('auth/logout', [\App\Modules\Auth\Controllers\AuthController::class, 'logout']);
@@ -108,8 +113,6 @@ Route::prefix('v1')->group(function () {
         Route::get('/dashboard/tasks',   [DashboardController::class, 'index']);
 
         // ── CRM ───────────────────────────────────────────────────────────────────
-        Route::apiResource('companies',  CompanyController::class);
-        Route::apiResource('contacts',   ContactController::class);
         Route::apiResource('leads',      LeadController::class);
         Route::get('clients/{client}/activity', [ClientController::class, 'activity']);
         Route::apiResource('clients',    ClientController::class);
@@ -158,6 +161,9 @@ Route::prefix('v1')->group(function () {
         // ── HR ────────────────────────────────────────────────────────────────────
         Route::apiResource('employees',  EmployeeController::class);
         Route::apiResource('departments', DepartmentController::class);
+        Route::apiResource('job-postings', JobPostingController::class);
+        // Exclude store since it's public
+        Route::apiResource('job-applications', JobApplicationController::class)->except(['store']);
         Route::get   ('attendance',      [AttendanceController::class, 'index']);
         Route::post  ('attendance',      [AttendanceController::class, 'store']);
         Route::delete('attendance/{id}', [AttendanceController::class, 'destroy']);
