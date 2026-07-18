@@ -65,7 +65,7 @@ export default function HrJobsPage() {
       <PageHeader
         title={t("nav.jobPostings")}
         description="Manage open positions and career opportunities."
-        action={
+        actions={
           <Button onClick={() => { setEditingJob(null); setFormOpen(true); }}>
             <Plus className="mr-2 h-4 w-4" /> New Job
           </Button>
