@@ -5,12 +5,11 @@ namespace App\Modules\Auth\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
@@ -18,6 +17,8 @@ class User extends Authenticatable
         'phone',
         'avatar',
         'password',
+        'role',
+        'permissions',
         'status',
         'last_login_at',
     ];
@@ -33,6 +34,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'last_login_at'     => 'datetime',
             'password'          => 'hashed',
+            'permissions'       => 'array',
         ];
     }
 
@@ -74,5 +76,22 @@ class User extends Authenticatable
     {
         return $this->last_login_at
             && $this->last_login_at->diffInMinutes(now()) < 15;
+    }
+
+    public function hasRole(string|array $roles): bool
+    {
+        if (is_string($roles)) {
+            return $this->role === $roles;
+        }
+        return in_array($this->role, $roles);
+    }
+
+    public function hasPermissionTo(string $permission): bool
+    {
+        if ($this->hasRole('super_admin')) {
+            return true;
+        }
+        $perms = $this->permissions ?? [];
+        return in_array($permission, $perms);
     }
 }

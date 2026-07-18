@@ -4,9 +4,130 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --on-primary: #ffffff;
+    --surface-container-low: #f9f9fa;
+    --surface-bright: #f9f9fa;
+    --warning-amber: #d98600;
+    --obsidian-surface: #f9f9fa;
+    --secondary-fixed: #41e0ca;
+    --on-tertiary: #5c1b8d;
+    --error-rose: #d71c49;
+    --surface-tint: #edfcfd;
+    --outline-variant: #263536;
+    --on-surface-variant: #f8fafa;
+    --tertiary-container: #d3bbe5;
+    --surface-container: #f9f9fa;
+    --on-tertiary-fixed-variant: #5f00a1;
+    --ai-purple: #8e3cdd;
+    --on-tertiary-fixed: #532f71;
+    --primary-fixed-dim: #00c3cc;
+    --surface-container-highest: #f3f3f5;
+    --on-secondary-container: #004840;
+    --error: #e49c93;
+    --inverse-primary: #005358;
+    --error-container: #780000;
+    --on-tertiary-container: #591f8c;
+    --obsidian-base: #f9f9fa;
+    --on-secondary: #144741;
+    --secondary-fixed-dim: #00c3ae;
+    --on-secondary-fixed: #294441;
+    --on-background: #f8f9ff;
+    --outline: #6d7d7e;
+    --surface-container-lowest: #f9f9fa;
+    --info-cyan: #009ebb;
+    --on-error-container: #473d3c;
+    --tertiary: #e5dee3;
+    --surface-variant: #f9f9fa;
+    --tertiary-fixed-dim: #c49fe5;
+    --primary-fixed: #41dde5;
+    --success-emerald: #00a06a;
+    --on-surface: #f8f9ff;
+    --background: #f9f9fa;
+    --secondary-container: #00ad9a;
+    --surface: #f9f9fa;
+    --surface-dim: #f9f9fa;
+    --obsidian-elevated: #f3f4f4;
+    --on-error: #791c20;
+    --secondary: #14c8b4;
+    --primary: #006c71;
+    --on-primary-fixed: #294445;
+    --surface-container-high: #f3f3f4;
+    --tertiary-fixed: #d6c2e5;
+    --on-secondary-fixed-variant: #004840;
+    --on-primary-fixed-variant: #00474b;
+    --primary-container: #00dbe5;
+    --inverse-on-surface: #f9f9fa;
+    --on-primary-container: #00474a;
+    --inverse-surface: #f8f9ff;
+  }
+
+  .dark {
+    --on-primary: #003739;
+    --surface-container-low: #131b2e;
+    --surface-bright: #31394d;
+    --warning-amber: #F59E0B;
+    --obsidian-surface: #0F172A;
+    --secondary-fixed: #62fae3;
+    --on-tertiary: #490080;
+    --error-rose: #F43F5E;
+    --surface-tint: #00dce5;
+    --outline-variant: #3a494a;
+    --on-surface-variant: #b9caca;
+    --tertiary-container: #edd4ff;
+    --surface-container: #171f33;
+    --on-tertiary-fixed-variant: #6900b3;
+    --ai-purple: #A855F7;
+    --on-tertiary-fixed: #2c0051;
+    --primary-fixed-dim: #00dce5;
+    --surface-container-highest: #2d3449;
+    --on-secondary-container: #004d44;
+    --error: #ffb4ab;
+    --inverse-primary: #00696e;
+    --error-container: #93000a;
+    --on-tertiary-container: #872fd5;
+    --obsidian-base: #020617;
+    --on-secondary: #003731;
+    --secondary-fixed-dim: #3cddc7;
+    --on-secondary-fixed: #00201c;
+    --on-background: #dae2fd;
+    --outline: #849495;
+    --surface-container-lowest: #060e20;
+    --info-cyan: #06B6D4;
+    --on-error-container: #ffdad6;
+    --tertiary: #fff8fd;
+    --surface-variant: #2d3449;
+    --tertiary-fixed-dim: #ddb7ff;
+    --primary-fixed: #63f7ff;
+    --success-emerald: #10B981;
+    --on-surface: #dae2fd;
+    --background: #0b1326;
+    --secondary-container: #03c6b2;
+    --surface: #0b1326;
+    --surface-dim: #0b1326;
+    --obsidian-elevated: #1E293B;
+    --on-error: #690005;
+    --secondary: #44e2cd;
+    --primary: #e9feff;
+    --on-primary-fixed: #002021;
+    --surface-container-high: #222a3d;
+    --tertiary-fixed: #f0dbff;
+    --on-secondary-fixed-variant: #005047;
+    --on-primary-fixed-variant: #004f53;
+    --primary-container: #00f5ff;
+    --inverse-on-surface: #283044;
+    --on-primary-container: #006c71;
+    --inverse-surface: #dae2fd;
+  }
+}
+
+
+@layer base {
     html {
         font-size: 15px;
         scroll-behavior: smooth;
+        scrollbar-width: thin;
+        scrollbar-color: #1E293B transparent;
     }
 
     body {
@@ -23,22 +144,22 @@
     background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: #1E293B; /* obsidian-elevated */
+    background-color: var(--obsidian-elevated);
     border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #b9caca; /* on-surface-variant */
+    background-color: var(--on-surface-variant);
 }
 
 .material-symbols-outlined { 
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; 
 }
 .glass-card { 
-    background: rgba(15, 23, 42, 0.6); 
+    background: var(--obsidian-surface); 
     backdrop-filter: blur(12px); 
-    border: 1px solid #1E293B; 
+    border: 1px solid var(--obsidian-elevated); 
 }
 .chart-grid { 
-    stroke: rgba(30, 41, 59, 0.5); 
+    stroke: var(--obsidian-elevated); 
     stroke-width: 1; 
 }

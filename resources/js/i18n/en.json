@@ -47,7 +47,23 @@
     "priority": "Priority",
     "assignee": "Assignee",
     "dueDate": "Due date",
-    "progress": "Progress"
+    "progress": "Progress",
+    "number": "Number",
+    "client": "Client",
+    "start": "Start",
+    "end": "End",
+    "document": "Document"
+  },
+  "contracts": {
+    "description": "Signed engagements",
+    "new": "New contract"
+  },
+  "status": {
+    "draft": "Draft",
+    "active": "Active",
+    "ended": "Ended",
+    "completed": "Completed",
+    "terminated": "Terminated"
   },
   "nav": {
     "dashboard": "Dashboard",

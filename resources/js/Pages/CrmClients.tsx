@@ -29,26 +29,29 @@ export default function ClientsPage() {
       renderForm={(close) => (
         <QuickForm
           onCancel={close}
-          onSubmit={(v) => {
-            add("clients", {
-              id: makeId("cl"),
-              companyId: v.companyId || companies[0]?.id || "",
-              name: v.name,
-              email: v.email,
-              phone: v.phone,
-              position: v.position,
-              status: "active",
-              createdAt: new Date().toISOString(),
-            });
-            close();
+          onSubmit={async (v) => {
+            try {
+              await add("clients", {
+                company_id: v.company_id || null,
+                name: v.name,
+                email: v.email,
+                phone: v.phone,
+                position: v.position,
+                status: "active",
+              });
+              close();
+            } catch (err: any) {
+              console.error("Failed to add client", err);
+              alert(err.response?.data?.message || "Failed to save client.");
+            }
           }}
           fields={[
-            { name: "name", label: "Full name", type: "text", required: true },
-            { name: "email", label: "Email", type: "email", required: true },
-            { name: "phone", label: "Phone", type: "text" },
+            { name: "name", label: t("common.name"), type: "text", required: true },
+            { name: "email", label: t("common.email"), type: "email", required: true },
+            { name: "phone", label: t("common.phone"), type: "text" },
             { name: "position", label: "Position", type: "text" },
             {
-              name: "companyId",
+              name: "company_id",
               label: "Company",
               type: "select",
               options: companies.map((c) => ({ value: c.id, label: c.name })),

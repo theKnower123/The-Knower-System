@@ -134,15 +134,17 @@ const groups: Group[] = [
 ];
 
 export function AppSidebar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { url: pathname } = usePage();
   const user = useAuth((s) => s.user);
   const role = user?.role;
+  
+  const isRtl = i18n.language === "ar";
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="offcanvas" side={isRtl ? "right" : "left"}>
       <SidebarHeader className="border-b border-sidebar-border">
         <Link href="/dashboard" className="flex items-center gap-2 px-2 py-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">

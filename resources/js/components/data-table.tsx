@@ -38,7 +38,7 @@ export function DataTable<T extends { id: string }>({
     <div className="space-y-3">
       {searchable && (
         <div className="relative max-w-sm">
-          <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute inset-s-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}

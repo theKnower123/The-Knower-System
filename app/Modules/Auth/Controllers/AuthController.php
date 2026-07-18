@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Modules\Auth\Models\User;
 
+use Illuminate\Support\Facades\Auth;
+
 class AuthController extends Controller
 {
     public function login(Request $request)
@@ -25,6 +27,10 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // Log the user in for the web session (for Inertia)
+        Auth::login($user);
+        $request->session()->regenerate();
+
         // Give full role-based permissions or token
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -37,7 +43,7 @@ class AuthController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'role' => $user->roles->first()->name ?? 'client',
+                    'role' => $user->role ?? 'client',
                 ]
             ]
         ]);
@@ -45,7 +51,13 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        if ($request->user()) {
+            $request->user()->currentAccessToken()->delete();
+        }
+
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
             'success' => true,
@@ -62,7 +74,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => $user->roles->first()->name ?? 'client',
+                'role' => $user->role ?? 'client',
             ]
         ]);
     }

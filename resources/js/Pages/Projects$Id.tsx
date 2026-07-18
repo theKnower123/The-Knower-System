@@ -16,7 +16,7 @@ import { DollarSign, Calendar, ListTodo, Bug } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 
 export default function ProjectDetail() {
-  const { id } = Route.useParams();
+  const id = window.location.pathname.split("/").pop();
   const projects = useCollection("projects");
   const clients = useCollection("clients");
   const milestones = useCollection("milestones").filter((m) => m.projectId === id);

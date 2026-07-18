@@ -9,6 +9,7 @@
     "signInAs": "تسجيل الدخول بصفة",
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",
+    "profileSettings": "إعدادات الحساب",
     "chooseRole": "اختر دورًا للمعاينة",
     "roleDemoNote": "وضع تجريبي — اختر أي دور. البيانات كلها وهمية في المتصفح."
   },
@@ -47,7 +48,23 @@
     "priority": "الأولوية",
     "assignee": "المسؤول",
     "dueDate": "تاريخ الاستحقاق",
-    "progress": "التقدم"
+    "progress": "التقدم",
+    "number": "الرقم",
+    "client": "العميل",
+    "start": "البداية",
+    "end": "النهاية",
+    "document": "المستند"
+  },
+  "contracts": {
+    "description": "الارتباطات الموقعة",
+    "new": "عقد جديد"
+  },
+  "status": {
+    "draft": "مسودة",
+    "active": "نشط",
+    "ended": "منتهي",
+    "completed": "مكتمل",
+    "terminated": "ملغى"
   },
   "nav": {
     "dashboard": "لوحة التحكم",

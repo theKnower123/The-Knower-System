@@ -35,6 +35,7 @@ use App\Modules\Support\Controllers\TicketMessageController;
 
 // ─── HR ───────────────────────────────────────────────────────────────────────
 use App\Modules\HR\Controllers\EmployeeController;
+use App\Modules\HR\Controllers\DepartmentController;
 use App\Modules\HR\Controllers\AttendanceController;
 use App\Modules\HR\Controllers\LeaveController;
 
@@ -156,6 +157,7 @@ Route::prefix('v1')->group(function () {
 
         // ── HR ────────────────────────────────────────────────────────────────────
         Route::apiResource('employees',  EmployeeController::class);
+        Route::apiResource('departments', DepartmentController::class);
         Route::get   ('attendance',      [AttendanceController::class, 'index']);
         Route::post  ('attendance',      [AttendanceController::class, 'store']);
         Route::delete('attendance/{id}', [AttendanceController::class, 'destroy']);

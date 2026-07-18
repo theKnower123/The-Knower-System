@@ -7,7 +7,9 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('quotations');
+        Schema::enableForeignKeyConstraints();
         
         Schema::create('quotations', function (Blueprint $table) {
             $table->id();

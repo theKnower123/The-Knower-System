@@ -21,9 +21,18 @@ export default function DepartmentsPage() {
       renderForm={(close) => (
         <QuickForm
           onCancel={close}
-          onSubmit={(v) => {
-            add("departments", { id: makeId("dp"), name: v.name, head: v.head, employeeCount: Number(v.employeeCount || 0) });
-            close();
+          onSubmit={async (v) => {
+            try {
+              await add("departments", { 
+                name: v.name, 
+                head: v.head, 
+                employee_count: Number(v.employeeCount || 0) 
+              });
+              close();
+            } catch (err: any) {
+              console.error("Failed to add department", err);
+              alert(err.response?.data?.message || "Failed to save department.");
+            }
           }}
           fields={[
             { name: "name", label: "Department name", type: "text", required: true },

@@ -23,8 +23,7 @@ export default function ProjectsPage() {
           key: "name",
           header: t("common.name"),
           cell: (r) => (
-            <Link href="/projects/$id"
-              params={{ id: r.id }}
+            <Link href={`/projects/${r.id}`}
               className="font-medium hover:text-primary"
             >
               {r.name}
@@ -53,26 +52,29 @@ export default function ProjectsPage() {
       renderForm={(close) => (
         <QuickForm
           onCancel={close}
-          onSubmit={(v) => {
-            add("projects", {
-              id: makeId("pr"),
-              name: v.name,
-              clientId: v.clientId || clients[0]?.id || "",
-              description: v.description,
-              type: v.type,
-              status: (v.status as Project["status"]) || "planning",
-              priority: (v.priority as Project["priority"]) || "medium",
-              startDate: new Date().toISOString(),
-              deadline: v.deadline ? new Date(v.deadline).toISOString() : new Date(Date.now() + 90 * 86400000).toISOString(),
-              budget: Number(v.budget || 0),
-              progress: 0,
-              createdAt: new Date().toISOString(),
-            });
-            close();
+          onSubmit={async (v) => {
+            try {
+              await add("projects", {
+                name: v.name,
+                client_id: v.client_id || clients[0]?.id || null,
+                description: v.description,
+                type: v.type,
+                status: (v.status as Project["status"]) || "planning",
+                priority: (v.priority as Project["priority"]) || "medium",
+                start_date: new Date().toISOString().split("T")[0],
+                deadline: v.deadline ? new Date(v.deadline).toISOString().split("T")[0] : new Date(Date.now() + 90 * 86400000).toISOString().split("T")[0],
+                budget: Number(v.budget || 0),
+                progress: 0,
+              });
+              close();
+            } catch (err: any) {
+              console.error("Failed to add project", err);
+              alert(err.response?.data?.message || "Failed to save project.");
+            }
           }}
           fields={[
             { name: "name", label: "Project name", type: "text", required: true },
-            { name: "clientId", label: "Client", type: "select", options: clients.map((c) => ({ value: c.id, label: c.name })) },
+            { name: "client_id", label: "Client", type: "select", options: clients.map((c) => ({ value: c.id, label: c.name })) },
             { name: "type", label: "Type", type: "text", defaultValue: "Web App" },
             {
               name: "priority",

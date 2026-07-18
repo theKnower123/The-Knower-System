@@ -10,7 +10,7 @@ import { shortDate } from "@/lib/format";
 import { makeId } from "@/mocks/data";
 
 export default function TicketDetail() {
-  const { id } = Route.useParams();
+  const id = window.location.pathname.split("/").pop();
   const tickets = useCollection("tickets");
   const clients = useCollection("clients");
   const ticket = tickets.find((t) => t.id === id);
@@ -44,7 +44,7 @@ export default function TicketDetail() {
       />
       <div className="rounded-xl border border-border bg-card p-6">
         <div className="space-y-4">
-          {ticket.messages.map((m) => (
+          {ticket.messages.map((m: any) => (
             <div key={m.id} className="rounded-lg border border-border/60 bg-background p-4">
               <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <span className="font-medium text-foreground">{m.sender}</span>

@@ -14,6 +14,22 @@ class EmployeeService
 
     public function create(array $data): Employee
     {
+        // If a new employee is being created from the UI with name/email, create a User first
+        if (isset($data['name']) && isset($data['email'])) {
+            $user = \App\Models\User::firstOrCreate(
+                ['email' => $data['email']],
+                [
+                    'name' => $data['name'],
+                    'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
+                    'role' => $data['role'],
+                    'phone' => $data['phone'] ?? null,
+                    'avatar' => $data['id_photo'] ?? null,
+                    'permissions' => []
+                ]
+            );
+            $data['user_id'] = $user->id;
+        }
+
         return Employee::create($data);
     }
 

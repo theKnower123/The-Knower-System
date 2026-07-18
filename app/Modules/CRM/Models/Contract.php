@@ -10,7 +10,7 @@ use App\Traits\HasWorkspace;
 class Contract extends Model
 {
     protected $fillable = [
-        'client_id', 'quotation_id', 'contract_number', 'start_date', 'end_date', 'status', 'file',
+        'client_id', 'quotation_id', 'contract_number', 'start_date', 'end_date', 'status', 'file', 'amount'
     ];
 
     protected $casts = [

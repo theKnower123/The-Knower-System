@@ -15,7 +15,9 @@ export function StaggerList({ children, className = '', staggerDelay = 0.1, sele
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    gsap.from(selector, {
+    const targets = selector === '>*' && container.current ? container.current.children : selector;
+    
+    gsap.from(targets, {
       y: 30,
       opacity: 0,
       duration: 0.5,

@@ -62,6 +62,7 @@ export interface Contract {
   clientId: ID;
   startDate: string;
   endDate: string;
+  amount: number;
   status: "draft" | "active" | "ended";
   createdAt: string;
 }
@@ -317,7 +318,7 @@ export const quotations: Quotation[] = [
 ];
 
 export const contracts: Contract[] = [
-  { id: "ct_1", number: "CTR-2026-001", clientId: "cl_1", startDate: iso(-10), endDate: iso(180), status: "active", createdAt: iso(-10) },
+  { id: "ct_1", number: "CTR-2026-001", clientId: "cl_1", startDate: iso(-10), endDate: iso(180), amount: 45000, status: "active", createdAt: iso(-10) },
 ];
 
 export const projects: Project[] = [

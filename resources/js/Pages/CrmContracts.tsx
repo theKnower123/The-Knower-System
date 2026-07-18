@@ -13,45 +13,53 @@ export default function ContractsPage() {
   return (
     <ResourcePage<Contract>
       title={t("nav.contracts")}
-      description="Signed engagements"
+      description={t("contracts.description")}
       rows={rows}
-      newLabel="New contract"
+      newLabel={t("contracts.new")}
       columns={[
-        { key: "number", header: "Number", cell: (r) => <span className="font-mono text-xs">{r.number}</span> },
-        { key: "client", header: "Client", cell: (r) => clients.find((c) => c.id === r.clientId)?.name ?? "—" },
-        { key: "start", header: "Start", cell: (r) => shortDate(r.startDate) },
-        { key: "end", header: "End", cell: (r) => shortDate(r.endDate) },
+        { key: "number", header: t("common.number"), cell: (r) => <span className="font-mono text-xs">{r.number}</span> },
+        { key: "client", header: t("common.client"), cell: (r) => clients.find((c) => c.id === r.clientId)?.name ?? "—" },
+        { key: "start", header: t("common.start"), cell: (r) => shortDate(r.startDate) },
+        { key: "end", header: t("common.end"), cell: (r) => shortDate(r.endDate) },
+        { key: "amount", header: t("common.amount"), cell: (r) => `$${r.amount?.toLocaleString() ?? 0}` },
         { key: "status", header: t("common.status"), cell: (r) => <StatusBadge value={r.status} /> },
+        { key: "file", header: t("common.document"), cell: () => <span className="text-muted-foreground text-xs underline cursor-pointer hover:text-primary">Download</span> }
       ]}
       renderForm={(close) => (
         <QuickForm
           onCancel={close}
-          onSubmit={(v) => {
+          onSubmit={async (v) => {
             const n = rows.length + 1;
-            add("contracts", {
-              id: makeId("ct"),
-              number: `CTR-2026-${String(n).padStart(3, "0")}`,
-              clientId: v.clientId,
-              startDate: v.startDate ? new Date(v.startDate).toISOString() : new Date().toISOString(),
-              endDate: v.endDate ? new Date(v.endDate).toISOString() : new Date().toISOString(),
-              status: (v.status as Contract["status"]) || "draft",
-              createdAt: new Date().toISOString(),
-            });
-            close();
+            try {
+              await add("contracts", {
+                number: `CTR-2026-${String(n).padStart(3, "0")}`,
+                client_id: v.client_id,
+                start_date: v.startDate ? new Date(v.startDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+                end_date: v.endDate ? new Date(v.endDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+                amount: Number(v.amount) || 0,
+                status: (v.status as Contract["status"]) || "draft",
+              });
+              close();
+            } catch (err: any) {
+              console.error("Failed to add contract", err);
+              alert(err.response?.data?.message || "Failed to save contract.");
+            }
           }}
           fields={[
-            { name: "clientId", label: "Client", type: "select", options: clients.map((c) => ({ value: c.id, label: c.name })), required: true },
-            { name: "startDate", label: "Start", type: "date" },
-            { name: "endDate", label: "End", type: "date" },
+            { name: "client_id", label: t("common.client"), type: "select", options: clients.map((c) => ({ value: c.id, label: c.name })), required: true },
+            { name: "startDate", label: t("common.start"), type: "date" },
+            { name: "endDate", label: t("common.end"), type: "date" },
+            { name: "amount", label: t("common.amount"), type: "text" },
+            { name: "file", label: t("common.document"), type: "file" },
             {
               name: "status",
-              label: "Status",
+              label: t("common.status"),
               type: "select",
               defaultValue: "draft",
               options: [
-                { value: "draft", label: "Draft" },
-                { value: "active", label: "Active" },
-                { value: "ended", label: "Ended" },
+                { value: "draft", label: t("status.draft") },
+                { value: "active", label: t("status.active") },
+                { value: "ended", label: t("status.ended") },
               ],
             },
           ]}

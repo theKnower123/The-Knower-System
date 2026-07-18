@@ -18,7 +18,7 @@ export default function TicketsPage() {
       rows={rows}
       newLabel="New ticket"
       columns={[
-        { key: "number", header: "Number", cell: (r) => <Link href="/support/tickets/$id" params={{ id: r.id }} className="font-mono text-xs hover:text-primary">{r.number}</Link> },
+        { key: "number", header: "Number", cell: (r) => <Link href={`/support/tickets/${r.id}`} className="font-mono text-xs hover:text-primary">{r.number}</Link> },
         { key: "subject", header: "Subject", cell: (r) => <span className="font-medium">{r.subject}</span> },
         { key: "client", header: "Client", cell: (r) => clients.find((c) => c.id === r.clientId)?.name ?? "—" },
         { key: "priority", header: "Priority", cell: (r) => <StatusBadge value={r.priority} /> },

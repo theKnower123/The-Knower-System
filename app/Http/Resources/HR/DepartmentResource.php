@@ -1,22 +1,19 @@
 <?php
 
-namespace App\Http\Resources\CRM;
+namespace App\Http\Resources\HR;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ClientResource extends JsonResource
+class DepartmentResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
         return [
             'id' => (string) $this->id,
-            'companyId' => (string) $this->company_id,
             'name' => $this->name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'position' => $this->position,
-            'status' => $this->status,
+            'head' => $this->head,
+            'employeeCount' => (int) $this->employee_count,
             'createdAt' => $this->created_at->toISOString(),
             'updatedAt' => $this->updated_at->toISOString(),
         ];

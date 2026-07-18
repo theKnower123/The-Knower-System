@@ -10,7 +10,11 @@ Route::get('/', function () {
 
 Route::get('/login', function () {
     return Inertia::render('Login');
-});
+})->name('login');
+
+Route::get('/forgot-password', function () {
+    return Inertia::render('ForgotPassword');
+})->name('password.request');
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', function () { return Inertia::render('Dashboard'); });

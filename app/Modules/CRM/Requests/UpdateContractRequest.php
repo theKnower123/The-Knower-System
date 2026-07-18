@@ -21,8 +21,8 @@ class UpdateContractRequest extends FormRequest
             'start_date' => 'sometimes|required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'status' => 'sometimes|required|in:draft,active,completed,terminated',
+            'amount' => 'nullable|numeric|min:0',
             'file' => 'nullable|string|max:255',
-        
         ];
     }
 }
