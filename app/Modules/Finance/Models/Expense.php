@@ -2,6 +2,8 @@
 
 namespace App\Modules\Finance\Models;
 
+use App\Modules\Auth\Models\User;
+
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;

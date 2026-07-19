@@ -2,6 +2,12 @@
 
 namespace App\Modules\CRM\Models;
 
+use App\Modules\Projects\Models\Project;
+use App\Modules\Finance\Models\Invoice;
+use App\Modules\Support\Models\Ticket;
+use App\Modules\Hosting\Models\Domain;
+use App\Modules\Hosting\Models\HostingAccount;
+
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;

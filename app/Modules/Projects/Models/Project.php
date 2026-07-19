@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use App\Traits\HasWorkspace;
+use App\Modules\CRM\Models\Client;
+use App\Modules\Auth\Models\User;
+use App\Modules\Finance\Models\Invoice;
+use App\Modules\Support\Models\Ticket;
+use App\Modules\Hosting\Models\Domain;
+use App\Modules\Hosting\Models\HostingAccount;
 
 class Project extends Model
 {

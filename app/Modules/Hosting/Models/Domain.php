@@ -2,6 +2,9 @@
 
 namespace App\Modules\Hosting\Models;
 
+use App\Modules\CRM\Models\Client;
+use App\Modules\Projects\Models\Project;
+
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;

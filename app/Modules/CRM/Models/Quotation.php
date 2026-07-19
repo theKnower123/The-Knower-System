@@ -1,6 +1,8 @@
 <?php
 namespace App\Modules\CRM\Models;
 
+use App\Modules\Auth\Models\User;
+
 use App\Traits\HasWorkspace;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

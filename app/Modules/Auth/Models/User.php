@@ -2,6 +2,12 @@
 
 namespace App\Modules\Auth\Models;
 
+use App\Modules\HR\Models\Employee;
+use App\Modules\Projects\Models\Task;
+use App\Modules\Support\Models\Ticket;
+use App\Modules\Projects\Models\Project;
+use App\Modules\Projects\Models\TaskComment;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;

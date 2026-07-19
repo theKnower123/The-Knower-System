@@ -34,34 +34,46 @@ import { money } from "@/lib/format";
 import { useAuth } from "@/store/auth";
 import { StatusBadge } from "@/components/status-badge";
 
-export default function DashboardPage() {
+interface DashboardProps {
+  stats: {
+    total_clients: number;
+    new_clients_this_month: number;
+    active_projects: number;
+    completed_projects: number;
+    overdue_projects: number;
+    pending_tasks: number;
+    overdue_tasks: number;
+    monthly_revenue: number;
+    unpaid_invoices: number;
+    unpaid_invoices_amount: number;
+    open_tickets: number;
+    online_employees: number;
+    domains_expiring_soon: number;
+    hosting_expiring_soon: number;
+  };
+  recentProjects: any[];
+  recentTickets: any[];
+  revenueChart: any[];
+  tasksByStatus: Record<string, number>;
+}
+
+export default function DashboardPage({ stats, recentProjects, recentTickets, revenueChart, tasksByStatus }: DashboardProps) {
   const { t } = useTranslation();
   const user = useAuth((s) => s.user);
+  
+  // We'll still need clients and notifications for the recent activity list
   const clients = useCollection("clients");
-  const projects = useCollection("projects");
-  const invoices = useCollection("invoices");
-  const tickets = useCollection("tickets");
-  const employees = useCollection("employees");
-  const domains = useCollection("domains");
-  const hosting = useCollection("hostingAccounts");
   const notifications = useCollection("notifications");
-
-  const active = projects.filter((p) => p.status === "in_progress").length;
-  const completed = projects.filter((p) => p.status === "completed").length;
-  const overdue = projects.filter((p) => p.status === "overdue").length;
+  const invoices = useCollection("invoices");
+  
+  // Filter unpaid invoices for the list
   const unpaid = invoices.filter((i) => i.status === "sent" || i.status === "overdue");
-  const monthlyRev = 34100;
-  const annualRev = 194300;
-  const openTickets = tickets.filter((t) => t.status === "open" || t.status === "in_progress").length;
-  const online = employees.filter((e) => e.status === "active").length;
-  const expDomains = domains.filter((d) => d.status !== "active").length;
-  const expHosting = hosting.filter((h) => h.status !== "active").length;
 
   const statusData = [
-    { name: "In progress", value: active, fill: "var(--chart-1)" },
-    { name: "Planning", value: projects.filter((p) => p.status === "planning").length, fill: "var(--chart-2)" },
-    { name: "Completed", value: completed, fill: "var(--chart-3)" },
-    { name: "Overdue", value: overdue, fill: "var(--chart-5)" },
+    { name: "In progress", value: stats?.active_projects || 0, fill: "var(--chart-1)" },
+    { name: "Planning", value: tasksByStatus?.todo || 0, fill: "var(--chart-2)" },
+    { name: "Completed", value: stats?.completed_projects || 0, fill: "var(--chart-3)" },
+    { name: "Overdue", value: stats?.overdue_projects || 0, fill: "var(--chart-5)" },
   ];
 
   return (
@@ -72,18 +84,16 @@ export default function DashboardPage() {
       />
 
       <StaggerList className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" staggerDelay={0.05}>
-        <StatCard label={t("dashboard.clients")} value={clients.length} icon={Users} delta="+2 this month" accent="primary" />
-        <StatCard label={t("dashboard.newClients")} value={2} icon={UserPlus} delta="last 30 days" />
-        <StatCard label={t("dashboard.activeProjects")} value={active} icon={FolderKanban} />
-        <StatCard label={t("dashboard.completedProjects")} value={completed} icon={Trophy} accent="success" />
-        <StatCard label={t("dashboard.overdueProjects")} value={overdue} icon={AlertOctagon} accent="destructive" />
-        <StatCard label={t("dashboard.monthlyRevenue")} value={money(monthlyRev)} icon={DollarSign} accent="success" delta="+18% vs last mo" />
-        <StatCard label={t("dashboard.annualRevenue")} value={money(annualRev)} icon={Wallet} />
-        <StatCard label={t("dashboard.unpaidInvoices")} value={unpaid.length} icon={FileWarning} accent="warning" />
-        <StatCard label={t("dashboard.openTickets")} value={openTickets} icon={LifeBuoy} accent="warning" />
-        <StatCard label={t("dashboard.onlineEmployees")} value={online} icon={Signal} accent="success" />
-        <StatCard label={t("dashboard.expiringDomains")} value={expDomains} icon={Globe} accent="warning" />
-        <StatCard label={t("dashboard.expiringHosting")} value={expHosting} icon={ShieldAlert} accent="warning" />
+        <StatCard label={t("dashboard.clients")} value={stats?.total_clients || 0} icon={Users} delta={`+${stats?.new_clients_this_month || 0} this month`} accent="primary" />
+        <StatCard label={t("dashboard.activeProjects")} value={stats?.active_projects || 0} icon={FolderKanban} />
+        <StatCard label={t("dashboard.completedProjects")} value={stats?.completed_projects || 0} icon={Trophy} accent="success" />
+        <StatCard label={t("dashboard.overdueProjects")} value={stats?.overdue_projects || 0} icon={AlertOctagon} accent="destructive" />
+        <StatCard label={t("dashboard.monthlyRevenue")} value={money(stats?.monthly_revenue || 0)} icon={DollarSign} accent="success" />
+        <StatCard label={t("dashboard.unpaidInvoices")} value={stats?.unpaid_invoices || 0} icon={FileWarning} accent="warning" delta={money(stats?.unpaid_invoices_amount || 0)} />
+        <StatCard label={t("dashboard.openTickets")} value={stats?.open_tickets || 0} icon={LifeBuoy} accent="warning" />
+        <StatCard label={t("dashboard.onlineEmployees")} value={stats?.online_employees || 0} icon={Signal} accent="success" />
+        <StatCard label={t("dashboard.expiringDomains")} value={stats?.domains_expiring_soon || 0} icon={Globe} accent="warning" />
+        <StatCard label={t("dashboard.expiringHosting")} value={stats?.hosting_expiring_soon || 0} icon={ShieldAlert} accent="warning" />
       </StaggerList>
 
       <StaggerList className="grid grid-cols-1 gap-4 lg:grid-cols-3" staggerDelay={0.1}>
@@ -94,7 +104,7 @@ export default function DashboardPage() {
           </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={seed.revenueSeries}>
+              <AreaChart data={revenueChart || []}>
                 <defs>
                   <linearGradient id="rev" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.5} />
@@ -144,13 +154,13 @@ export default function DashboardPage() {
         <div className="rounded-xl border border-border bg-card p-5">
           <h3 className="mb-4 font-display text-base font-semibold">{t("dashboard.recentActivity")}</h3>
           <ul className="space-y-3">
-            {notifications.slice(0, 6).map((n) => (
-              <li key={n.id} className="flex items-start justify-between gap-3 border-b border-border/40 pb-3 last:border-none last:pb-0">
+            {recentProjects?.map((p) => (
+              <li key={p.id} className="flex items-start justify-between gap-3 border-b border-border/40 pb-3 last:border-none last:pb-0">
                 <div>
-                  <p className="text-sm font-medium">{n.title}</p>
-                  <p className="text-xs text-muted-foreground">{n.message}</p>
+                  <p className="text-sm font-medium">{p.name}</p>
+                  <p className="text-xs text-muted-foreground">{p.client?.name || "No Client"}</p>
                 </div>
-                <StatusBadge value={n.type} />
+                <StatusBadge value={p.status} />
               </li>
             ))}
           </ul>

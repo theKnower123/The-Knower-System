@@ -63,17 +63,37 @@ export const queryClient = new QueryClient({
   },
 });
 
+// Convert snake_case keys to camelCase recursively so backend data
+// matches the frontend field names (e.g. client_id → clientId).
+function toCamel(str: string): string {
+  return str.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+}
+
+function normalize(val: unknown): unknown {
+  if (Array.isArray(val)) return val.map(normalize);
+  if (val !== null && typeof val === "object") {
+    return Object.fromEntries(
+      Object.entries(val as Record<string, unknown>).map(([k, v]) => [
+        toCamel(k),
+        normalize(v),
+      ])
+    );
+  }
+  return val;
+}
+
 export function useCollection<K extends keyof typeof endpointMap>(key: K): any[] {
   const { data } = useQuery({
     queryKey: [key],
     queryFn: async () => {
       const res = await api.get(`/${endpointMap[key as string]}`);
-      return res.data?.data || [];
+      const raw = res.data?.data || [];
+      return normalize(raw) as any[];
     },
     initialData: [],
   });
 
-  return data;
+  return Array.isArray(data) ? data : [];
 }
 
 async function invalidate(key: string) {
@@ -85,8 +105,27 @@ async function invalidate(key: string) {
   });
 }
 
+// Convert camelCase to snake_case for outgoing API requests
+function toSnake(str: string): string {
+  return str.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
+}
+
+function denormalize(val: unknown): unknown {
+  if (Array.isArray(val)) return val.map(denormalize);
+  if (val !== null && typeof val === "object") {
+    return Object.fromEntries(
+      Object.entries(val as Record<string, unknown>).map(([k, v]) => [
+        toSnake(k),
+        denormalize(v),
+      ])
+    );
+  }
+  return val;
+}
+
 export async function add<K extends keyof typeof endpointMap>(key: K, item: any) {
-  const res = await api.post(`/${endpointMap[key as string]}`, item);
+  const payload = denormalize(item);
+  const res = await api.post(`/${endpointMap[key as string]}`, payload);
   await invalidate(key as string);
   return res.data;
 }
@@ -96,7 +135,8 @@ export async function update<K extends keyof typeof endpointMap>(
   id: string | number,
   patch: any,
 ) {
-  const res = await api.put(`/${endpointMap[key as string]}/${id}`, patch);
+  const payload = denormalize(patch);
+  const res = await api.put(`/${endpointMap[key as string]}/${id}`, payload);
   await invalidate(key as string);
   return res.data;
 }
