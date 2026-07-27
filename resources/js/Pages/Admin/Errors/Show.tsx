@@ -33,7 +33,7 @@ export default function Show({ errorLog }: any) {
             <div className="p-6 space-y-4">
               <div>
                 <span className="text-sm text-muted-foreground font-medium block mb-1">Message</span>
-                <div className="font-mono text-sm bg-muted/30 p-3 rounded-md text-red-500 break-words">
+                <div className="font-mono text-sm bg-muted/30 p-3 rounded-md text-red-500 [word-break:break-word]">
                   {errorLog.message || 'No message provided'}
                 </div>
               </div>

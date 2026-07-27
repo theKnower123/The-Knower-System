@@ -52,7 +52,7 @@ export default function Automation() {
           
           {rules.map(rule => (
             <div key={rule.id} className="grid grid-cols-12 gap-4 items-center bg-muted/30 p-3 rounded-lg border">
-              <div className="col-span-5 font-mono text-sm text-primary break-words">
+              <div className="col-span-5 font-mono text-sm text-primary [word-break:break-word]">
                 {rule.keyword}
               </div>
               <div className="col-span-6 flex items-center gap-2 text-sm">

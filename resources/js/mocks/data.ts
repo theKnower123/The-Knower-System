@@ -34,6 +34,7 @@ export interface Lead {
   status: "new" | "contacted" | "qualified" | "lost" | "won";
   assignedTo: string;
   createdAt: string;
+  created_at?: string;
 }
 
 export interface Quotation {
@@ -51,9 +52,12 @@ export interface Contract {
   id: ID;
   number: string;
   clientId: ID;
+  projectId?: ID;
+  type?: string;
   startDate: string;
   endDate: string;
-  amount: number;
+  amount?: number;
+  file?: string;
   status: "draft" | "active" | "ended";
   createdAt: string;
 }
@@ -64,6 +68,9 @@ export interface Project {
   clientId: ID;
   description: string;
   type: string;
+  techStack?: string;
+  language?: string;
+  users?: string[];
   status: "planning" | "in_progress" | "on_hold" | "completed" | "overdue";
   priority: "low" | "medium" | "high";
   startDate: string;
@@ -124,7 +131,8 @@ export interface Invoice {
   clientId: ID;
   projectId?: ID;
   amount: number;
-  status: "draft" | "sent" | "paid" | "overdue";
+  paidAmount: number;
+  status: "draft" | "sent" | "partial" | "paid" | "overdue";
   dueDate: string;
   createdAt: string;
 }
@@ -252,9 +260,13 @@ export interface Meeting {
   id: ID;
   title: string;
   clientId?: ID;
-  date: string;
-  duration: number;
-  attendees: string;
+  date?: string;
+  startTime: string;
+  endTime: string;
+  duration?: number;
+  attendees?: string;
+  location?: string;
+  description?: string;
 }
 
 export interface Contact {
@@ -292,8 +304,8 @@ export const leads: Lead[] = [
 ];
 
 export const meetings: Meeting[] = [
-  { id: "mt_1", title: "Kickoff — Nile Pharma", clientId: "cl_1", date: iso(2), duration: 60, attendees: "PM, Client, Sales" },
-  { id: "mt_2", title: "Design review — Cedar", clientId: "cl_2", date: iso(4), duration: 45, attendees: "Designer, Client" },
+  { id: "mt_1", title: "Kickoff — Nile Pharma", clientId: "cl_1", startTime: iso(2), endTime: iso(2.1), attendees: "PM, Client, Sales" },
+  { id: "mt_2", title: "Design review — Cedar", clientId: "cl_2", startTime: iso(4), endTime: iso(4.1), attendees: "Designer, Client" },
 ];
 
 export const quotations: Quotation[] = [

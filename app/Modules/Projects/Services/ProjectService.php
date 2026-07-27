@@ -14,12 +14,23 @@ class ProjectService
 
     public function create(array $data): Project
     {
-        return Project::create($data);
+        $users = $data['users'] ?? [];
+        unset($data['users']);
+        $project = Project::create($data);
+        if (!empty($users)) {
+            $project->users()->sync($users);
+        }
+        return $project;
     }
 
     public function update(Project $project, array $data): Project
     {
+        $users = $data['users'] ?? null;
+        unset($data['users']);
         $project->update($data);
+        if ($users !== null) {
+            $project->users()->sync($users);
+        }
         return $project;
     }
 

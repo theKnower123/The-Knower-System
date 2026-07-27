@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, Section, CTABand, PricingCard, FeatureCard } from "@/components/public/blocks";
-import { hostingPlans } from "@/mocks/marketing";
+import { hostingPlans as staticHostingPlans } from "@/mocks/marketing";
 import { Cloud, Server, Zap, Shield, HardDrive, Activity } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export const Route = createFileRoute("/_public/hosting")({
   head: () => ({
@@ -13,7 +15,34 @@ export const Route = createFileRoute("/_public/hosting")({
   component: HostingPage,
 });
 
+// Same mapping used on /pricing -- real columns are blurb/highlight/cta_text,
+// not description/is_popular.
+function mapDbPlan(p: any) {
+  return {
+    name: p.name,
+    price: { monthly: Number(p.price_monthly) || 0, yearly: Number(p.price_yearly) || 0 },
+    blurb: p.blurb,
+    features: p.features || [],
+    highlight: !!p.highlight,
+    cta: p.cta_text || undefined,
+  };
+}
+
 function HostingPage() {
+  const { data: allPlans } = useQuery({
+    queryKey: ["public", "pricing"],
+    queryFn: async () => {
+      const res = await axios.get("/api/v1/public/pricing");
+      return (res.data.plans || []) as any[];
+    },
+  });
+
+  // Only plans created in CMS > Pricing Plans with Plan Type = "hosting"
+  // show up here. Falls back to the old static demo plans if none exist
+  // yet, so the page never looks empty during setup.
+  const dbHostingPlans = allPlans?.filter((p) => p.plan_type === "hosting").map(mapDbPlan);
+  const hostingPlans = dbHostingPlans?.length ? dbHostingPlans : staticHostingPlans;
+
   return (
     <div>
       <PageHero eyebrow="Hosting & Cloud" title="Managed hosting, worry-free" subtitle="Cloud, servers, CDN, email and backups — one team, one bill." />
@@ -32,7 +61,7 @@ function HostingPage() {
       <Section className="bg-muted/30">
         <h2 className="font-display text-2xl font-semibold">Hosting plans</h2>
         <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {hostingPlans.map((p) => <PricingCard key={p.name} plan={p} cycle="monthly" />)}
+          {hostingPlans.map((p: any) => <PricingCard key={p.name} plan={p} cycle="monthly" />)}
         </div>
       </Section>
       <CTABand title="Need a custom architecture?" primary={{ label: "Talk to a cloud engineer", to: "/contact" }} />

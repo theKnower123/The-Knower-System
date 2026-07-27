@@ -154,7 +154,13 @@ class User extends Authenticatable
             ],
             'support' => [
                 "dashboard.view", "support.view", "ticket.manage", "ticket.reply", 
-                "client.manage"
+                "client.manage", "support.inbox", "support.tickets", "support.canned",
+                "support.kb_read"
+            ],
+            'support_manager' => [
+                "dashboard.view", "support.view", "ticket.manage", "ticket.reply",
+                "client.manage", "support.inbox", "support.tickets", "support.canned",
+                "support.kb_read", "support.manage"
             ],
             'client' => ["client_portal.view"],
             default => []

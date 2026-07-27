@@ -14,6 +14,9 @@ class BugService
 
     public function create(array $data): Bug
     {
+        if (empty($data['description'])) {
+            $data['description'] = 'No description provided.';
+        }
         return Bug::create($data);
     }
 

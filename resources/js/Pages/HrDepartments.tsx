@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useTranslation } from "react-i18next";
 import { ResourcePage } from "@/components/resource-page";
 import { QuickForm } from "@/components/quick-form";
@@ -31,7 +32,7 @@ export default function DepartmentsPage() {
               close();
             } catch (err: any) {
               console.error("Failed to add department", err);
-              alert(err.response?.data?.message || "Failed to save department.");
+              toast(err.response?.data?.message || "Failed to save department.");
             }
           }}
           fields={[

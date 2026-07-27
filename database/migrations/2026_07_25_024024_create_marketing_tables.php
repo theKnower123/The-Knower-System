@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('contracts', function (Blueprint $table) {
-            $table->decimal('amount', 15, 2)->default(0)->after('end_date');
+        Schema::create('marketing_tables', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('contracts', function (Blueprint $table) {
-            $table->dropColumn('amount');
-        });
+        Schema::dropIfExists('marketing_tables');
     }
 };

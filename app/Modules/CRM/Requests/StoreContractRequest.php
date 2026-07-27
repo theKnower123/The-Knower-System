@@ -15,6 +15,8 @@ class StoreContractRequest extends FormRequest
     {
         return [
             'client_id' => 'required|exists:clients,id',
+            'project_id' => 'nullable|exists:projects,id',
+            'type' => 'nullable|string',
             'quotation_id' => 'nullable|exists:quotations,id',
             'contract_number' => 'nullable|string|max:100|unique:contracts,contract_number',
             'start_date' => 'required|date',

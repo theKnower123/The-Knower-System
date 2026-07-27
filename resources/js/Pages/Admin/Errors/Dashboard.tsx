@@ -63,9 +63,9 @@ export default function ErrorDashboard({ stats, topErrors, latestExceptions }: a
         <div className="rounded-xl border bg-card text-card-foreground shadow">
           <div className="p-6">
             <h3 className="font-semibold leading-none tracking-tight mb-4">Top Errors</h3>
-            <div className="space-y-4">
+            <div className="flex flex-col">
               {topErrors.map((error: any, i: number) => (
-                <div key={i} className="flex items-center justify-between border-b pb-2 last:border-0 last:pb-0">
+                <div key={i} className="flex items-center justify-between [&:not(:last-child)]:border-b [&:not(:last-child)]:pb-3 [&:not(:first-child)]:pt-3">
                   <div className="flex items-center gap-3 overflow-hidden">
                     <span className="bg-muted px-2 py-1 rounded text-xs font-mono shrink-0">{error.status_code}</span>
                     <span className="text-sm truncate" title={error.message}>{error.message || 'Unknown Error'}</span>
@@ -81,9 +81,9 @@ export default function ErrorDashboard({ stats, topErrors, latestExceptions }: a
         <div className="rounded-xl border bg-card text-card-foreground shadow">
           <div className="p-6">
             <h3 className="font-semibold leading-none tracking-tight mb-4">Latest Exceptions</h3>
-            <div className="space-y-4">
+            <div className="flex flex-col">
               {latestExceptions.map((error: any) => (
-                <div key={error.id} className="flex flex-col border-b pb-3 last:border-0 last:pb-0">
+                <div key={error.id} className="flex flex-col [&:not(:last-child)]:border-b [&:not(:last-child)]:pb-3 [&:not(:first-child)]:pt-3">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm font-semibold truncate text-red-500" title={error.exception_type}>
                       {error.exception_type ? error.exception_type.split('\\').pop() : 'Error'}

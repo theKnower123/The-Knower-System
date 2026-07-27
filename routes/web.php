@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use Inertia\Inertia;
+require __DIR__.'/modules-new.php';
 
 Route::get('/', function () {
     return view('public');

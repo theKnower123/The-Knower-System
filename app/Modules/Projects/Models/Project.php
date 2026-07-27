@@ -20,6 +20,7 @@ class Project extends Model
     protected $fillable = [
         'client_id', 'name', 'description', 'type', 'status',
         'priority', 'start_date', 'deadline', 'budget', 'progress', 'created_by',
+        'tech_stack', 'language', 'github_link', 'assets_link'
     ];
 
     protected $casts = [
@@ -33,6 +34,8 @@ class Project extends Model
     public function client()        { return $this->belongsTo(Client::class); 
 }
     public function creator()       { return $this->belongsTo(User::class, 'created_by'); 
+}
+    public function users()         { return $this->belongsToMany(User::class); 
 }
     public function milestones()    { return $this->hasMany(Milestone::class); 
 }

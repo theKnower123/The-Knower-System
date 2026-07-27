@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHero, Section, PricingCard, CTABand, Card } from "@/components/public/blocks";
-import { plans as staticPlans, hostingPlans, maintenancePlans } from "@/mocks/marketing";
+import { plans as staticPlans, hostingPlans as staticHostingPlans, maintenancePlans as staticMaintenancePlans } from "@/mocks/marketing";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
@@ -20,24 +20,42 @@ export const Route = createFileRoute("/_public/pricing")({
   component: PricingPage,
 });
 
+// DB row -> the shape PricingCard expects. This was previously reading
+// p.description / p.is_popular, which don't exist on marketing_plans --
+// the real columns are `blurb` and `highlight`. That mismatch is why
+// featured/description never actually showed real data before.
+function mapDbPlan(p: any) {
+  return {
+    name: p.name,
+    price: { monthly: Number(p.price_monthly) || 0, yearly: Number(p.price_yearly) || 0 },
+    blurb: p.blurb,
+    features: p.features || [],
+    highlight: !!p.highlight,
+    cta: p.cta_text || undefined,
+  };
+}
+
 function PricingPage() {
   const [cycle, setCycle] = useState<"monthly" | "yearly">("monthly");
-  
-  const { data: dynamicPlans } = useQuery({
-    queryKey: ['public', 'pricing'],
+
+  const { data: allPlans } = useQuery({
+    queryKey: ["public", "pricing"],
     queryFn: async () => {
-      const res = await axios.get('/api/v1/public/pricing');
-      return res.data.plans.map((p: any) => ({
-        name: p.name,
-        price: { monthly: p.price_monthly, yearly: p.price_yearly },
-        blurb: p.description,
-        features: p.features || [],
-        highlight: p.is_popular,
-        cta: p.price_monthly == 0 ? "Contact sales" : undefined
-      }));
-    }
+      const res = await axios.get("/api/v1/public/pricing");
+      return (res.data.plans || []) as any[];
+    },
   });
-  const plansToUse = dynamicPlans || staticPlans;
+
+  // Split the one API response by plan_type instead of hitting 3 different
+  // static mock arrays. A plan only shows up here once someone sets its
+  // "Plan Type" in CMS > Pricing Plans (see the admin form fix).
+  const softwarePlans = allPlans?.filter((p) => (p.plan_type ?? "software") === "software").map(mapDbPlan);
+  const hostingPlans = allPlans?.filter((p) => p.plan_type === "hosting").map(mapDbPlan);
+  const maintenancePlans = allPlans?.filter((p) => p.plan_type === "maintenance").map(mapDbPlan);
+
+  const plansToUse = softwarePlans?.length ? softwarePlans : staticPlans;
+  const hostingToUse = hostingPlans?.length ? hostingPlans : staticHostingPlans;
+  const maintenanceToUse = maintenancePlans?.length ? maintenancePlans : staticMaintenancePlans;
 
   return (
     <div>
@@ -62,7 +80,7 @@ function PricingPage() {
         <h2 className="font-display text-2xl font-semibold">Hosting plans</h2>
         <p className="mt-2 text-muted-foreground">Managed cloud hosting with 24/7 monitoring.</p>
         <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {hostingPlans.map((p) => <PricingCard key={p.name} plan={p} cycle={cycle} />)}
+          {hostingToUse.map((p: any) => <PricingCard key={p.name} plan={p} cycle={cycle} />)}
         </div>
       </Section>
 
@@ -70,7 +88,7 @@ function PricingPage() {
         <h2 className="font-display text-2xl font-semibold">Maintenance plans</h2>
         <p className="mt-2 text-muted-foreground">Keep your software fast, secure and improving.</p>
         <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {maintenancePlans.map((p) => <PricingCard key={p.name} plan={p} cycle={cycle} />)}
+          {maintenanceToUse.map((p: any) => <PricingCard key={p.name} plan={p} cycle={cycle} />)}
         </div>
       </Section>
 

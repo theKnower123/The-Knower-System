@@ -233,10 +233,7 @@ export const faqs: FaqItem[] = [
 ];
 
 export const branches = [
-  { city: "Riyadh", country: "Saudi Arabia", address: "King Fahd Road, Olaya Tower, Riyadh", phone: "+966 11 000 0000", email: "riyadh@theknower.io" },
-  { city: "Dubai", country: "UAE", address: "Sheikh Zayed Road, Business Bay, Dubai", phone: "+971 4 000 0000", email: "dubai@theknower.io" },
-  { city: "Cairo", country: "Egypt", address: "Sheikh Zayed City, Cairo", phone: "+20 2 0000 0000", email: "cairo@theknower.io" },
-  { city: "London", country: "United Kingdom", address: "Canary Wharf, London", phone: "+44 20 0000 0000", email: "london@theknower.io" },
+  { city: " Alexandria", country: "Egypt", address: "Borj Al Arab, Alexandria", phone: "+20 2 0000 0000", email: "[EMAIL_ADDRESS]" },
 ];
 
 export const systemStatus = [

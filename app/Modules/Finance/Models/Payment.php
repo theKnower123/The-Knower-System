@@ -12,7 +12,7 @@ class Payment extends Model
     use HasWorkspace, LogsActivity;
 
     protected $fillable = [
-        'invoice_id', 'method', 'amount', 'paid_at', 'reference',
+        'invoice_id', 'method', 'amount', 'paid_at', 'reference', 'transfer_proof', 'notes',
     ];
 
     protected $casts = [

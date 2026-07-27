@@ -24,6 +24,10 @@ class StoreProjectRequest extends FormRequest
             'deadline' => 'nullable|date|after_or_equal:start_date',
             'budget' => 'nullable|numeric|min:0',
             'progress' => 'nullable|integer|min:0|max:100',
+            'tech_stack' => 'nullable|string',
+            'language' => 'nullable|string',
+            'users' => 'nullable|array',
+            'users.*' => 'exists:users,id',
         ];
     }
 }

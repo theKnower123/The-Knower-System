@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, Section, CTABand, PricingCard, FeatureCard } from "@/components/public/blocks";
-import { maintenancePlans } from "@/mocks/marketing";
+import { maintenancePlans as staticMaintenancePlans } from "@/mocks/marketing";
 import { Wrench, Shield, Activity, RefreshCw, Bug, TrendingUp } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export const Route = createFileRoute("/_public/maintenance")({
   head: () => ({
@@ -13,7 +15,29 @@ export const Route = createFileRoute("/_public/maintenance")({
   component: MaintenancePage,
 });
 
+function mapDbPlan(p: any) {
+  return {
+    name: p.name,
+    price: { monthly: Number(p.price_monthly) || 0, yearly: Number(p.price_yearly) || 0 },
+    blurb: p.blurb,
+    features: p.features || [],
+    highlight: !!p.highlight,
+    cta: p.cta_text || undefined,
+  };
+}
+
 function MaintenancePage() {
+  const { data: allPlans } = useQuery({
+    queryKey: ["public", "pricing"],
+    queryFn: async () => {
+      const res = await axios.get("/api/v1/public/pricing");
+      return (res.data.plans || []) as any[];
+    },
+  });
+
+  const dbMaintenancePlans = allPlans?.filter((p) => p.plan_type === "maintenance").map(mapDbPlan);
+  const maintenancePlans = dbMaintenancePlans?.length ? dbMaintenancePlans : staticMaintenancePlans;
+
   return (
     <div>
       <PageHero eyebrow="Maintenance" title="Software that keeps getting better" subtitle="Security patches, performance tuning, bug fixes and continuous improvement." />
@@ -32,7 +56,7 @@ function MaintenancePage() {
       <Section className="bg-muted/30">
         <h2 className="font-display text-2xl font-semibold">Maintenance plans</h2>
         <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {maintenancePlans.map((p) => <PricingCard key={p.name} plan={p} cycle="monthly" />)}
+          {maintenancePlans.map((p: any) => <PricingCard key={p.name} plan={p} cycle="monthly" />)}
         </div>
       </Section>
       <CTABand title="Emergency support needed?" subtitle="24/7 hotline for critical issues." primary={{ label: "Contact support", to: "/support" }} />

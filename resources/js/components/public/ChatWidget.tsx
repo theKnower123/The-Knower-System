@@ -5,6 +5,7 @@ import { MessageSquare, X, Send, Paperclip, Minimize2, MoreHorizontal } from 'lu
 import { cn } from '@/lib/utils';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface Message {
   id: string;
@@ -14,6 +15,7 @@ interface Message {
 }
 
 export function ChatWidget() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
@@ -158,14 +160,14 @@ export function ChatWidget() {
           <div className="flex-1 overflow-y-auto p-4 bg-muted/10 space-y-4">
             {!hasStarted ? (
               <div className="bg-background border shadow-sm rounded-xl p-5 mt-4">
-                <h4 className="font-semibold mb-2">Welcome! 👋</h4>
-                <p className="text-sm text-muted-foreground mb-4">Please fill out the form below so we can assist you better.</p>
+                <h4 className="font-semibold mb-2">{t("chat.welcome", "Welcome! 👋")}</h4>
+                <p className="text-sm text-muted-foreground mb-4">{t("chat.please_fill", "Please fill out the form below so we can assist you better.")}</p>
                 <form onSubmit={handleStartChat} className="space-y-3">
                   <div>
-                    <Input placeholder="Name *" required value={name} onChange={e => setName(e.target.value)} className="bg-muted/50" />
+                    <Input placeholder={`${t("common.name", "Name")} *`} required value={name} onChange={e => setName(e.target.value)} className="bg-muted/50" />
                   </div>
                   <div>
-                    <Input type="email" placeholder="Email *" required value={email} onChange={e => setEmail(e.target.value)} className="bg-muted/50" />
+                    <Input type="email" placeholder={`${t("common.email", "Email")} *`} required value={email} onChange={e => setEmail(e.target.value)} className="bg-muted/50" />
                   </div>
                   <div>
                     <select 
@@ -173,12 +175,12 @@ export function ChatWidget() {
                       value={department}
                       onChange={e => setDepartment(e.target.value)}
                     >
-                      <option value="Support">General Support</option>
-                      <option value="Sales">Sales & Billing</option>
-                      <option value="Technical">Technical Help</option>
+                      <option value="Support">{t("chat.support", "General Support")}</option>
+                      <option value="Sales">{t("chat.sales", "Sales & Billing")}</option>
+                      <option value="Technical">{t("chat.technical", "Technical Help")}</option>
                     </select>
                   </div>
-                  <Button type="submit" className="w-full">Start Chat</Button>
+                  <Button type="submit" className="w-full">{t("chat.start", "Start Chat")}</Button>
                 </form>
               </div>
             ) : (
@@ -241,7 +243,7 @@ export function ChatWidget() {
                 <input 
                   type="text"
                   className="flex-1 bg-transparent border-0 focus:ring-0 text-sm p-2.5 outline-none min-w-0"
-                  placeholder="Type your message..."
+                  placeholder={t("chat.type_message", "Type your message...")}
                   value={reply}
                   onChange={e => setReply(e.target.value)}
                   disabled={!hasStarted}

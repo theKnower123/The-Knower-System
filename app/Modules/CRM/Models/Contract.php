@@ -12,7 +12,7 @@ class Contract extends Model
     use HasWorkspace, LogsActivity;
 
     protected $fillable = [
-        'client_id', 'quotation_id', 'contract_number', 'start_date', 'end_date', 'status', 'file', 'amount'
+        'client_id', 'project_id', 'type', 'quotation_id', 'contract_number', 'start_date', 'end_date', 'status', 'file', 'amount'
     ];
 
     protected $casts = [

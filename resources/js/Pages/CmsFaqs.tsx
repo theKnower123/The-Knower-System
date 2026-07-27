@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { ResourcePage } from "@/components/resource-page";
 import { QuickForm } from "@/components/quick-form";
 import { useCollection, add } from "@/mocks/store";
@@ -24,7 +25,7 @@ export default function CmsFaqsPage() {
               await add("faqs", { ...{"isActive":true,"order":0}, ...v });
               close();
             } catch (err: any) {
-              alert(err.response?.data?.message || "Failed to save faq.");
+              toast(err.response?.data?.message || "Failed to save faq.");
             }
           }}
           fields={[

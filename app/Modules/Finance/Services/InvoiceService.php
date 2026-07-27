@@ -14,6 +14,9 @@ class InvoiceService
 
     public function create(array $data): Invoice
     {
+        if (empty($data['invoice_number'])) {
+            $data['invoice_number'] = 'INV-' . strtoupper(uniqid());
+        }
         return Invoice::create($data);
     }
 

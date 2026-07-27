@@ -1,3 +1,5 @@
+import { useState } from "react";
+import axios from "axios";
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, Section, Card } from "@/components/public/blocks";
 import { branches } from "@/mocks/marketing";
@@ -10,20 +12,72 @@ import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
 
 export const Route = createFileRoute("/_public/contact")({
   head: () => ({ meta: [{ title: "Contact — The Knower" }, { name: "description", content: "Talk to sales, book a demo, or find your local office." }] }),
-  component: () => (
+  component: ContactPage,
+});
+
+function ContactPage() {
+  const [sending, setSending] = useState(false);
+  const [bookingDemo, setBookingDemo] = useState(false);
+  const [demoDone, setDemoDone] = useState(false);
+
+  async function handleContactSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    setSending(true);
+    try {
+      await axios.post("/api/v1/public/contact", {
+        name: data.get("name"),
+        company: data.get("company") || null,
+        email: data.get("email"),
+        phone: data.get("phone") || null,
+        message: data.get("message"),
+      });
+      toast.success("Thanks! We'll reply within a business hour.");
+      form.reset();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message ?? "Something went wrong. Please try again.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  async function handleBookDemo() {
+    const name = window.prompt("Your full name?");
+    if (!name) return;
+    const email = window.prompt("Your email?");
+    if (!email) return;
+
+    setBookingDemo(true);
+    try {
+      await axios.post("/api/v1/public/demo-request", { name, email });
+      toast.success("Demo request received — our team will email you to pick a time.");
+      setDemoDone(true);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message ?? "Something went wrong. Please try again.");
+    } finally {
+      setBookingDemo(false);
+    }
+  }
+
+  return (
     <div>
       <PageHero eyebrow="Contact" title="Let's talk" subtitle="We usually reply within a business hour." />
       <Section>
         <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
           <Card>
             <h2 className="font-display text-xl font-semibold">Send us a message</h2>
-            <form onSubmit={(e) => { e.preventDefault(); toast.success("Thanks! We'll reply within a business hour."); }} className="mt-6 grid gap-4 sm:grid-cols-2">
-              <div><Label>Full name</Label><Input required /></div>
-              <div><Label>Company</Label><Input /></div>
-              <div><Label>Email</Label><Input type="email" required /></div>
-              <div><Label>Phone</Label><Input /></div>
-              <div className="sm:col-span-2"><Label>How can we help?</Label><Textarea rows={5} required /></div>
-              <div className="sm:col-span-2"><Button type="submit" size="lg" className="w-full sm:w-auto">Send message</Button></div>
+            <form onSubmit={handleContactSubmit} className="mt-6 grid gap-4 sm:grid-cols-2">
+              <div><Label>Full name</Label><Input name="name" required /></div>
+              <div><Label>Company</Label><Input name="company" /></div>
+              <div><Label>Email</Label><Input name="email" type="email" required /></div>
+              <div><Label>Phone</Label><Input name="phone" /></div>
+              <div className="sm:col-span-2"><Label>How can we help?</Label><Textarea name="message" rows={5} required /></div>
+              <div className="sm:col-span-2">
+                <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={sending}>
+                  {sending ? "Sending…" : "Send message"}
+                </Button>
+              </div>
             </form>
           </Card>
           <div className="space-y-4">
@@ -40,7 +94,18 @@ export const Route = createFileRoute("/_public/contact")({
             <Card>
               <h3 className="font-display text-base font-semibold">Book a demo</h3>
               <p className="mt-1 text-sm text-muted-foreground">30 minutes with a product expert.</p>
-              <Button className="mt-3 w-full" onClick={() => toast.success("Demo scheduled — check your inbox.")}>Pick a time</Button>
+              {/*
+                NOTE: there's no real calendar/scheduling system in this
+                project (no Calendly-style booking). This now creates a
+                real Lead tagged "Demo request" in CRM > Leads, and a human
+                on your sales team follows up to actually pick a time.
+                If you want true self-serve time-slot picking, that needs
+                a calendar integration (Calendly, Cal.com, or a custom
+                availability system) -- a separate, bigger feature.
+              */}
+              <Button className="mt-3 w-full" onClick={handleBookDemo} disabled={bookingDemo || demoDone}>
+                {demoDone ? "Request received ✓" : bookingDemo ? "Sending…" : "Request a time"}
+              </Button>
             </Card>
           </div>
         </div>
@@ -59,5 +124,5 @@ export const Route = createFileRoute("/_public/contact")({
         </div>
       </Section>
     </div>
-  ),
-});
+  );
+}

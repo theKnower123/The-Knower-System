@@ -11,6 +11,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 import { useState } from "react";
 import { useAuth } from "@/store/auth";
 import { toast } from "sonner";
@@ -22,6 +33,7 @@ export default function CalendarPage() {
   const user = useAuth((s) => s.user);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deletingEvent, setDeletingEvent] = useState<{id: string, title: string} | null>(null);
   const [selectedDate, setSelectedDate] = useState<{ start: string; end: string } | null>(null);
   const [formData, setFormData] = useState({
     title: "",
@@ -30,17 +42,35 @@ export default function CalendarPage() {
     type: "meeting", // meeting, deadline, event
   });
 
-  const events = meetings?.map((m: any) => ({
-    id: String(m.id),
-    title: m.title,
-    start: m.start_time,
-    end: m.end_time,
-    extendedProps: {
-      description: m.description,
-      project_id: m.project_id,
-    },
-    backgroundColor: m.project_id ? "var(--primary)" : "var(--chart-2)",
+  const contracts = useCollection("contracts");
+
+  const meetingEvents = meetings?.map((m: any) => ({
+    id: `meet_${m.id}`,
+    title: `🤝 ${m.title}`,
+    start: m.startTime || m.start_time,
+    end: m.endTime || m.end_time,
+    extendedProps: { description: m.description },
+    backgroundColor: "var(--primary)",
   })) || [];
+
+  const projectEvents = projects?.filter((p: any) => p.deadline).map((p: any) => ({
+    id: `proj_${p.id}`,
+    title: `🚀 ${p.name} Deadline`,
+    start: p.deadline,
+    allDay: true,
+    backgroundColor: "var(--chart-2)",
+  })) || [];
+
+  const contractEvents = contracts?.filter((c: any) => c.startDate).map((c: any) => ({
+    id: `cont_${c.id}`,
+    title: `📄 Contract: ${c.number}`,
+    start: c.startDate || c.start_date,
+    end: c.endDate || c.end_date,
+    allDay: true,
+    backgroundColor: "var(--chart-4)",
+  })) || [];
+
+  const events = [...meetingEvents, ...projectEvents, ...contractEvents];
 
   const handleDateSelect = (selectInfo: any) => {
     setSelectedDate({
@@ -52,10 +82,15 @@ export default function CalendarPage() {
   };
 
   const handleEventClick = (clickInfo: any) => {
-    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'?`)) {
-      remove("meetings", clickInfo.event.id).then(() => {
+    setDeletingEvent({ id: clickInfo.event.id, title: clickInfo.event.title });
+  };
+
+  const confirmDeleteEvent = () => {
+    if (deletingEvent) {
+      remove("meetings", deletingEvent.id.replace("meet_", "")).then(() => {
         toast.success("Event deleted");
-      });
+        setDeletingEvent(null);
+      }).catch(() => toast.error("Failed to delete event"));
     }
   };
 
@@ -103,7 +138,7 @@ export default function CalendarPage() {
           select={handleDateSelect}
           eventClick={handleEventClick}
           eventDrop={(info) => {
-            update("meetings", info.event.id, {
+            update("meetings", info.event.id.replace("meet_", ""), {
               start_time: info.event.startStr,
               end_time: info.event.endStr || info.event.startStr,
             });
@@ -157,6 +192,23 @@ export default function CalendarPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!deletingEvent} onOpenChange={(open) => !open && setDeletingEvent(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("common.confirmDeleteTitle") || "Are you absolutely sure?"}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("common.confirmDeleteDesc") || "This action cannot be undone. This will permanently delete the record."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeletingEvent(null)}>{t("common.cancel")}</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteEvent} className="bg-red-500 hover:bg-red-600 text-white">
+              {t("common.delete")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

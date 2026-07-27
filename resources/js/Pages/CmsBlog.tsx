@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { ResourcePage } from "@/components/resource-page";
 import { QuickForm } from "@/components/quick-form";
 import { useCollection, add } from "@/mocks/store";
@@ -24,7 +25,7 @@ export default function CmsBlogPage() {
               await add("blogPosts", { ...{"isPublished":true,"authorName":"Admin"}, ...v });
               close();
             } catch (err: any) {
-              alert(err.response?.data?.message || "Failed to save post.");
+              toast(err.response?.data?.message || "Failed to save post.");
             }
           }}
           fields={[

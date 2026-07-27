@@ -14,6 +14,9 @@ class ContractService
 
     public function create(array $data): Contract
     {
+        if (empty($data['contract_number'])) {
+            $data['contract_number'] = 'CTR-' . strtoupper(uniqid());
+        }
         return Contract::create($data);
     }
 

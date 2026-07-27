@@ -1,53 +1,236 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, X, SlidersHorizontal } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 export interface Column<T> {
   key: string;
   header: string;
   cell: (row: T) => ReactNode;
   className?: string;
+  /** Hide this column on mobile card view to reduce clutter */
+  hideOnMobile?: boolean;
 }
 
-export function DataTable<T extends { id: string }>({
+export type FilterDef =
+  | {
+      type?: "select";
+      key: string;
+      label: string;
+      options: { value: string; label: string }[];
+      accessor?: (row: any) => string;
+    }
+  | {
+      type: "date-range";
+      key: string;
+      label: string;
+      accessor?: (row: any) => string | Date | null | undefined;
+    };
+
+export function DataTable<T extends { id: string | number }>({
   rows,
   columns,
   searchable = true,
   getSearchable,
   empty = "Nothing here yet",
+  filters,
 }: {
   rows: T[];
   columns: Column<T>[];
   searchable?: boolean;
   getSearchable?: (row: T) => string;
   empty?: string;
+  filters?: FilterDef[];
 }) {
   const [q, setQ] = useState("");
+  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
+  const [appliedFilters, setAppliedFilters] = useState<Record<string, string>>({});
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
+
+  const hasActiveFilters = Object.values(appliedFilters).some((v) => v && v !== "__all__");
+
+  const setFilter = (key: string, value: string) => {
+    setActiveFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const clearFilters = () => {
+    setActiveFilters({});
+    setAppliedFilters({});
+  };
+
+  const applyFilters = () => {
+    setAppliedFilters(activeFilters);
+  };
+
   const filtered = useMemo(() => {
-    if (!q.trim()) return rows;
-    const needle = q.toLowerCase();
-    return rows.filter((r) => {
-      const hay = getSearchable
-        ? getSearchable(r)
-        : Object.values(r as Record<string, unknown>).join(" ").toString();
-      return hay.toLowerCase().includes(needle);
-    });
-  }, [rows, q, getSearchable]);
+    let result = rows;
+
+    // Apply dropdown filters based on appliedFilters
+    if (filters) {
+      for (const filter of filters) {
+        if (filter.type === "date-range") {
+          const from = appliedFilters[`${filter.key}_from`];
+          const to = appliedFilters[`${filter.key}_to`];
+          if (from || to) {
+            result = result.filter((r) => {
+              const val = filter.accessor ? filter.accessor(r) : (r as any)[filter.key];
+              if (!val) return false;
+              const dateVal = new Date(val).getTime();
+              if (from && dateVal < new Date(from).getTime()) return false;
+              if (to && dateVal > new Date(to).getTime() + 86399000) return false; // Include the whole 'to' day
+              return true;
+            });
+          }
+        } else {
+          const val = appliedFilters[filter.key];
+          if (val && val !== "__all__") {
+            result = result.filter((r) => {
+              if (filter.accessor) {
+                return filter.accessor(r) === val;
+              }
+              const rowVal = (r as any)[filter.key];
+              return String(rowVal ?? "") === val;
+            });
+          }
+        }
+      }
+    }
+
+    // Apply text search
+    if (q.trim()) {
+      const needle = q.toLowerCase();
+      result = result.filter((r) => {
+        const hay = getSearchable
+          ? getSearchable(r)
+          : Object.values(r as Record<string, unknown>).join(" ").toString();
+        return hay.toLowerCase().includes(needle);
+      });
+    }
+
+    return result;
+  }, [rows, q, activeFilters, getSearchable, filters]);
+
+  // Separate columns for mobile: first column as "title", rest as detail rows
+  const mobileColumns = columns.filter((c) => !c.hideOnMobile);
 
   return (
     <div className="space-y-3">
-      {searchable && (
-        <div className="relative max-w-sm">
-          <Search className="absolute inset-s-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search…"
-            className="ps-9"
-          />
+      {/* Search + Filter Controls */}
+      {(searchable || (filters && filters.length > 0)) && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            {searchable && (
+              <div className="relative flex-1 max-w-sm">
+                <Search className="absolute inset-s-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Search…"
+                  className="ps-9"
+                />
+              </div>
+            )}
+            {filters && filters.length > 0 && (
+              <Button
+                variant={filtersExpanded || hasActiveFilters ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFiltersExpanded(!filtersExpanded)}
+                className="gap-1.5 shrink-0"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+                <span className="hidden sm:inline">Filters</span>
+                {hasActiveFilters && (
+                  <span className="ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-background/20 text-[10px] font-bold">
+                    {Object.values(activeFilters).filter((v) => v && v !== "__all__").length}
+                  </span>
+                )}
+              </Button>
+            )}
+          </div>
+
+          {/* Filter Dropdowns */}
+          {filters && filters.length > 0 && filtersExpanded && (
+            <div className="flex flex-col gap-3 rounded-lg border border-border/60 bg-muted/30 p-3">
+              <div className="flex flex-wrap items-end gap-3">
+                {filters.map((f) => (
+                  <div key={f.key} className="space-y-1 min-w-[140px] flex-1 max-w-[280px]">
+                    <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                      {f.label}
+                    </label>
+                    {f.type === "date-range" ? (
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="date"
+                          className="h-8 text-xs"
+                          value={activeFilters[`${f.key}_from`] || ""}
+                          onChange={(e) => setFilter(`${f.key}_from`, e.target.value)}
+                        />
+                        <span className="text-xs text-muted-foreground">to</span>
+                        <Input
+                          type="date"
+                          className="h-8 text-xs"
+                          value={activeFilters[`${f.key}_to`] || ""}
+                          onChange={(e) => setFilter(`${f.key}_to`, e.target.value)}
+                        />
+                      </div>
+                    ) : (
+                      <Select
+                        value={activeFilters[f.key] || "__all__"}
+                        onValueChange={(v) => setFilter(f.key, v)}
+                      >
+                        <SelectTrigger className="h-8 text-xs">
+                          <SelectValue placeholder={`All ${f.label}`} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="__all__">All {f.label}</SelectItem>
+                          {f.options.map((o) => (
+                            <SelectItem key={o.value} value={o.value}>
+                              {o.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-2 pt-2 border-t border-border/40">
+                <Button size="sm" onClick={applyFilters}>
+                  Apply Filters
+                </Button>
+                {(Object.keys(activeFilters).length > 0 || hasActiveFilters) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearFilters}
+                    className="gap-1 text-xs text-muted-foreground hover:text-destructive h-8"
+                  >
+                    <X className="h-3 w-3" />
+                    Clear all
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
+
+      {/* Results count when filtering */}
+      {(q.trim() || hasActiveFilters) && (
+        <p className="text-xs text-muted-foreground">
+          Showing {filtered.length} of {rows.length} results
+        </p>
+      )}
+
+      {/* ── Desktop table view (hidden on mobile) ── */}
+      <div className="hidden sm:block overflow-hidden rounded-xl border border-border bg-card">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-muted/40">
@@ -91,6 +274,43 @@ export function DataTable<T extends { id: string }>({
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* ── Mobile card view (hidden on desktop) ── */}
+      <div className="sm:hidden space-y-3">
+        {filtered.length === 0 && (
+          <div className="rounded-xl border border-border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
+            {empty}
+          </div>
+        )}
+        {filtered.map((row) => (
+          <div
+            key={row.id}
+            className="rounded-xl border border-border bg-card p-4 space-y-2"
+          >
+            {mobileColumns.map((c, i) => (
+              <div
+                key={c.key}
+                className={
+                  i === 0
+                    ? "text-sm font-medium"
+                    : "flex items-center justify-between gap-2 text-sm"
+                }
+              >
+                {i === 0 ? (
+                  c.cell(row)
+                ) : (
+                  <>
+                    <span className="text-xs text-muted-foreground shrink-0">
+                      {c.header}
+                    </span>
+                    <span className="text-end">{c.cell(row)}</span>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );

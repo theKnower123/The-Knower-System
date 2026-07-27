@@ -1,13 +1,26 @@
 import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/page-header";
 import { StatCard } from "@/components/stat-card";
-import { useCollection, seed } from "@/mocks/store";
 import { money } from "@/lib/format";
 import { Button } from "@/components/ui/button";
-import { Download, FileSpreadsheet, FileText, TrendingUp, Users, FolderKanban, UsersRound } from "lucide-react";
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import { Download, FileSpreadsheet, FileText, TrendingUp, Users, FolderKanban, UsersRound, Loader2 } from "lucide-react";
+import { BarChart, Bar, LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-const reports = [
+const api = axios.create({
+  baseURL: "/api/v1",
+  headers: { Accept: "application/json" },
+  withCredentials: true,
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("auth_token");
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+const reportCards = [
   { key: "sales", label: "Sales report", icon: TrendingUp, description: "Leads, quotes, and conversion" },
   { key: "finance", label: "Finance report", icon: FileText, description: "Revenue, expenses, and margin" },
   { key: "clients", label: "Clients report", icon: Users, description: "Growth and retention" },
@@ -17,10 +30,53 @@ const reports = [
 
 export default function ReportsPage() {
   const { t } = useTranslation();
-  const clients = useCollection("clients");
-  const projects = useCollection("projects");
-  const employees = useCollection("employees");
-  const revenue = seed.revenueSeries.reduce((s, r) => s + r.revenue, 0);
+
+  // ── Fetch all report data ──
+  const { data: revenueData, isLoading: revLoading } = useQuery({
+    queryKey: ["reports", "revenue"],
+    queryFn: async () => {
+      const res = await api.get("/reports/revenue");
+      return res.data.data;
+    },
+  });
+
+  const { data: financeData } = useQuery({
+    queryKey: ["reports", "finance"],
+    queryFn: async () => {
+      const res = await api.get("/reports/finance");
+      return res.data.data;
+    },
+  });
+
+  const { data: projectsData } = useQuery({
+    queryKey: ["reports", "projects"],
+    queryFn: async () => {
+      const res = await api.get("/reports/projects");
+      return res.data.data;
+    },
+  });
+
+  const { data: clientsData } = useQuery({
+    queryKey: ["reports", "clients"],
+    queryFn: async () => {
+      const res = await api.get("/reports/clients");
+      return res.data.data;
+    },
+  });
+
+  const { data: employeesData } = useQuery({
+    queryKey: ["reports", "employees"],
+    queryFn: async () => {
+      const res = await api.get("/reports/employees");
+      return res.data.data;
+    },
+  });
+
+  const totalRevenue = revenueData?.total_revenue || 0;
+  const totalExpenses = revenueData?.total_expenses || 0;
+  const totalClients = clientsData?.summary?.total || 0;
+  const totalProjects = projectsData?.summary?.total || 0;
+  const totalEmployees = employeesData?.summary?.total || 0;
 
   return (
     <div className="space-y-6">
@@ -34,28 +90,48 @@ export default function ReportsPage() {
           </>
         }
       />
+
+      {/* ── KPI Summary ── */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Total revenue" value={money(revenue)} icon={TrendingUp} accent="success" />
-        <StatCard label="Clients" value={clients.length} icon={Users} />
-        <StatCard label="Projects" value={projects.length} icon={FolderKanban} />
-        <StatCard label="Employees" value={employees.length} icon={UsersRound} />
+        <StatCard label="Total revenue" value={money(totalRevenue)} icon={TrendingUp} accent="success" />
+        <StatCard label="Total expenses" value={money(totalExpenses)} icon={FileText} accent="destructive" />
+        <StatCard label="Net profit" value={money(totalRevenue - totalExpenses)} icon={TrendingUp} accent={totalRevenue - totalExpenses > 0 ? "success" : "destructive"} />
+        <StatCard label="Unpaid invoices" value={financeData?.unpaid_invoices || 0} icon={FileText} accent="warning" delta={money(financeData?.total_unpaid || 0)} />
       </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StatCard label="Clients" value={totalClients} icon={Users} delta={`${clientsData?.summary?.active || 0} active`} />
+        <StatCard label="Projects" value={totalProjects} icon={FolderKanban} delta={`${projectsData?.summary?.active || 0} active, ${projectsData?.summary?.overdue || 0} overdue`} />
+        <StatCard label="Employees" value={totalEmployees} icon={UsersRound} delta={`${employeesData?.summary?.active || 0} active`} />
+      </div>
+
+      {/* ── Revenue Chart (Monthly breakdown) ── */}
       <div className="rounded-xl border border-border bg-card p-6">
-        <h3 className="mb-4 font-display text-base font-semibold">Revenue trend</h3>
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="font-display text-base font-semibold">Revenue vs Expenses ({revenueData?.year || new Date().getFullYear()})</h3>
+          {revLoading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+        </div>
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={seed.revenueSeries}>
+            <BarChart data={revenueData?.monthly || []}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
               <XAxis dataKey="month" stroke="var(--muted-foreground)" fontSize={11} />
               <YAxis stroke="var(--muted-foreground)" fontSize={11} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
-              <Tooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} formatter={(v) => money(Number(v))} />
-              <Line type="monotone" dataKey="revenue" stroke="var(--chart-1)" strokeWidth={2.5} dot={{ r: 3 }} />
-            </LineChart>
+              <Tooltip
+                contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }}
+                formatter={(v: number) => money(v)}
+              />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Bar dataKey="revenue" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="expenses" fill="var(--chart-5)" radius={[4, 4, 0, 0]} />
+              <Line type="monotone" dataKey="profit" stroke="var(--chart-3)" strokeWidth={2} dot={{ r: 3 }} />
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
+
+      {/* ── Report Cards ── */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {reports.map((r) => (
+        {reportCards.map((r) => (
           <div key={r.key} className="group rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/40">
             <div className="flex items-start justify-between">
               <div className="rounded-lg bg-primary/10 p-2 text-primary"><r.icon className="h-5 w-5" /></div>

@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
-import { DataTable, type Column } from "@/components/data-table";
+import { DataTable, type Column, type FilterDef } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-export function ResourcePage<T extends { id: string }>({
+export function ResourcePage<T extends { id: string | number }>({
   title,
   description,
   rows,
@@ -23,6 +23,11 @@ export function ResourcePage<T extends { id: string }>({
   renderForm,
   onSubmit,
   extraActions,
+  renderEditForm,
+  editingRow,
+  onCloseEdit,
+  filters,
+  headerContent,
 }: {
   title: string;
   description?: string;
@@ -33,6 +38,13 @@ export function ResourcePage<T extends { id: string }>({
   renderForm?: (close: () => void) => ReactNode;
   onSubmit?: () => void;
   extraActions?: ReactNode;
+  renderEditForm?: (row: T, close: () => void) => ReactNode;
+  editingRow?: T | null;
+  onCloseEdit?: () => void;
+  /** Filter definitions for the data table */
+  filters?: FilterDef[];
+  /** Optional content rendered between the header and the table (e.g. stat cards) */
+  headerContent?: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   const canCreate = !!renderForm || !!onSubmit;
@@ -80,7 +92,22 @@ export function ResourcePage<T extends { id: string }>({
           </div>
         }
       />
-      <DataTable rows={rows} columns={columns} getSearchable={getSearchable} />
+
+      {headerContent}
+
+      <DataTable rows={rows} columns={columns} getSearchable={getSearchable} filters={filters} />
+
+      {/* Edit Dialog */}
+      {renderEditForm && editingRow && (
+        <Dialog open={!!editingRow} onOpenChange={(v) => !v && onCloseEdit?.()}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>Edit Details</DialogTitle>
+            </DialogHeader>
+            {renderEditForm(editingRow, () => onCloseEdit?.())}
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

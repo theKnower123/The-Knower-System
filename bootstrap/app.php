@@ -28,8 +28,8 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->reportable(function (\Throwable $e) {
-            \App\Modules\Core\Services\ErrorLoggingService::logException($e);
-        });
+    \App\Modules\Core\Services\ErrorLoggingService::logException($e);
+});
 
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),

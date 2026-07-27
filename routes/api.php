@@ -78,7 +78,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/team',        [\App\Modules\CMS\Controllers\PublicApiController::class, 'team']);
         Route::get('/services',    [\App\Modules\CMS\Controllers\PublicApiController::class, 'services']);
         Route::get('/careers',     [\App\Modules\CMS\Controllers\PublicApiController::class, 'careers']);
-        
+        Route::post('/contact',       [\App\Modules\CMS\Controllers\PublicApiController::class, 'submitContact']);
+    Route::post('/demo-request',  [\App\Modules\CMS\Controllers\PublicApiController::class, 'submitDemoRequest']);
         // Support Widget Ingestion
         Route::post('/support/ingest', [\App\Modules\Support\Controllers\IngestionController::class, 'ingest']);
     });
@@ -147,7 +148,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('milestones', MilestoneController::class);
         Route::apiResource('tasks',      TaskController::class);
         Route::apiResource('bugs',       BugController::class);
-        Route::apiResource('meetings',   \App\Modules\Projects\Controllers\MeetingController::class);
+        Route::apiResource('meetings', \App\Modules\CRM\Controllers\MeetingController::class);
         Route::apiResource('time-logs',  \App\Modules\Projects\Controllers\TimeLogController::class);
 
         // Task Comments

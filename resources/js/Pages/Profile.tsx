@@ -8,6 +8,7 @@ import { useAuth } from "@/store/auth";
 import { useState, useRef } from "react";
 import { toast } from "sonner";
 import { Camera, Save, Trash2, Smartphone, Monitor } from "lucide-react";
+import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 
 export default function ProfilePage() {
   const { t } = useTranslation();
@@ -53,9 +54,7 @@ export default function ProfilePage() {
   };
 
   const deleteAccount = () => {
-    if (confirm("Are you sure you want to permanently delete your account? This action cannot be undone.")) {
-      toast.success("Account deleted.");
-    }
+    toast.success("Account deleted.");
   };
 
   const initials = name
@@ -264,9 +263,11 @@ export default function ProfilePage() {
               <p className="text-sm text-muted-foreground mb-4">
                 Permanently delete your account and all associated data. This action cannot be undone.
               </p>
-              <Button variant="destructive" onClick={deleteAccount}>
-                <Trash2 className="mr-2 h-4 w-4" /> Delete Account
-              </Button>
+              <ConfirmDeleteButton onConfirm={deleteAccount} asChild>
+                <Button variant="destructive">
+                  <Trash2 className="mr-2 h-4 w-4" /> Delete Account
+                </Button>
+              </ConfirmDeleteButton>
             </div>
           </TabsContent>
 

@@ -14,6 +14,9 @@ class QuotationService
     public function create(array $data): Quotation
     {
         $data['created_by'] = Auth::id();
+        if (empty($data['quotation_number'])) {
+            $data['quotation_number'] = 'QT-' . strtoupper(uniqid());
+        }
         return Quotation::create($data);
     }
 
