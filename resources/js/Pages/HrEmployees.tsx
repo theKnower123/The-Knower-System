@@ -13,6 +13,7 @@ import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 export default function EmployeesPage() {
   const { t } = useTranslation();
   const rows = useCollection("employees");
+  const departments = useCollection("departments");
   const { user } = useAuth();
   
   const [editingRow, setEditingRow] = useState<Employee | null>(null);
@@ -40,9 +41,58 @@ export default function EmployeesPage() {
     { name: "phone", label: t("common.fields.phoneNumber") || "Phone Number", type: "text" },
     { name: "address", label: t("common.fields.address") || "Address", type: "text" },
     { name: "id_number", label: t("common.fields.nationalId") || "National ID Number", type: "text" },
-    { name: "id_photo", label: t("common.fields.idPhoto") || "ID Photo URL", type: "text" },
-    { name: "department", label: t("common.fields.department") || "Department", type: "text" },
-    { name: "position", label: t("common.fields.jobPosition") || "Job Position", type: "text" },
+    { name: "id_photo", label: t("common.fields.idPhoto") || "ID / Employee Photo", type: "file", accept: "image/*" },
+    { 
+      name: "department", 
+      label: t("common.fields.department") || "Department", 
+      type: "select",
+      options: [
+        { value: "", label: "— No Department —" },
+        ...departments.map((d: any) => ({ value: d.name, label: d.name })),
+      ]
+    },
+    { 
+      name: "position", 
+      label: t("common.fields.jobPosition") || "Job Title", 
+      type: "select",
+      options: [
+        { value: "Software Developer", label: "Software Developer" },
+        { value: "Senior Software Developer", label: "Senior Software Developer" },
+        { value: "Lead Developer", label: "Lead Developer" },
+        { value: "Full-Stack Developer", label: "Full-Stack Developer" },
+        { value: "Frontend Developer", label: "Frontend Developer" },
+        { value: "Backend Developer", label: "Backend Developer" },
+        { value: "Mobile Developer", label: "Mobile Developer" },
+        { value: "UI/UX Designer", label: "UI/UX Designer" },
+        { value: "Graphic Designer", label: "Graphic Designer" },
+        { value: "Project Manager", label: "Project Manager" },
+        { value: "Senior Project Manager", label: "Senior Project Manager" },
+        { value: "QA Engineer", label: "QA Engineer" },
+        { value: "QA Lead", label: "QA Lead" },
+        { value: "DevOps Engineer", label: "DevOps Engineer" },
+        { value: "System Administrator", label: "System Administrator" },
+        { value: "Network Engineer", label: "Network Engineer" },
+        { value: "Data Analyst", label: "Data Analyst" },
+        { value: "Business Analyst", label: "Business Analyst" },
+        { value: "Team Leader", label: "Team Leader" },
+        { value: "Technical Lead", label: "Technical Lead" },
+        { value: "HR Specialist", label: "HR Specialist" },
+        { value: "HR Manager", label: "HR Manager" },
+        { value: "Recruiter", label: "Recruiter" },
+        { value: "Accountant", label: "Accountant" },
+        { value: "Financial Analyst", label: "Financial Analyst" },
+        { value: "Sales Executive", label: "Sales Executive" },
+        { value: "Account Manager", label: "Account Manager" },
+        { value: "Customer Support Specialist", label: "Customer Support Specialist" },
+        { value: "Content Writer", label: "Content Writer" },
+        { value: "Marketing Specialist", label: "Marketing Specialist" },
+        { value: "SEO Specialist", label: "SEO Specialist" },
+        { value: "CEO", label: "CEO" },
+        { value: "CTO", label: "CTO" },
+        { value: "COO", label: "COO" },
+        { value: "Other", label: "Other" },
+      ]
+    },
     { name: "salary", label: t("common.fields.salary") || "Salary (USD)", type: "number" },
   ];
 

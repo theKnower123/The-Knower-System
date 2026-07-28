@@ -8,6 +8,16 @@ import { makeId, type Department } from "@/mocks/data";
 export default function DepartmentsPage() {
   const { t } = useTranslation();
   const rows = useCollection("departments");
+  const employees = useCollection("employees");
+
+  // Only team leaders can be department heads
+  const teamLeaderOptions = [
+    { value: "", label: "— No Head Assigned —" },
+    ...employees
+      .filter((e: any) => e.role === "team_leader" || e.role === "ceo" || e.role === "project_manager")
+      .map((e: any) => ({ value: e.name, label: e.name })),
+  ];
+
   return (
     <ResourcePage<Department>
       title={t("nav.departments")}
@@ -16,7 +26,7 @@ export default function DepartmentsPage() {
       newLabel="New department"
       columns={[
         { key: "name", header: t("common.name"), cell: (r) => <span className="font-medium">{r.name}</span> },
-        { key: "head", header: "Head", cell: (r) => r.head },
+        { key: "head", header: "Head", cell: (r) => r.head || "—" },
         { key: "count", header: "Employees", cell: (r) => r.employeeCount },
       ]}
       renderForm={(close) => (
@@ -26,7 +36,7 @@ export default function DepartmentsPage() {
             try {
               await add("departments", { 
                 name: v.name, 
-                head: v.head, 
+                head: v.head || "", 
                 employee_count: Number(v.employeeCount || 0) 
               });
               close();
@@ -37,7 +47,12 @@ export default function DepartmentsPage() {
           }}
           fields={[
             { name: "name", label: "Department name", type: "text", required: true },
-            { name: "head", label: "Head", type: "text" },
+            { 
+              name: "head", 
+              label: "Head (Team Leader)", 
+              type: "select",
+              options: teamLeaderOptions,
+            },
             { name: "employeeCount", label: "Employee count", type: "number", defaultValue: 0 },
           ]}
         />

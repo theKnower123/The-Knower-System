@@ -93,6 +93,7 @@ export interface Task {
   id: ID;
   projectId: ID;
   milestoneId?: ID;
+  departmentId?: string;
   title: string;
   description: string;
   assignee: string;

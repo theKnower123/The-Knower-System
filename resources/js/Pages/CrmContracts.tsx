@@ -15,6 +15,7 @@ export default function ContractsPage() {
   const { t } = useTranslation();
   const rows = useCollection("contracts");
   const clients = useCollection("clients");
+  const projects = useCollection("projects");
   const { user } = useAuth();
   
   const [editingRow, setEditingRow] = useState<Contract | null>(null);
@@ -22,7 +23,7 @@ export default function ContractsPage() {
 
   const formFields: FieldDef[] = [
     { name: "client_id", label: t("common.fields.client") || "Client", type: "select", options: clients.map((c) => ({ value: c.id, label: c.name })), required: true },
-    { name: "project_id", label: "Project ID", type: "text", required: true },
+    { name: "project_id", label: "Project", type: "select", options: [{ value: "", label: "— No Project —" }, ...projects.map((p) => ({ value: p.id as string, label: p.name }))], required: true },
     {
       name: "type",
       label: t("common.fields.contractType") || "Contract Type",
@@ -36,7 +37,7 @@ export default function ContractsPage() {
     },
     { name: "startDate", label: t("common.start"), type: "date" },
     { name: "endDate", label: t("common.end"), type: "date" },
-    { name: "file", label: t("common.document"), type: "text" },
+    { name: "file", label: t("common.document") || "Document (PDF / Word / Image)", type: "file", accept: ".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp" },
     {
       name: "status",
       label: t("common.status"),

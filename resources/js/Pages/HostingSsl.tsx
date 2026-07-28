@@ -37,7 +37,32 @@ export default function SSLPage() {
           }}
           fields={[
             { name: "domainId", label: "Domain", type: "select", options: domains.map((d) => ({ value: d.id, label: d.domain })), required: true },
-            { name: "provider", label: "Provider", type: "text", defaultValue: "Let's Encrypt" },
+            { 
+              name: "provider", 
+              label: "Provider", 
+              type: "select",
+              defaultValue: "Let's Encrypt",
+              options: [
+                // Free / most popular first
+                { value: "Let's Encrypt", label: "Let's Encrypt (Free)" },
+                { value: "ZeroSSL", label: "ZeroSSL (Free)" },
+                { value: "Cloudflare SSL", label: "Cloudflare SSL (Free)" },
+                // Paid providers
+                { value: "Sectigo", label: "Sectigo (Comodo)" },
+                { value: "DigiCert", label: "DigiCert" },
+                { value: "GlobalSign", label: "GlobalSign" },
+                { value: "GeoTrust", label: "GeoTrust" },
+                { value: "Thawte", label: "Thawte" },
+                { value: "RapidSSL", label: "RapidSSL" },
+                { value: "GoDaddy SSL", label: "GoDaddy SSL" },
+                { value: "Namecheap SSL", label: "Namecheap SSL" },
+                { value: "Entrust", label: "Entrust" },
+                { value: "SSL.com", label: "SSL.com" },
+                { value: "TrustAsia", label: "TrustAsia" },
+                { value: "HARICA", label: "HARICA" },
+                { value: "Other", label: "Other" },
+              ]
+            },
             { name: "expiryDate", label: "Expires", type: "date" },
           ]}
         />

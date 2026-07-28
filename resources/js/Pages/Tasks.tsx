@@ -49,10 +49,21 @@ const COLUMNS: Array<{ key: Task["status"]; label: string }> = [
 
 export default function TasksPage() {
   const { t } = useTranslation();
-  const tasks = useCollection("tasks");
+  const allTasks = useCollection("tasks");
   const projects = useCollection("projects");
   const users = useCollection("employees");
+  const departments = useCollection("departments");
   const { user } = useAuth();
+
+  // Determine the current user's department from employee records
+  const currentEmployee = users.find((u: any) => u.email === user?.email || u.name === user?.name);
+  const currentDepartment = (currentEmployee as any)?.department || null;
+
+  // Admins see all tasks; others see only tasks for their department
+  const canSeeAllTasks = ["super_admin", "ceo", "project_manager"].includes(user?.role || "");
+  const tasks = canSeeAllTasks
+    ? allTasks
+    : allTasks.filter((t: any) => !t.departmentId || t.departmentId === currentDepartment);
 
   const [viewMode, setViewMode] = useState<"kanban" | "table">("table");
   const [formOpen, setFormOpen] = useState(false);
@@ -101,11 +112,27 @@ export default function TasksPage() {
         { value: "urgent", label: "Urgent" },
       ],
     },
+    ...(canSeeAllTasks ? [{
+      key: "departmentId",
+      label: "Department",
+      options: departments.map((d: any) => ({ value: d.name, label: d.name })),
+      accessor: (row: any) => row.departmentId || "",
+    }] : []),
   ];
 
   const formFields: FieldDef[] = [
     { name: "title", label: "Task Title", type: "text", required: true },
     { name: "projectId", label: "Project", type: "select", options: projects.map((p) => ({ value: p.id as string, label: p.name })), required: true },
+    { 
+      name: "departmentId", 
+      label: "Department", 
+      type: "select", 
+      options: [
+        { value: "", label: "— All Departments —" },
+        ...departments.map((d: any) => ({ value: d.name, label: d.name }))
+      ],
+      defaultValue: currentDepartment || "",
+    },
     { name: "assigned_to", label: "Assignee", type: "select", options: [{ value: "", label: "— Unassigned —" }, ...users.map((u) => ({ value: u.id as string, label: u.name }))] },
     {
       name: "priority",
@@ -194,6 +221,7 @@ export default function TasksPage() {
                           id: makeId("tk"),
                           title: v.title,
                           projectId: v.projectId,
+                          departmentId: v.departmentId || currentDepartment || "",
                           assignee: users.find((u) => u.id === v.assigned_to)?.name || "Unassigned",
                           assigned_to: v.assigned_to || null,
                           priority: v.priority || "medium",
