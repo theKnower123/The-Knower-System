@@ -80,6 +80,7 @@ const groups: Group[] = [
     items: [
       { to: "/projects", labelKey: "nav.projects", icon: FolderKanban, perm: "project.view" },
       { to: "/tasks", labelKey: "nav.tasks", icon: ListTodo, perm: "task.view" },
+      { to: "/cms/team", labelKey: "Team Members", icon: Users, perm: "project.view" },
       { to: "/bugs", labelKey: "Maintenance & Bugs", icon: Bug, perm: "bug.manage" },
       { to: "/crm/contracts", labelKey: "nav.contracts", icon: Handshake, perm: "contract.manage" },
       { to: "/calendar", labelKey: "Calendar", icon: Calendar, perm: "project.view" },
@@ -123,7 +124,6 @@ const groups: Group[] = [
       { to: "/cms/testimonials", labelKey: "Testimonials", icon: Trophy, perm: "cms.manage" },
       { to: "/cms/faqs", labelKey: "FAQs", icon: FileText, perm: "cms.manage" },
       { to: "/cms/blog", labelKey: "Blog Posts", icon: Edit, perm: "cms.manage" },
-      { to: "/cms/team", labelKey: "Team Members", icon: Users, perm: "cms.manage" },
       { to: "/cms/services", labelKey: "Services", icon: Settings, perm: "cms.manage" },
     ],
   },
