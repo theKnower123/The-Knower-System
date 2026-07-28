@@ -42,6 +42,7 @@ export function DataTable<T extends { id: string | number }>({
   getSearchable,
   empty = "Nothing here yet",
   filters,
+  pageSize = 10,
 }: {
   rows: T[];
   columns: Column<T>[];
@@ -176,7 +177,7 @@ export function DataTable<T extends { id: string | number }>({
             <div className="flex flex-col gap-3 rounded-lg border border-border/60 bg-muted/30 p-3">
               <div className="flex flex-wrap items-end gap-3">
                 {filters.map((f) => (
-                  <div key={f.key} className="space-y-1 min-w-[140px] flex-1 max-w-[280px]">
+                  <div key={f.key} className={`space-y-1 flex-1 ${f.type === 'date-range' ? 'min-w-[300px] max-w-[400px]' : 'min-w-[140px] max-w-[280px]'}`}>
                     <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                       {f.label}
                     </label>
