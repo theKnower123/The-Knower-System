@@ -1,5 +1,5 @@
 import { Link } from "@inertiajs/react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Github, ExternalLink, Code2, Layers, Users } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { StatCard } from "@/components/stat-card";
@@ -14,18 +14,30 @@ import {
 } from "@/components/ui/tabs";
 import { DollarSign, Calendar, ListTodo, Bug } from "lucide-react";
 import { DataTable } from "@/components/data-table";
+import { useAuth } from "@/store/auth";
 
 export default function ProjectDetail() {
   const id = window.location.pathname.split("/").pop();
   const projects = useCollection("projects");
   const clients = useCollection("clients");
+  const employees = useCollection("employees");
   const milestones = useCollection("milestones").filter((m) => m.projectId === id);
   const tasks = useCollection("tasks").filter((t) => t.projectId === id);
   const bugs = useCollection("bugs").filter((b) => b.projectId === id);
   const files = useCollection("files").filter((f) => f.projectId === id);
   const project = projects.find((p) => p.id === id);
 
-  if (!project) {
+  const { user } = useAuth();
+  const isReadOnly = ["developer", "designer", "qa", "support", "accountant", "sales"].includes(user?.role || "");
+
+  // Check if project exists and user is assigned if read-only
+  const isAssigned = project
+    ? ((project as any).users || []).some(
+        (uid: string) => uid === String(user?.id) || uid === user?.name || uid === user?.email
+      )
+    : false;
+
+  if (!project || (isReadOnly && !isAssigned)) {
     return (
       <div className="space-y-4">
         <Button variant="ghost" asChild>
@@ -34,11 +46,19 @@ export default function ProjectDetail() {
             Back to projects
           </Link>
         </Button>
-        <p className="text-muted-foreground">Project not found.</p>
+        <p className="text-muted-foreground">
+          {!project ? "Project not found." : "You do not have access to view this project."}
+        </p>
       </div>
     );
   }
+
   const client = clients.find((c) => c.id === project.clientId);
+
+  // Map assigned user IDs/names to employee details
+  const teamMembers = ((project as any).users || [])
+    .map((uid: string) => employees.find((e) => e.id === uid || e.name === uid || e.email === uid)?.name || uid)
+    .filter(Boolean);
 
   return (
     <div className="space-y-6">
@@ -61,7 +81,10 @@ export default function ProjectDetail() {
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Budget" value={money(project.budget)} icon={DollarSign} />
+        {!isReadOnly && (
+          <StatCard label="Budget" value={money(project.budget)} icon={DollarSign} />
+        )}
+        <StatCard label="Progress" value={`${project.progress || 0}%`} icon={Layers} accent="primary" />
         <StatCard label="Deadline" value={shortDate(project.deadline)} icon={Calendar} />
         <StatCard label="Tasks" value={tasks.length} icon={ListTodo} />
         <StatCard label="Bugs" value={bugs.length} icon={Bug} accent="destructive" />
@@ -139,19 +162,83 @@ export default function ProjectDetail() {
           </Tabs>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-6">
-          <h3 className="mb-4 font-display text-base font-semibold">Overview</h3>
-          <dl className="space-y-3 text-sm">
-            <div className="flex justify-between"><dt className="text-muted-foreground">Client</dt><dd>{client?.name}</dd></div>
-            <div className="flex justify-between"><dt className="text-muted-foreground">Type</dt><dd>{project.type}</dd></div>
-            <div className="flex justify-between"><dt className="text-muted-foreground">Start</dt><dd>{shortDate(project.startDate)}</dd></div>
-            <div className="flex justify-between"><dt className="text-muted-foreground">Deadline</dt><dd>{shortDate(project.deadline)}</dd></div>
-            <div className="flex justify-between"><dt className="text-muted-foreground">Budget</dt><dd className="tabular-nums">{money(project.budget)}</dd></div>
-            <div className="flex justify-between"><dt className="text-muted-foreground">Priority</dt><dd><StatusBadge value={project.priority} /></dd></div>
-            <div className="flex justify-between"><dt className="text-muted-foreground">Status</dt><dd><StatusBadge value={project.status} /></dd></div>
-          </dl>
+        <div className="space-y-4">
+          <div className="rounded-xl border border-border bg-card p-6">
+            <h3 className="mb-4 font-display text-base font-semibold">Overview</h3>
+            <dl className="space-y-3 text-sm">
+              <div className="flex justify-between"><dt className="text-muted-foreground">Client</dt><dd>{client?.name || "Portfolio"}</dd></div>
+              <div className="flex justify-between"><dt className="text-muted-foreground">Type</dt><dd>{project.type}</dd></div>
+              {(project as any).techStack || (project as any).tech_stack ? (
+                <div className="flex justify-between"><dt className="text-muted-foreground">Tech Stack</dt><dd>{(project as any).techStack || (project as any).tech_stack}</dd></div>
+              ) : null}
+              {(project as any).language ? (
+                <div className="flex justify-between"><dt className="text-muted-foreground">Language</dt><dd>{(project as any).language}</dd></div>
+              ) : null}
+              <div className="flex justify-between"><dt className="text-muted-foreground">Start</dt><dd>{shortDate((project as any).startDate || (project as any).start_date)}</dd></div>
+              <div className="flex justify-between"><dt className="text-muted-foreground">Deadline</dt><dd>{shortDate(project.deadline)}</dd></div>
+              {!isReadOnly && (
+                <div className="flex justify-between"><dt className="text-muted-foreground">Budget</dt><dd className="tabular-nums">{money(project.budget)}</dd></div>
+              )}
+              <div className="flex justify-between"><dt className="text-muted-foreground">Priority</dt><dd><StatusBadge value={project.priority} /></dd></div>
+              <div className="flex justify-between"><dt className="text-muted-foreground">Status</dt><dd><StatusBadge value={project.status} /></dd></div>
+            </dl>
+          </div>
+
+          {/* Links & Repository Box */}
+          {((project as any).github_link || (project as any).githubLink || (project as any).assets_link || (project as any).assetsLink) && (
+            <div className="rounded-xl border border-border bg-card p-6 space-y-3">
+              <h3 className="font-display text-base font-semibold flex items-center gap-2">
+                <Code2 className="h-4 w-4 text-primary" /> Project Resources
+              </h3>
+              <div className="space-y-2">
+                {((project as any).github_link || (project as any).githubLink) && (
+                  <a
+                    href={(project as any).github_link || (project as any).githubLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-2.5 text-xs transition-colors hover:border-primary hover:bg-muted"
+                  >
+                    <span className="flex items-center gap-2 font-medium">
+                      <Github className="h-4 w-4" /> GitHub Repository
+                    </span>
+                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+                  </a>
+                )}
+                {((project as any).assets_link || (project as any).assetsLink) && (
+                  <a
+                    href={(project as any).assets_link || (project as any).assetsLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-2.5 text-xs transition-colors hover:border-primary hover:bg-muted"
+                  >
+                    <span className="flex items-center gap-2 font-medium">
+                      <ExternalLink className="h-4 w-4" /> Project Assets / Files
+                    </span>
+                    <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Team Members Box */}
+          {teamMembers.length > 0 && (
+            <div className="rounded-xl border border-border bg-card p-6 space-y-3">
+              <h3 className="font-display text-base font-semibold flex items-center gap-2">
+                <Users className="h-4 w-4 text-primary" /> Team Assigned ({teamMembers.length})
+              </h3>
+              <div className="flex flex-wrap gap-1.5">
+                {teamMembers.map((m: string, idx: number) => (
+                  <span key={idx} className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-foreground">
+                    {m}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
+

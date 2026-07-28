@@ -26,14 +26,27 @@ export default function ProjectsPage() {
 
   const canEdit = ["super_admin", "ceo", "project_manager", "team_leader", "hr"].includes(user?.role || "");
 
+  // Roles that see only their assigned projects (read-only)
+  const isReadOnly = ["developer", "designer", "qa", "support", "accountant", "sales"].includes(user?.role || "");
+
+  // Filter projects: read-only users see only projects where they are in the `users` array
+  const visibleRows = isReadOnly
+    ? rows.filter((r: any) => {
+        const teamArr: string[] = (r as any).users || [];
+        return teamArr.some(
+          (uid) => uid === String(user?.id) || uid === user?.name || uid === user?.email
+        );
+      })
+    : rows;
+
   // Dashboard stats
   const stats = useMemo(() => {
-    const active = rows.filter((r) => r.status === "active" || r.status === "in_progress").length;
-    const completed = rows.filter((r) => r.status === "completed").length;
-    const onHold = rows.filter((r) => r.status === "on_hold").length;
-    const overdue = rows.filter((r) => r.deadline && new Date(r.deadline) < new Date() && r.status !== "completed").length;
-    return { total: rows.length, active, completed, onHold, overdue };
-  }, [rows]);
+    const active = visibleRows.filter((r) => r.status === "active" || r.status === "in_progress").length;
+    const completed = visibleRows.filter((r) => r.status === "completed").length;
+    const onHold = visibleRows.filter((r) => r.status === "on_hold").length;
+    const overdue = visibleRows.filter((r) => r.deadline && new Date(r.deadline) < new Date() && r.status !== "completed").length;
+    return { total: visibleRows.length, active, completed, onHold, overdue };
+  }, [visibleRows]);
 
   // Build unique types for filter
   const typeOptions = useMemo(() => {
@@ -165,14 +178,15 @@ export default function ProjectsPage() {
   return (
     <ResourcePage<Project>
       title={t("nav.projects")}
-      description="Every engagement from planning to launch"
-      rows={rows}
+      description={isReadOnly ? "Your assigned projects" : "Every engagement from planning to launch"}
+      rows={visibleRows}
       getSearchable={(r) => `${r.name} ${r.type} ${r.status} ${r.priority} ${r.description || ""}`}
       newLabel="New project"
       editingRow={editingRow}
       onCloseEdit={() => setEditingRow(null)}
       filters={filters}
       headerContent={dashboardHeader}
+      hideNewButton={isReadOnly}
       columns={[
         {
           key: "name",
@@ -201,7 +215,7 @@ export default function ProjectsPage() {
             </div>
           ),
         },
-        { key: "budget", header: "Budget", cell: (r) => <span className="tabular-nums">{money(r.budget)}</span> },
+        { key: "budget", header: "Budget", cell: (r) => <span className="tabular-nums">{money(r.budget)}</span>, hidden: isReadOnly },
         { key: "duration", header: "Duration", cell: (r) => <span className="text-xs text-muted-foreground whitespace-nowrap">{shortDate((r as any).start_date || (r as any).startDate)} - {shortDate(r.deadline)}</span> },
         {
           key: "links",
@@ -226,16 +240,18 @@ export default function ProjectsPage() {
           header: "",
           cell: (r) => (
             <div className="flex items-center justify-end gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger className="p-2 hover:bg-muted rounded-full">
-                  <MoreHorizontal className="w-4 h-4" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => handleStatusChange(r, 'completed')}>Mark as Completed</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleStatusChange(r, 'on_hold')}>Put on Hold</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleStatusChange(r, 'active')}>Set to Active</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {!isReadOnly && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="p-2 hover:bg-muted rounded-full">
+                    <MoreHorizontal className="w-4 h-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => handleStatusChange(r, 'completed')}>Mark as Completed</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleStatusChange(r, 'on_hold')}>Put on Hold</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleStatusChange(r, 'active')}>Set to Active</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
               {canEdit && (
                 <>
                   <button
