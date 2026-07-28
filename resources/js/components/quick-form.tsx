@@ -12,13 +12,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Check, ChevronsUpDown } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 export type FieldDef =
   | { name: string; label: string; type: "text" | "email" | "number" | "date"; required?: boolean; defaultValue?: string | number; hidden?: boolean }
   | { name: string; label: string; type: "textarea"; required?: boolean; defaultValue?: string; hidden?: boolean }
   | { name: string; label: string; type: "select"; options: { value: string; label: string }[]; required?: boolean; defaultValue?: string; hidden?: boolean }
-  | { name: string; label: string; type: "multiselect"; options: { value: string; label: string }[]; required?: boolean; defaultValue?: string[]; hidden?: boolean }
+  | { name: string; label: string; type: "multiselect"; options: { value: string; label: string; avatar?: string; description?: string }[]; required?: boolean; defaultValue?: string[]; hidden?: boolean }
   | { name: string; label: string; type: "file"; required?: boolean; accept?: string; hidden?: boolean };
 
 export function QuickForm({
@@ -95,26 +100,105 @@ export function QuickForm({
                 </SelectContent>
               </Select>
             ) : f.type === "multiselect" ? (
-              <div className="flex flex-col gap-2 border p-3 rounded-md max-h-48 overflow-y-auto">
-                {f.options.map(opt => {
-                  const checked = (values[f.name] || []).includes(opt.value);
-                  return (
-                    <label key={opt.value} className="flex items-center gap-2 text-sm">
-                      <Checkbox 
-                        checked={checked} 
-                        onCheckedChange={(c) => {
-                          const current = values[f.name] || [];
-                          if (c) {
-                            set(f.name, [...current, opt.value]);
-                          } else {
-                            set(f.name, current.filter((x: string) => x !== opt.value));
-                          }
-                        }} 
-                      />
-                      {opt.label}
-                    </label>
-                  );
-                })}
+              <div className="flex flex-col gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "w-full justify-between h-auto min-h-[2.5rem] py-2 px-3 font-normal",
+                        !(values[f.name] && values[f.name].length > 0) && "text-muted-foreground"
+                      )}
+                    >
+                      <div className="flex flex-wrap gap-1 items-center">
+                        {values[f.name] && values[f.name].length > 0 ? (
+                          values[f.name].map((val: string) => {
+                            const opt = f.options.find(o => o.value === val);
+                            return (
+                              <Badge variant="secondary" key={val} className="mr-1 mb-1 font-normal flex items-center gap-1">
+                                {opt?.avatar && <Avatar className="w-4 h-4"><AvatarImage src={opt.avatar} /><AvatarFallback>{opt?.label?.charAt(0)}</AvatarFallback></Avatar>}
+                                {opt ? opt.label : val}
+                                <div
+                                  role="button"
+                                  className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      const current = values[f.name] || [];
+                                      set(f.name, current.filter((x: string) => x !== val));
+                                    }
+                                  }}
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                  }}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    const current = values[f.name] || [];
+                                    set(f.name, current.filter((x: string) => x !== val));
+                                  }}
+                                >
+                                  <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                                </div>
+                              </Badge>
+                            );
+                          })
+                        ) : (
+                          "Select " + f.label.toLowerCase() + "..."
+                        )}
+                      </div>
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[400px] max-w-[90vw] p-0" align="start">
+                    <Command>
+                      <CommandInput placeholder={`Search ${f.label.toLowerCase()}...`} />
+                      <CommandList>
+                        <CommandEmpty>No results found.</CommandEmpty>
+                        <CommandGroup>
+                          {f.options.map((opt) => {
+                            const isSelected = (values[f.name] || []).includes(opt.value);
+                            return (
+                              <CommandItem
+                                key={opt.value}
+                                value={`${opt.label} ${opt.description || ""}`}
+                                onSelect={() => {
+                                  const current = values[f.name] || [];
+                                  if (isSelected) {
+                                    set(f.name, current.filter((x: string) => x !== opt.value));
+                                  } else {
+                                    set(f.name, [...current, opt.value]);
+                                  }
+                                }}
+                                className="flex items-center gap-3 py-2 cursor-pointer"
+                              >
+                                {opt.avatar && (
+                                  <Avatar className="w-8 h-8">
+                                    <AvatarImage src={opt.avatar} />
+                                    <AvatarFallback>{opt.label.charAt(0)}</AvatarFallback>
+                                  </Avatar>
+                                )}
+                                <div className="flex flex-col">
+                                  <span className="font-medium">{opt.label}</span>
+                                  {opt.description && <span className="text-xs text-muted-foreground">{opt.description}</span>}
+                                </div>
+                                <div className={cn(
+                                  "ml-auto flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                  isSelected
+                                    ? "bg-primary text-primary-foreground"
+                                    : "opacity-50 [&_svg]:invisible"
+                                )}>
+                                  <Check className={cn("h-3 w-3")} />
+                                </div>
+                              </CommandItem>
+                            );
+                          })}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
             ) : f.type === "file" ? (
               <div className="space-y-2">

@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/page-header";
-import { useCollection, add } from "@/mocks/store";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,9 +14,37 @@ import { Play, Square } from "lucide-react";
 
 export default function TimeLogsPage() {
   const { t } = useTranslation();
-  const timeLogs = useCollection("timeLogs");
-  const tasks = useCollection("tasks");
   const user = useAuth((s) => s.user);
+  const queryClient = useQueryClient();
+
+  const { data: timeLogs = [], isLoading: loadingLogs } = useQuery({
+    queryKey: ["time-logs"],
+    queryFn: async () => {
+      const res = await axios.get("/api/v1/time-logs");
+      return res.data.data || res.data;
+    }
+  });
+
+  const { data: tasks = [], isLoading: loadingTasks } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: async () => {
+      const res = await axios.get("/api/v1/tasks");
+      return res.data.data || res.data;
+    }
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: async (data: any) => {
+      return axios.post("/api/v1/time-logs", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["time-logs"] });
+      toast.success("Time log saved successfully");
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || "Failed to save time log");
+    }
+  });
 
   const [activeTask, setActiveTask] = useState<string>("none");
   const [description, setDescription] = useState("");
@@ -39,17 +68,16 @@ export default function TimeLogsPage() {
       const hours = Math.round((diffMs / (1000 * 60 * 60)) * 100) / 100;
 
       try {
-        await add("timeLogs", {
+        saveMutation.mutate({
           task_id: activeTask === "none" ? null : Number(activeTask),
           user_id: user?.id,
           date: startTime?.toISOString().split('T')[0],
           hours: Math.max(0.01, hours), // minimum 0.01 hours
           description: description || "Time tracked",
         });
-        toast.success(`Logged ${hours} hours successfully`);
         setDescription("");
       } catch (e) {
-        toast.error("Failed to save time log");
+        toast.error("An error occurred");
       }
     }
   };

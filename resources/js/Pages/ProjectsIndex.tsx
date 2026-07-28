@@ -96,8 +96,29 @@ export default function ProjectsPage() {
   const formFields: FieldDef[] = [
     { name: "name", label: t("common.fields.projectName") || "Project name", type: "text", required: true },
     { name: "client_id", label: t("common.fields.client") + " (Optional)" || "Client (Optional)", type: "select", options: [{ value: "", label: "— No client —" }, ...clients.map((c) => ({ value: c.id as string, label: c.name }))] },
-    { name: "users", label: t("common.fields.assignTeam") || "Assign Team Members", type: "multiselect", options: users.map((u) => ({ value: u.id as string, label: u.name })) },
-    { name: "type", label: t("common.fields.type") || "Type (Frontend/Backend/Fullstack)", type: "text", defaultValue: "Full-Stack Web App" },
+    { 
+      name: "users", 
+      label: t("common.fields.assignTeam") + " (Optional)" || "Assign Team Members (Optional)", 
+      type: "multiselect", 
+      options: users.map((u) => ({ 
+        value: u.id as string, 
+        label: u.name, 
+        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${u.name}`,
+        description: u.email 
+      })) 
+    },
+    { 
+      name: "type", 
+      label: t("common.fields.type") || "Type", 
+      type: "select", 
+      defaultValue: "Web",
+      options: [
+        { value: "Web", label: "Web Application" },
+        { value: "Mobile Application", label: "Mobile Application" },
+        { value: "Desktop", label: "Desktop Application" },
+        { value: "Web, Mobile & Desktop", label: "Web, Mobile & Desktop" },
+      ]
+    },
     { name: "tech_stack", label: t("common.fields.techStack") || "Tech Stack", type: "text", defaultValue: "Laravel + React" },
     { name: "language", label: t("common.fields.language") || "Programming Language", type: "text", defaultValue: "PHP / TypeScript" },
     {

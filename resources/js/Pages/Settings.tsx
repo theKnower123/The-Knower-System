@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { ROLE_LABELS, ROLE_PERMISSIONS, ALL_ROLES, PERMISSIONS, Permission } from "@/lib/permissions";
+import { ROLE_LABELS, ROLE_PERMISSIONS, ALL_ROLES, PERMISSIONS, Permission, PERMISSION_DESCRIPTIONS } from "@/lib/permissions";
 import { StatusBadge } from "@/components/status-badge";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -201,18 +201,24 @@ function RolesTab() {
                 <Label>Permissions</Label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {PERMISSIONS.map((perm) => (
-                    <div key={perm} className="flex items-center space-x-2">
+                    <div key={perm} className="flex items-start space-x-2 border rounded-md p-3">
                       <Checkbox 
                         id={perm} 
                         checked={editRole.permissions.includes(perm)}
                         onCheckedChange={() => togglePermission(perm)}
+                        className="mt-0.5"
                       />
-                      <label 
-                        htmlFor={perm} 
-                        className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                      >
-                        {perm.replace(".", " ")}
-                      </label>
+                      <div className="flex flex-col gap-1">
+                        <label 
+                          htmlFor={perm} 
+                          className="text-xs font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                        >
+                          {perm.replace(".", " ")}
+                        </label>
+                        <p className="text-[10px] text-muted-foreground leading-snug">
+                          {PERMISSION_DESCRIPTIONS[perm] || "Allows access to this feature."}
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>

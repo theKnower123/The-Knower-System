@@ -25,6 +25,7 @@ export default function ClientsPage() {
     { name: "email", label: t("common.email") || "Email", type: "email", required: true },
     { name: "phone", label: t("common.phone") || "Phone", type: "text" },
     { name: "position", label: t("common.fields.jobPosition") || "Position", type: "text" },
+    { name: "password", label: "Portal Password (Optional)", type: "password" },
   ];
 
   const clientFilters: FilterDef[] = [
@@ -49,7 +50,7 @@ export default function ClientsPage() {
       onCloseEdit={() => setEditingRow(null)}
       filters={clientFilters}
       columns={[
-        { key: "name", header: t("common.name"), cell: (r) => <div><div className="font-medium">{r.name}</div><div className="text-xs text-muted-foreground">{r.position}</div></div> },
+        { key: "name", header: t("common.name"), cell: (r) => <div><div className="font-medium flex items-center gap-2">{r.name} {(r as any).password && <span className="text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary px-1.5 py-0.5 rounded-sm">Portal User</span>}</div><div className="text-xs text-muted-foreground">{r.position}</div></div> },
         { key: "email", header: t("common.email"), cell: (r) => <span className="text-muted-foreground">{r.email}</span>, hideOnMobile: true },
         { key: "phone", header: t("common.phone"), cell: (r) => r.phone, hideOnMobile: true },
         { key: "status", header: t("common.status"), cell: (r) => <StatusBadge value={r.status} /> },
@@ -110,6 +111,7 @@ export default function ClientsPage() {
             email: row.email,
             phone: row.phone || "",
             position: row.position || "",
+            password: (row as any).password || "",
           }}
           onCancel={close}
           onSubmit={async (v) => {

@@ -51,6 +51,11 @@ class User extends Authenticatable
         return $this->hasOne(Employee::class);
     }
 
+    public function client()
+    {
+        return $this->hasOne(\App\Modules\CRM\Models\Client::class);
+    }
+
     public function assignedTasks()
     {
         return $this->hasMany(Task::class, 'assigned_to');

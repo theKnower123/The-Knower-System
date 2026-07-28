@@ -78,6 +78,53 @@ export const PERMISSIONS = [
 
 export type Permission = (typeof PERMISSIONS)[number];
 
+export const PERMISSION_DESCRIPTIONS: Record<Permission, string> = {
+  "dashboard.view": "View the main overview dashboard.",
+  "crm.view": "Access the CRM module (Leads, Clients, Meetings).",
+  "lead.manage": "Create, edit, and delete leads.",
+  "client.manage": "Create, edit, and delete clients.",
+  "quotation.manage": "Generate, edit, and send quotations.",
+  "contract.manage": "Create, edit, and sign contracts.",
+  "project.view": "View project details and progress.",
+  "project.manage": "Full access: create, edit, delete projects and assign teams.",
+  "task.view": "View assigned tasks within projects.",
+  "task.manage": "Create, assign, edit, and delete tasks.",
+  "task.update_status": "Change the status of tasks (e.g., In Progress, Done).",
+  "bug.manage": "Report, edit, and resolve project bugs.",
+  "file.upload": "Upload and manage files inside projects.",
+  "finance.view": "View financial summaries and reports.",
+  "invoice.manage": "Create, send, and delete invoices.",
+  "payment.manage": "Record and manage incoming payments.",
+  "expense.manage": "Record and categorize company expenses.",
+  "hosting.view": "View hosting servers and domains.",
+  "hosting.manage": "Manage hosting packages and accounts.",
+  "domain.manage": "Register, renew, and manage domains.",
+  "server.manage": "Manage server configurations and access.",
+  "ssl.manage": "Install and renew SSL certificates.",
+  "hr.view": "View the HR dashboard and employee list.",
+  "hr.manage": "Add, edit, and terminate employee profiles.",
+  "attendance.manage": "Monitor and manage employee attendance records.",
+  "leave.manage": "Approve or reject leave requests.",
+  "payroll.manage": "Generate and manage employee payrolls.",
+  "support.view": "View support tickets and knowledge base.",
+  "ticket.manage": "Create, assign, and delete support tickets.",
+  "ticket.reply": "Respond to active support tickets.",
+  "report.view": "View system and analytics reports.",
+  "ai.use": "Access and use integrated AI assistant tools.",
+  "settings.manage": "Manage system settings, integrations, and configurations.",
+  "user.manage": "Add, edit, and remove system users and assign roles.",
+  "client_portal.view": "Access the limited client portal interface.",
+  "code.review": "Review and approve code commits (Developer focused).",
+  "design.upload": "Upload UI/UX designs and assets (Designer focused).",
+  "qa.test": "Run QA tests and mark them as passed/failed.",
+  "cms.manage": "Manage CMS content (Pricing, FAQs, Blogs).",
+  "support.inbox": "View the unified support inbox and live chats.",
+  "support.tickets": "Access detailed ticket threads.",
+  "support.canned": "Manage canned responses for support.",
+  "support.kb_read": "Read the knowledge base articles.",
+  "support.manage": "Full support access: SLAs, automation, queues, and agents.",
+};
+
 const ALL: Permission[] = [...PERMISSIONS];
 
 export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {

@@ -18,9 +18,10 @@ class Client extends Model
     use HasWorkspace, LogsActivity;
 
     protected $fillable = [
-        'name', 'email', 'phone', 'position', 'status',
+        'name', 'email', 'phone', 'position', 'status', 'user_id'
     ];
 
+    public function user()          { return $this->belongsTo(\App\Modules\Auth\Models\User::class); }
     public function projects()      { return $this->hasMany(Project::class); 
 }
     public function invoices()      { return $this->hasMany(Invoice::class); 
