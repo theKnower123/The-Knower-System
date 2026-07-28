@@ -47,23 +47,42 @@ const COLUMNS: Array<{ key: Task["status"]; label: string }> = [
   { key: "done", label: "Done" },
 ];
 
+// Role → category label mapping (same as CmsTeam)
+const ROLE_CATEGORIES = [
+  { value: "leadership",      label: "Leadership",         roles: ["ceo"] },
+  { value: "admins",          label: "Admins",             roles: ["super_admin"] },
+  { value: "project_mgmt",    label: "Project Management", roles: ["project_manager"] },
+  { value: "team_leaders",    label: "Team Leaders",       roles: ["team_leader"] },
+  { value: "developers",      label: "Developers",         roles: ["developer"] },
+  { value: "designers",       label: "Designers",          roles: ["designer"] },
+  { value: "qa",              label: "QA & Testing",       roles: ["qa"] },
+  { value: "finance",         label: "Finance & Accounting",roles: ["accountant"] },
+  { value: "hr",              label: "Human Resources",    roles: ["hr"] },
+  { value: "support",         label: "Support",            roles: ["support"] },
+  { value: "sales",           label: "Sales",              roles: ["sales"] },
+];
+
+function getCategoryForRole(role: string): string {
+  const found = ROLE_CATEGORIES.find((c) => c.roles.includes(role));
+  return found ? found.value : "all";
+}
+
 export default function TasksPage() {
   const { t } = useTranslation();
   const allTasks = useCollection("tasks");
   const projects = useCollection("projects");
   const users = useCollection("employees");
-  const departments = useCollection("departments");
   const { user } = useAuth();
 
-  // Determine the current user's department from employee records
-  const currentEmployee = users.find((u: any) => u.email === user?.email || u.name === user?.name);
-  const currentDepartment = (currentEmployee as any)?.department || null;
+  // Map current user's role to a category key
+  const userRole = user?.role || "";
+  const userCategory = getCategoryForRole(userRole);
 
-  // Admins see all tasks; others see only tasks for their department
-  const canSeeAllTasks = ["super_admin", "ceo", "project_manager"].includes(user?.role || "");
+  // Admins / CEO / PM see everything; others see only their category's tasks
+  const canSeeAllTasks = ["super_admin", "ceo", "project_manager"].includes(userRole);
   const tasks = canSeeAllTasks
     ? allTasks
-    : allTasks.filter((t: any) => !t.departmentId || t.departmentId === currentDepartment);
+    : allTasks.filter((t: any) => !t.categoryRole || t.categoryRole === userCategory);
 
   const [viewMode, setViewMode] = useState<"kanban" | "table">("table");
   const [formOpen, setFormOpen] = useState(false);
@@ -113,10 +132,10 @@ export default function TasksPage() {
       ],
     },
     ...(canSeeAllTasks ? [{
-      key: "departmentId",
-      label: "Department",
-      options: departments.map((d: any) => ({ value: d.name, label: d.name })),
-      accessor: (row: any) => row.departmentId || "",
+      key: "categoryRole",
+      label: "Category",
+      options: ROLE_CATEGORIES.map((c) => ({ value: c.value, label: c.label })),
+      accessor: (row: any) => (row as any).categoryRole || "",
     }] : []),
   ];
 
@@ -124,14 +143,15 @@ export default function TasksPage() {
     { name: "title", label: "Task Title", type: "text", required: true },
     { name: "projectId", label: "Project", type: "select", options: projects.map((p) => ({ value: p.id as string, label: p.name })), required: true },
     { 
-      name: "departmentId", 
-      label: "Department", 
+      name: "categoryRole", 
+      label: "Assign to Category", 
       type: "select", 
+      required: true,
+      defaultValue: userCategory || "",
       options: [
-        { value: "", label: "— All Departments —" },
-        ...departments.map((d: any) => ({ value: d.name, label: d.name }))
+        { value: "all", label: "— All Categories (Everyone) —" },
+        ...ROLE_CATEGORIES.map((c) => ({ value: c.value, label: c.label }))
       ],
-      defaultValue: currentDepartment || "",
     },
     { name: "assigned_to", label: "Assignee", type: "select", options: [{ value: "", label: "— Unassigned —" }, ...users.map((u) => ({ value: u.id as string, label: u.name }))] },
     {
@@ -221,7 +241,7 @@ export default function TasksPage() {
                           id: makeId("tk"),
                           title: v.title,
                           projectId: v.projectId,
-                          departmentId: v.departmentId || currentDepartment || "",
+                          categoryRole: v.categoryRole || userCategory || "all",
                           assignee: users.find((u) => u.id === v.assigned_to)?.name || "Unassigned",
                           assigned_to: v.assigned_to || null,
                           priority: v.priority || "medium",
@@ -413,6 +433,7 @@ export default function TasksPage() {
               initialValues={{
                 title: editingRow.title,
                 projectId: editingRow.projectId || "",
+                categoryRole: (editingRow as any).categoryRole || userCategory || "all",
                 assigned_to: (editingRow as any).assigned_to || "",
                 priority: editingRow.priority || "medium",
                 status: editingRow.status || "todo",
