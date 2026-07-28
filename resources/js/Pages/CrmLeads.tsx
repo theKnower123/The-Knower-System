@@ -68,47 +68,12 @@ export default function LeadsPage() {
     },
   });
 
-  // Unique sources for filter
-  const sourceOptions = [...new Set(rows.map((r: any) => r.source).filter(Boolean))].map((s: string) => ({ value: s, label: s }));
-
-  const leadsFilters: FilterDef[] = [
-    {
-      key: "status",
-      label: "Status",
-      options: [
-        { value: "new", label: "New" },
-        { value: "contacted", label: "Contacted" },
-        { value: "qualified", label: "Qualified" },
-        { value: "won", label: "Won" },
-        { value: "lost", label: "Lost" },
-      ],
-    },
-    {
-      key: "source",
-      label: "Source",
-      options: sourceOptions,
-    },
-  ];
+  const leadsFilters: FilterDef[] = [];
 
   const formFields: FieldDef[] = [
     { name: "name", label: t("common.name") || "Name", type: "text", required: true },
     { name: "email", label: t("common.email") || "Email", type: "email", required: true },
     { name: "phone", label: t("common.phone") || "Phone", type: "text" },
-    { name: "source", label: "Source", type: "text", defaultValue: "website" },
-    { name: "budget", label: t("common.fields.budget") || "Budget (USD)", type: "number" },
-    {
-      name: "status",
-      label: t("common.fields.status") || "Status",
-      type: "select",
-      defaultValue: "new",
-      options: [
-        { value: "new", label: "New" },
-        { value: "contacted", label: "Contacted" },
-        { value: "qualified", label: "Qualified" },
-        { value: "won", label: "Won" },
-        { value: "lost", label: "Lost" },
-      ],
-    },
   ];
 
   return (
@@ -116,7 +81,7 @@ export default function LeadsPage() {
       title={t("nav.leads")}
       description="Prospects moving through the sales pipeline"
       rows={rows}
-      getSearchable={(r) => `${r.name} ${r.email} ${r.source} ${r.status}`}
+      getSearchable={(r) => `${r.name} ${r.email}`}
       newLabel="New lead"
       editingRow={editingRow}
       onCloseEdit={() => setEditingRow(null)}
@@ -124,10 +89,7 @@ export default function LeadsPage() {
       columns={[
         { key: "name", header: t("common.name"), cell: (r) => <span className="font-medium">{r.name}</span> },
         { key: "email", header: t("common.email"), cell: (r) => <span className="text-muted-foreground">{r.email}</span>, hideOnMobile: true },
-        { key: "source", header: "Source", cell: (r) => r.source, hideOnMobile: true },
-        { key: "budget", header: "Budget", cell: (r) => <span className="tabular-nums">{money(r.budget || 0)}</span> },
-        { key: "status", header: t("common.status"), cell: (r) => <StatusBadge value={r.status} /> },
-        { key: "created", header: t("common.created"), cell: (r) => <span className="text-xs text-muted-foreground">{shortDate(r.createdAt || r.created_at)}</span> },
+        { key: "created", header: t("common.created"), cell: (r) => <span className="text-xs text-muted-foreground">{shortDate(r.createdAt || r.created_at || "")}</span> },
         { 
           key: "actions", 
           header: t("common.actions") || "Actions", 
@@ -160,12 +122,7 @@ export default function LeadsPage() {
         <QuickForm
           onCancel={close}
           onSubmit={(v) => {
-            saveMutation.mutate({
-              ...v,
-              source: v.source || "website",
-              budget: Number(v.budget || 0),
-              status: v.status || "new",
-            });
+            saveMutation.mutate(v);
             close();
           }}
           fields={formFields}
@@ -178,9 +135,6 @@ export default function LeadsPage() {
             name: row.name,
             email: row.email,
             phone: row.phone || "",
-            source: row.source || "website",
-            budget: row.budget || 0,
-            status: row.status || "new",
           }}
           onCancel={close}
           onSubmit={(v) => {
@@ -189,7 +143,6 @@ export default function LeadsPage() {
               data: {
                 ...row,
                 ...v,
-                budget: Number(v.budget || 0),
               }
             });
           }}

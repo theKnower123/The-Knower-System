@@ -25,11 +25,29 @@ import {
 import { useState } from "react";
 import { useAuth } from "@/store/auth";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export default function CalendarPage() {
   const { t } = useTranslation();
   const meetings = useCollection("meetings");
-  const projects = useCollection("projects");
+  const tasks = useCollection("tasks");
+  const invoices = useCollection("invoices");
+  const domains = useCollection("domains");
+  const ssls = useCollection("ssls");
+  const leaves = useCollection("leaves");
+  const contracts = useCollection("contracts");
+  
+  const { data: apiProjects = [] } = useQuery({
+    queryKey: ["projects"],
+    queryFn: async () => {
+      const res = await axios.get("/api/v1/projects");
+      return res.data.data;
+    },
+  });
+  
+  const projects = apiProjects;
+
   const user = useAuth((s) => s.user);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,8 +60,6 @@ export default function CalendarPage() {
     type: "meeting", // meeting, deadline, event
   });
 
-  const contracts = useCollection("contracts");
-
   const meetingEvents = meetings?.map((m: any) => ({
     id: `meet_${m.id}`,
     title: `🤝 ${m.title}`,
@@ -53,10 +69,10 @@ export default function CalendarPage() {
     backgroundColor: "var(--primary)",
   })) || [];
 
-  const projectEvents = projects?.filter((p: any) => p.deadline).map((p: any) => ({
+  const projectEvents = projects?.filter((p: any) => p.deadline || p.end_date).map((p: any) => ({
     id: `proj_${p.id}`,
     title: `🚀 ${p.name} Deadline`,
-    start: p.deadline,
+    start: p.deadline || p.end_date,
     allDay: true,
     backgroundColor: "var(--chart-2)",
   })) || [];
@@ -69,8 +85,41 @@ export default function CalendarPage() {
     allDay: true,
     backgroundColor: "var(--chart-4)",
   })) || [];
+  
+  const taskEvents = tasks?.filter((t: any) => t.dueDate).map((t: any) => ({
+    id: `task_${t.id}`,
+    title: `✅ Task: ${t.title}`,
+    start: t.dueDate,
+    allDay: true,
+    backgroundColor: "var(--chart-1)",
+  })) || [];
 
-  const events = [...meetingEvents, ...projectEvents, ...contractEvents];
+  const invoiceEvents = invoices?.filter((i: any) => i.dueDate).map((i: any) => ({
+    id: `inv_${i.id}`,
+    title: `💳 Invoice Due: ${i.number}`,
+    start: i.dueDate,
+    allDay: true,
+    backgroundColor: "var(--chart-3)",
+  })) || [];
+
+  const domainEvents = domains?.filter((d: any) => d.expiryDate).map((d: any) => ({
+    id: `dom_${d.id}`,
+    title: `🌐 Domain Expiry: ${d.domain}`,
+    start: d.expiryDate,
+    allDay: true,
+    backgroundColor: "var(--chart-5)",
+  })) || [];
+
+  const leaveEvents = leaves?.filter((l: any) => l.startDate).map((l: any) => ({
+    id: `leave_${l.id}`,
+    title: `🌴 Leave: ${l.type}`,
+    start: l.startDate,
+    end: l.endDate,
+    allDay: true,
+    backgroundColor: "var(--muted)",
+  })) || [];
+
+  const events = [...meetingEvents, ...projectEvents, ...contractEvents, ...taskEvents, ...invoiceEvents, ...domainEvents, ...leaveEvents];
 
   const handleDateSelect = (selectInfo: any) => {
     setSelectedDate({

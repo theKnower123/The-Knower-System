@@ -149,7 +149,7 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('tasks',      TaskController::class);
         Route::apiResource('bugs',       BugController::class);
         Route::apiResource('meetings', \App\Modules\CRM\Controllers\MeetingController::class);
-        Route::apiResource('time-logs',  \App\Modules\Projects\Controllers\TimeLogController::class);
+
 
         // Task Comments
         Route::get   ('tasks/{id}/comments', [TaskCommentController::class, 'index']);

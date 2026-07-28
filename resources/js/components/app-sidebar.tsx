@@ -73,8 +73,6 @@ const groups: Group[] = [
       { to: "/crm/leads", labelKey: "nav.leads", icon: UserSquare2, perm: "lead.manage" },
       { to: "/crm/clients", labelKey: "nav.clients", icon: Users, perm: "client.manage" },
       { to: "/crm/meetings", labelKey: "nav.meetings", icon: Video, perm: "crm.view" },
-      { to: "/crm/quotations", labelKey: "nav.quotations", icon: FileText, perm: "quotation.manage" },
-      { to: "/crm/contracts", labelKey: "nav.contracts", icon: Handshake, perm: "contract.manage" },
     ],
   },
   {
@@ -82,9 +80,9 @@ const groups: Group[] = [
     items: [
       { to: "/projects", labelKey: "nav.projects", icon: FolderKanban, perm: "project.view" },
       { to: "/tasks", labelKey: "nav.tasks", icon: ListTodo, perm: "task.view" },
-      { to: "/bugs", labelKey: "nav.bugs", icon: Bug, perm: "bug.manage" },
+      { to: "/bugs", labelKey: "Maintenance & Bugs", icon: Bug, perm: "bug.manage" },
+      { to: "/crm/contracts", labelKey: "nav.contracts", icon: Handshake, perm: "contract.manage" },
       { to: "/calendar", labelKey: "Calendar", icon: Calendar, perm: "project.view" },
-      { to: "/time-logs", labelKey: "Time Tracking", icon: Clock, perm: "project.view" },
     ],
   },
   {
@@ -115,6 +113,7 @@ const groups: Group[] = [
       { to: "/hr/attendance", labelKey: "nav.attendance", icon: Calendar, perm: "attendance.manage" },
       { to: "/hr/leaves", labelKey: "nav.leaves", icon: ClipboardList, perm: "leave.manage" },
       { to: "/hr/payroll", labelKey: "nav.payroll", icon: Banknote, perm: "payroll.manage" },
+      { to: "/crm/quotations", labelKey: "nav.quotations", icon: FileText, perm: "quotation.manage" },
     ],
   },
   {

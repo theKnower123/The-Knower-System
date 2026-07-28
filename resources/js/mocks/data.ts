@@ -29,9 +29,6 @@ export interface Lead {
   name: string;
   email: string;
   phone: string;
-  source: string;
-  budget: number;
-  status: "new" | "contacted" | "qualified" | "lost" | "won";
   assignedTo: string;
   createdAt: string;
   created_at?: string;
@@ -111,6 +108,8 @@ export interface Bug {
   title: string;
   severity: "low" | "medium" | "high" | "critical";
   status: "open" | "in_progress" | "resolved" | "closed";
+  type?: "bug" | "maintenance";
+  budget?: number;
   reportedBy: string;
   assignedTo: string;
   createdAt: string;
@@ -299,9 +298,9 @@ export const contacts: Contact[] = [
 ];
 
 export const leads: Lead[] = [
-  { id: "ld_1", name: "Omar Hakim", email: "omar@fastcart.io", phone: "+20 111 000 111", source: "Website", budget: 25000, status: "qualified", assignedTo: "Sales", createdAt: iso(-10) },
-  { id: "ld_2", name: "Lina Aziz", email: "lina@medix.co", phone: "+961 70 111 222", source: "Referral", budget: 60000, status: "contacted", assignedTo: "Sales", createdAt: iso(-4) },
-  { id: "ld_3", name: "Hassan Trad", email: "hassan@builder.tn", phone: "+216 22 333 444", source: "LinkedIn", budget: 12000, status: "new", assignedTo: "Sales", createdAt: iso(-1) },
+  { id: "ld_1", name: "Omar Hakim", email: "omar@fastcart.io", phone: "+20 111 000 111", assignedTo: "Sales", createdAt: iso(-10) },
+  { id: "ld_2", name: "Lina Aziz", email: "lina@medix.co", phone: "+961 70 111 222", assignedTo: "Sales", createdAt: iso(-4) },
+  { id: "ld_3", name: "Hassan Trad", email: "hassan@builder.tn", phone: "+216 22 333 444", assignedTo: "Sales", createdAt: iso(-1) },
 ];
 
 export const meetings: Meeting[] = [

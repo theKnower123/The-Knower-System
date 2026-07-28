@@ -52,25 +52,29 @@ export default function BugsPage() {
 
   // Inline form state
   const [form, setForm] = useState({
+    type: "bug", // bug or maintenance
     title: "",
     projectId: "",
     severity: "medium",
     reportedBy: "",
     assignedTo: "",
+    budget: "",
   });
 
   const setF = (k: string, v: string) => setForm((s) => ({ ...s, [k]: v }));
 
   return (
     <ResourcePage<Bug>
-      title={t("nav.bugs")}
-      description="Defects reported across projects"
+      title="Maintenance & Bugs"
+      description="Defects and maintenance requests across projects"
       rows={rows}
-      newLabel="Report bug"
+      newLabel="Report Bug / Maintenance"
       columns={[
+        { key: "type", header: "Type", cell: (r) => <span className="capitalize">{r.type || "Bug"}</span> },
         { key: "title", header: t("common.title"), cell: (r) => <span className="font-medium">{r.title}</span> },
         { key: "project", header: "Project", cell: (r) => projects.find((p) => p.id === r.projectId)?.name ?? "—" },
         { key: "severity", header: "Severity", cell: (r) => <StatusBadge value={r.severity} /> },
+        { key: "budget", header: "Cost", cell: (r) => r.type === 'maintenance' ? <span className="tabular-nums">${r.budget || 0}</span> : "—" },
         { key: "status", header: t("common.status"), cell: (r) => <StatusBadge value={r.status} /> },
         { key: "assignee", header: "Assigned to", cell: (r) => r.assignedTo },
         { key: "reporter", header: "Reported by", cell: (r) => r.reportedBy },
@@ -83,10 +87,12 @@ export default function BugsPage() {
             e.preventDefault();
             add("bugs", {
               id: makeId("bg"),
+              type: form.type,
               projectId: form.projectId,
               title: form.title,
               severity: (form.severity as Bug["severity"]) || "medium",
               status: "open",
+              budget: form.type === "maintenance" ? Number(form.budget || 0) : 0,
               reportedBy: clientOptions.find((c) => c.value === form.reportedBy)?.label || form.reportedBy || "Unknown",
               assignedTo: employeeOptions.find((emp) => emp.value === form.assignedTo)?.label || form.assignedTo || "Unassigned",
               createdAt: new Date().toISOString(),
@@ -137,6 +143,34 @@ export default function BugsPage() {
               </Select>
             </div>
 
+            {/* Type */}
+            <div className="space-y-1.5">
+              <Label>Type</Label>
+              <Select value={form.type} onValueChange={(v) => setF("type", v)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type…" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="bug">Bug</SelectItem>
+                  <SelectItem value="maintenance">Maintenance</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Budget (Only for Maintenance) */}
+            {form.type === "maintenance" && (
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label htmlFor="bug-budget">Cost (USD) *</Label>
+                <Input
+                  id="bug-budget"
+                  type="number"
+                  required
+                  value={form.budget}
+                  onChange={(e) => setF("budget", e.target.value)}
+                />
+              </div>
+            )}
+
             {/* Reported by – searchable clients dropdown */}
             <div className="space-y-1.5">
               <Label>Reported by (Client)</Label>
@@ -165,7 +199,7 @@ export default function BugsPage() {
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={close}>Cancel</Button>
-            <Button type="submit">Report Bug</Button>
+            <Button type="submit">Submit</Button>
           </DialogFooter>
         </form>
       )}
