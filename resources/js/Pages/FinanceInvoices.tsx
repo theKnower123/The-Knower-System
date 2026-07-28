@@ -44,6 +44,7 @@ export default function InvoicesPage() {
 
   return (
     <ResourcePage<Invoice>
+      collectionKey="invoices"
       title={t("nav.invoices")}
       description="Bills issued to clients"
       rows={rows}
@@ -75,6 +76,18 @@ export default function InvoicesPage() {
           options: projects.map((p) => ({ value: p.id as string, label: p.name })),
           accessor: (row: any) => row.projectId || row.project_id || "",
         },
+        {
+          type: "date-range",
+          key: "dueDate",
+          label: "Due Date",
+          accessor: (row: any) => row.dueDate || null,
+        },
+        {
+          type: "date-range",
+          key: "createdAt",
+          label: "Date Created",
+          accessor: (row: any) => row.createdAt || row.created_at || null,
+        }
       ] as FilterDef[]}
       columns={[
         { key: "number", header: "Number", cell: (r) => <span className="font-mono text-xs">{r.number}</span> },

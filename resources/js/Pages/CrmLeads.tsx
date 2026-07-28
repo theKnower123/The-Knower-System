@@ -5,8 +5,7 @@ import { QuickForm, type FieldDef } from "@/components/quick-form";
 import { StatusBadge } from "@/components/status-badge";
 import { type Lead } from "@/mocks/data";
 import { money, shortDate } from "@/lib/format";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { useCollection, add, update, remove } from "@/mocks/store";
 import { toast } from "sonner";
 import { useAuth } from "@/store/auth";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
@@ -14,61 +13,27 @@ import type { FilterDef } from "@/components/data-table";
 
 export default function LeadsPage() {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const { user } = useAuth();
-  
   const [editingRow, setEditingRow] = useState<Lead | null>(null);
   const canEdit = ["super_admin", "ceo", "project_manager", "team_leader", "hr"].includes(user?.role || "");
+  const rows = useCollection("leads");
+  const employees = useCollection("employees");
 
-  const { data: rows = [] } = useQuery({
-    queryKey: ["leads"],
-    queryFn: async () => {
-      const res = await axios.get("/api/v1/leads");
-      return res.data.data;
+  const leadsFilters: FilterDef[] = [
+    {
+      type: "select",
+      key: "assignedTo",
+      label: "Assigned To",
+      options: employees.map((e) => ({ value: e.name, label: e.name })),
+      accessor: (r: any) => r.assignedTo || r.assigned_to || "",
     },
-  });
-
-  const saveMutation = useMutation({
-    mutationFn: async (data: any) => {
-      return axios.post("/api/v1/leads", data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["leads"] });
-      toast.success("Lead created successfully.");
-    },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || "Failed to create lead.");
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string | number, data: any }) => {
-      return axios.put(`/api/v1/leads/${id}`, data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["leads"] });
-      toast.success("Lead updated successfully.");
-      setEditingRow(null);
-    },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || "Failed to update lead.");
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string | number) => {
-      return axios.delete(`/api/v1/leads/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["leads"] });
-      toast.success("Lead deleted successfully.");
-    },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || "Failed to delete lead.");
-    },
-  });
-
-  const leadsFilters: FilterDef[] = [];
+    {
+      type: "date-range",
+      key: "createdAt",
+      label: "Date Created",
+      accessor: (r: any) => r.createdAt || r.created_at || null,
+    }
+  ];
 
   const formFields: FieldDef[] = [
     { name: "name", label: t("common.name") || "Name", type: "text", required: true },
@@ -78,6 +43,7 @@ export default function LeadsPage() {
 
   return (
     <ResourcePage<Lead>
+      collectionKey="leads"
       title={t("nav.leads")}
       description="Prospects moving through the sales pipeline"
       rows={rows}
@@ -107,8 +73,13 @@ export default function LeadsPage() {
                     {t("common.edit")}
                   </button>
                   <ConfirmDeleteButton
-                    onConfirm={() => {
-                      deleteMutation.mutate(r.id);
+                    onConfirm={async () => {
+                      try {
+                        await remove("leads", r.id);
+                        toast.success("Lead deleted successfully.");
+                      } catch(e) {
+                        toast.error("Failed to delete lead.");
+                      }
                     }}
                     className="text-red-500 hover:text-red-700 text-sm"
                   />
@@ -121,9 +92,14 @@ export default function LeadsPage() {
       renderForm={(close) => (
         <QuickForm
           onCancel={close}
-          onSubmit={(v) => {
-            saveMutation.mutate(v);
-            close();
+          onSubmit={async (v) => {
+            try {
+              await add("leads", v);
+              toast.success("Lead created successfully.");
+              close();
+            } catch(err: any) {
+              toast.error(err.response?.data?.message || "Failed to create lead.");
+            }
           }}
           fields={formFields}
         />
@@ -137,14 +113,14 @@ export default function LeadsPage() {
             phone: row.phone || "",
           }}
           onCancel={close}
-          onSubmit={(v) => {
-            updateMutation.mutate({
-              id: row.id,
-              data: {
-                ...row,
-                ...v,
-              }
-            });
+          onSubmit={async (v) => {
+            try {
+              await update("leads", row.id, { ...row, ...v });
+              toast.success("Lead updated successfully.");
+              close();
+            } catch(err: any) {
+              toast.error(err.response?.data?.message || "Failed to update lead.");
+            }
           }}
           fields={formFields}
         />

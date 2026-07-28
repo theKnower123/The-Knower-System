@@ -13,8 +13,14 @@ use App\Modules\Support\Models\Ticket;
 use App\Modules\Hosting\Models\Domain;
 use App\Modules\Hosting\Models\HostingAccount;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class Project extends Model
 {
+    use HandlesTrash;
+    use SoftDeletes;
     use HasWorkspace, LogsActivity;
 
     protected $fillable = [

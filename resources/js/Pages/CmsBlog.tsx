@@ -12,6 +12,7 @@ export default function CmsBlogPage() {
 
   return (
     <ResourcePage
+      collectionKey="blogPosts"
       title="Blog Posts"
       description="Manage company blog"
       rows={rows}

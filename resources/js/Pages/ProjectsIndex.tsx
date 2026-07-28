@@ -63,6 +63,12 @@ export default function ProjectsPage() {
       accessor: (row: any) => row.start_date || row.startDate || null,
     },
     {
+      type: "date-range",
+      key: "deadline",
+      label: "End Date",
+      accessor: (row: any) => row.deadline || null,
+    },
+    {
       key: "status",
       label: "Status",
       options: [
@@ -177,6 +183,7 @@ export default function ProjectsPage() {
 
   return (
     <ResourcePage<Project>
+      collectionKey="projects"
       title={t("nav.projects")}
       description={isReadOnly ? "Your assigned projects" : "Every engagement from planning to launch"}
       rows={visibleRows}

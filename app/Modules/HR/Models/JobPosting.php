@@ -8,8 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Traits\HasWorkspace;
 use Spatie\Activitylog\Traits\LogsActivity;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class JobPosting extends Model
 {
+    use HandlesTrash;
+    use SoftDeletes;
     use HasWorkspace, LogsActivity;
 
     protected $fillable = [

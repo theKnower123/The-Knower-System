@@ -5,8 +5,14 @@ namespace App\Modules\HR\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class JobApplication extends Model
 {
+    use HandlesTrash;
+    use SoftDeletes;
     use HasWorkspace, LogsActivity;
 
     protected $fillable = [

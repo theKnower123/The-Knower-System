@@ -8,8 +8,14 @@ use App\Traits\HasWorkspace;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class BlogPost extends Model
 {
+    use HandlesTrash;
+    use SoftDeletes;
     use HasWorkspace, LogsActivity;
 
     protected $guarded = [];

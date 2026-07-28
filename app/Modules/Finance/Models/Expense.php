@@ -9,8 +9,14 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use App\Traits\HasWorkspace;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class Expense extends Model
 {
+    use HandlesTrash;
+    use SoftDeletes;
     use HasWorkspace, LogsActivity;
 
     protected $fillable = [

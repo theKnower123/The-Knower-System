@@ -10,6 +10,7 @@ export default function AttendancePage() {
   const employees = useCollection("employees");
   return (
     <ResourcePage<Attendance>
+      collectionKey="attendance"
       title={t("nav.attendance")}
       description="Daily check-in / check-out records"
       rows={rows}

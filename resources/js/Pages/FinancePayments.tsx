@@ -69,6 +69,7 @@ export default function PaymentsPage() {
 
   return (
     <ResourcePage<Payment>
+      collectionKey="payments"
       title={t("nav.payments")}
       description="Payments received against invoices — track every transaction with proof"
       rows={rows}

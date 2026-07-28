@@ -53,6 +53,7 @@ export default function ContractsPage() {
 
   return (
     <ResourcePage<Contract>
+      collectionKey="contracts"
       title={t("nav.contracts")}
       description={t("contracts.description")}
       rows={rows}

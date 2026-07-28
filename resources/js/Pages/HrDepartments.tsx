@@ -20,6 +20,7 @@ export default function DepartmentsPage() {
 
   return (
     <ResourcePage<Department>
+      collectionKey="departments"
       title={t("nav.departments")}
       description="Company org chart"
       rows={rows}

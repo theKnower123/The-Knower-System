@@ -70,6 +70,7 @@ export default function DomainsPage() {
 
   return (
     <ResourcePage<Domain>
+      collectionKey="domains"
       title={t("nav.domains")}
       description="Registered domains & renewals — linked to clients and projects"
       rows={rows}

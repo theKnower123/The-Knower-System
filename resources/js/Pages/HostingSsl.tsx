@@ -12,6 +12,7 @@ export default function SSLPage() {
   const domains = useCollection("domains");
   return (
     <ResourcePage<SSL>
+      collectionKey="ssls"
       title={t("nav.ssl")}
       description="TLS certificates and their renewal windows"
       rows={rows}

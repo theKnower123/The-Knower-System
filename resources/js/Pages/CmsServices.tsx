@@ -12,6 +12,7 @@ export default function CmsServicesPage() {
 
   return (
     <ResourcePage
+      collectionKey="servicesCms"
       title="Services"
       description="Manage services offered"
       rows={rows}

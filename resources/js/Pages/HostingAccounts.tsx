@@ -12,6 +12,7 @@ export default function AccountsPage() {
   const clients = useCollection("clients");
   return (
     <ResourcePage<HostingAccount>
+      collectionKey="hostingAccounts"
       title={t("nav.hostingAccounts")}
       description="Client hosting plans and expirations"
       rows={rows}

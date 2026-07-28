@@ -219,6 +219,10 @@ Route::prefix('v1')->group(function () {
         Route::put ('settings/company',    [SettingsController::class, 'updateCompany']);
         Route::put ('settings/mail',       [SettingsController::class, 'updateMail']);
         Route::put ('settings/security',   [SettingsController::class, 'updateSecurity']);
+
+        // ── Trash ─────────────────────────────────────────────────────────────────
+        Route::post('trash/{module}/{id}/restore', [\App\Http\Controllers\TrashController::class, 'restore']);
+        Route::delete('trash/{module}/{id}/force', [\App\Http\Controllers\TrashController::class, 'forceDelete']);
     });
 
 });

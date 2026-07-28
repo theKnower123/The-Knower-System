@@ -13,6 +13,7 @@ export default function TicketsPage() {
   const clients = useCollection("clients");
   return (
     <ResourcePage<Ticket>
+      collectionKey="tickets"
       title={t("nav.tickets")}
       description="Client support conversations"
       rows={rows}

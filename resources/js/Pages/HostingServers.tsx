@@ -10,6 +10,7 @@ export default function ServersPage() {
   const rows = useCollection("servers");
   return (
     <ResourcePage<ServerT>
+      collectionKey="servers"
       title={t("nav.servers")}
       description="Provisioned infrastructure"
       rows={rows}

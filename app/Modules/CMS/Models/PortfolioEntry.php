@@ -5,8 +5,14 @@ namespace App\Modules\CMS\Models;
 use App\Modules\Projects\Models\Project;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class PortfolioEntry extends Model
 {
+    use HandlesTrash;
+    use SoftDeletes;
     protected $fillable = [
         'project_id', 'client_approved', 'is_visible', 'cover_image',
         'description', 'tags', 'show_client_name',

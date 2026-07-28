@@ -28,6 +28,7 @@ export default function MeetingsPage() {
 
   return (
     <ResourcePage<Meeting>
+      collectionKey="meetings"
       title={t("nav.meetings")}
       description="Scheduled calls & workshops"
       rows={rows}

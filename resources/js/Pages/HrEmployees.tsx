@@ -98,12 +98,38 @@ export default function EmployeesPage() {
 
   return (
     <ResourcePage<Employee>
+      collectionKey="employees"
       title={t("nav.employees")}
       description="Team roster"
       rows={rows}
       newLabel="New employee"
       editingRow={editingRow}
       onCloseEdit={() => setEditingRow(null)}
+      filters={[
+        {
+          key: "department",
+          label: "Department",
+          type: "select",
+          options: departments.map((d: any) => ({ value: d.name, label: d.name })),
+          accessor: (r: any) => r.department || "",
+        },
+        {
+          key: "status",
+          label: "Status",
+          type: "select",
+          options: [
+            { value: "active", label: "Active" },
+            { value: "on_leave", label: "On Leave" },
+            { value: "terminated", label: "Terminated" },
+          ],
+        },
+        {
+          key: "position",
+          label: "Position",
+          type: "select",
+          options: Array.from(new Set(rows.map(r => r.position).filter(Boolean))).map(p => ({ value: p as string, label: p as string })),
+        }
+      ]}
       columns={[
         { key: "name", header: t("common.name"), cell: (r) => <div><div className="font-medium">{r.name}</div><div className="text-xs text-muted-foreground">{r.email}</div></div> },
         { key: "dept", header: "Department", cell: (r) => r.department, hideOnMobile: true },

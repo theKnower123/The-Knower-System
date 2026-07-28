@@ -6,8 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use App\Modules\Auth\Models\User;
 use App\Modules\Settings\Models\Workspace;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class ErrorLog extends Model
 {
+    use HandlesTrash;
+    use SoftDeletes;
     protected $guarded = ['id'];
 
     protected $casts = [

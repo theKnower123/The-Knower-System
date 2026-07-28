@@ -5,8 +5,14 @@ namespace App\Modules\Finance\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class Timesheet extends Model
 {
+    use HandlesTrash;
+    use SoftDeletes;
     protected $fillable = ['user_id', 'period_start', 'period_end', 'status', 'approved_by', 'approved_at'];
 
     protected $casts = [

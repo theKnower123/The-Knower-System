@@ -8,6 +8,7 @@ export default function CmsTestimonialsPage() {
 
   return (
     <ResourcePage
+      collectionKey="testimonials"
       title="Testimonials"
       description="Manage customer reviews"
       rows={rows}

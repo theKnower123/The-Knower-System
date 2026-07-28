@@ -137,6 +137,18 @@ export default function TasksPage() {
       options: ROLE_CATEGORIES.map((c) => ({ value: c.value, label: c.label })),
       accessor: (row: any) => (row as any).categoryRole || "",
     }] : []),
+    {
+      key: "assignee",
+      label: "Assigned To",
+      options: users.map((u) => ({ value: u.name, label: u.name })),
+      accessor: (r: any) => r.assignee || "",
+    },
+    {
+      type: "date-range",
+      key: "dueDate",
+      label: "Due Date",
+      accessor: (r: any) => r.dueDate || null,
+    },
   ];
 
   const formFields: FieldDef[] = [

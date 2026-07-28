@@ -4,8 +4,14 @@ namespace App\Modules\Marketing\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class CampaignMetric extends Model
 {
+    use HandlesTrash;
+    use SoftDeletes;
     protected $fillable = [
         'campaign_id', 'date', 'reach', 'clicks', 'cost', 'leads_generated',
     ];

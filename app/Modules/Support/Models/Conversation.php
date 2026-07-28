@@ -7,8 +7,14 @@ use App\Modules\Auth\Models\User;
 use App\Modules\HR\Models\Department;
 use App\Modules\Settings\Models\Workspace;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class Conversation extends Model
 {
+    use HandlesTrash;
+    use SoftDeletes;
     protected $guarded = ['id'];
 
     protected $casts = [

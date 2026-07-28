@@ -6,8 +6,11 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Traits\HandlesTrash;
+
 class KbArticle extends Model
 {
+    use HandlesTrash;
     use SoftDeletes;
 
     protected $fillable = ['title', 'category', 'body', 'is_published', 'created_by'];

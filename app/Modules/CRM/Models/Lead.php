@@ -12,8 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\LeadPipelineStage;
 use App\Enums\LeadSource;
 
+use App\Traits\HandlesTrash;
+
 class Lead extends Model
 {
+    use HandlesTrash;
     use HasWorkspace, SoftDeletes, LogsActivity;
 
     protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];

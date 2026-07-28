@@ -5,8 +5,14 @@ namespace App\Modules\AI\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class AiSuggestion extends Model
 {
+    use HandlesTrash;
+    use SoftDeletes;
     protected $fillable = [
         'target_table', 'target_id', 'suggestion_type', 'content', 'status', 'reviewed_by',
     ];

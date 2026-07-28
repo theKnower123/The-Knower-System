@@ -47,6 +47,7 @@ export default function ExpensesPage() {
 
   return (
     <ResourcePage<Expense>
+      collectionKey="expenses"
       title={t("nav.expenses")}
       description="Company costs and outflows"
       rows={rows}

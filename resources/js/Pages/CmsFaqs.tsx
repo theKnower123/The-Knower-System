@@ -12,6 +12,7 @@ export default function CmsFaqsPage() {
 
   return (
     <ResourcePage
+      collectionKey="faqs"
       title="FAQs"
       description="Manage frequently asked questions"
       rows={rows}

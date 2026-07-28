@@ -37,10 +37,37 @@ export default function ClientsPage() {
         { value: "inactive", label: "Inactive" },
       ],
     },
+    {
+      key: "company",
+      label: "Company",
+      type: "select",
+      options: [
+        { value: "Acme Corp", label: "Acme Corp" },
+        { value: "Globex", label: "Globex" },
+      ],
+      accessor: (r: any) => r.company || "",
+    },
+    {
+      key: "country",
+      label: "Country",
+      type: "select",
+      options: [
+        { value: "USA", label: "USA" },
+        { value: "UK", label: "UK" },
+        { value: "Canada", label: "Canada" },
+      ],
+      accessor: (r: any) => r.country || "",
+    },
+    {
+      key: "createdAt",
+      label: "Created Date",
+      type: "date-range",
+    }
   ];
 
   return (
     <ResourcePage<Client>
+      collectionKey="clients"
       title={t("nav.clients")}
       description="Clients and individuals working with The Knower"
       rows={rows}

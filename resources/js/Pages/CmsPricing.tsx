@@ -12,6 +12,7 @@ export default function CmsPricingPage() {
 
   return (
     <ResourcePage
+      collectionKey="marketingPlans"
       title="Pricing Plans"
       description="Manage pricing plans and features"
       rows={rows}

@@ -13,8 +13,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class User extends Authenticatable
 {
+    use HandlesTrash;
+    use SoftDeletes;
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [

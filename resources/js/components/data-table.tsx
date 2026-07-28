@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface Column<T> {
   key: string;
@@ -48,8 +49,10 @@ export function DataTable<T extends { id: string | number }>({
   getSearchable?: (row: T) => string;
   empty?: string;
   filters?: FilterDef[];
+  pageSize?: number;
 }) {
   const [q, setQ] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
   const [appliedFilters, setAppliedFilters] = useState<Record<string, string>>({});
   const [filtersExpanded, setFiltersExpanded] = useState(false);
@@ -63,10 +66,12 @@ export function DataTable<T extends { id: string | number }>({
   const clearFilters = () => {
     setActiveFilters({});
     setAppliedFilters({});
+    setCurrentPage(1);
   };
 
   const applyFilters = () => {
     setAppliedFilters(activeFilters);
+    setCurrentPage(1);
   };
 
   const filtered = useMemo(() => {
@@ -116,6 +121,17 @@ export function DataTable<T extends { id: string | number }>({
 
     return result;
   }, [rows, q, activeFilters, getSearchable, filters]);
+
+  // Reset pagination when search changes
+  useMemo(() => {
+    setCurrentPage(1);
+  }, [q]);
+
+  const totalPages = Math.ceil(filtered.length / (pageSize || 10));
+  const paginated = useMemo(() => {
+    const start = (currentPage - 1) * (pageSize || 10);
+    return filtered.slice(start, start + (pageSize || 10));
+  }, [filtered, currentPage, pageSize]);
 
   // Separate columns for mobile: first column as "title", rest as detail rows
   const mobileColumns = columns.filter((c) => !c.hideOnMobile);
@@ -259,7 +275,7 @@ export function DataTable<T extends { id: string | number }>({
                   </td>
                 </tr>
               )}
-              {filtered.map((row) => (
+              {paginated.map((row) => (
                 <tr
                   key={row.id}
                   className="border-t border-border/60 transition-colors hover:bg-muted/30"
@@ -283,7 +299,7 @@ export function DataTable<T extends { id: string | number }>({
             {empty}
           </div>
         )}
-        {filtered.map((row) => (
+        {paginated.map((row) => (
           <div
             key={row.id}
             className="rounded-xl border border-border bg-card p-4 space-y-2"
@@ -312,6 +328,38 @@ export function DataTable<T extends { id: string | number }>({
           </div>
         ))}
       </div>
+
+      {/* ── Pagination Controls ── */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4">
+          <p className="text-sm text-muted-foreground">
+            Showing {(currentPage - 1) * (pageSize || 10) + 1} to {Math.min(currentPage * (pageSize || 10), filtered.length)} of {filtered.length} results
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            >
+              <ChevronLeft className="h-4 w-4" />
+              <span className="sr-only">Previous</span>
+            </Button>
+            <span className="text-sm font-medium">
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            >
+              <ChevronRight className="h-4 w-4" />
+              <span className="sr-only">Next</span>
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

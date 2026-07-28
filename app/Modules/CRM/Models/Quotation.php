@@ -12,8 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Enums\QuotationStatus;
 
+use App\Traits\HandlesTrash;
+
 class Quotation extends Model
 {
+    use HandlesTrash;
     use HasWorkspace, SoftDeletes, LogsActivity;
 
     protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];

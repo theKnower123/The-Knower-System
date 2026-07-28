@@ -65,6 +65,7 @@ export default function BugsPage() {
 
   return (
     <ResourcePage<Bug>
+      collectionKey="bugs"
       title="Maintenance & Bugs"
       description="Defects and maintenance requests across projects"
       rows={rows}

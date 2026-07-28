@@ -5,8 +5,14 @@ namespace App\Modules\Support\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Auth\Models\User;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use App\Traits\HandlesTrash;
+
 class Message extends Model
 {
+    use HandlesTrash;
+    use SoftDeletes;
     protected $guarded = ['id'];
 
     protected $casts = [

@@ -88,11 +88,16 @@ function normalize(val: unknown): unknown {
   return val;
 }
 
-export function useCollection<K extends keyof typeof endpointMap>(key: K): any[] {
+export function useCollection<K extends keyof typeof endpointMap>(
+  key: K, 
+  options?: { trashed?: boolean }
+): any[] {
+  const trashed = options?.trashed ?? (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get("trash") === "1");
+  
   const { data } = useQuery({
-    queryKey: [key],
+    queryKey: [key, { trashed }],
     queryFn: async () => {
-      const res = await api.get(`/${endpointMap[key as string]}`);
+      const res = await api.get(`/${endpointMap[key as string]}${trashed ? '?trashed=1' : ''}`);
       const raw = res.data?.data || [];
       return normalize(raw) as any[];
     },
@@ -153,3 +158,14 @@ export async function remove<K extends keyof typeof endpointMap>(key: K, id: str
   return res.data;
 }
 
+export async function restore<K extends keyof typeof endpointMap>(key: K, id: string | number) {
+  const res = await api.post(`/trash/${endpointMap[key as string]}/${id}/restore`);
+  await invalidate(key as string);
+  return res.data;
+}
+
+export async function forceDelete<K extends keyof typeof endpointMap>(key: K, id: string | number) {
+  const res = await api.delete(`/trash/${endpointMap[key as string]}/${id}/force`);
+  await invalidate(key as string);
+  return res.data;
+}

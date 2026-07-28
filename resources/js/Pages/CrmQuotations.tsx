@@ -102,6 +102,7 @@ export default function QuotationsPage() {
 
   return (
     <ResourcePage<Quotation>
+      collectionKey="quotations"
       title={t("nav.quotations")}
       description="Price proposals sent to clients"
       rows={rows}
