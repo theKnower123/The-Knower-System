@@ -10,6 +10,7 @@ export interface SessionUser {
   role: Role;
   permissions?: string[];
   avatar?: string;
+  client_id?: string | number | null;
 }
 
 interface AuthState {
@@ -50,6 +51,7 @@ export const useAuth = create<AuthState>()(
               name: user.name,
               email: user.email,
               role: validRole as Role,
+              client_id: user.client_id,
             },
             token,
           });

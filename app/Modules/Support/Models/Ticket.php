@@ -17,6 +17,7 @@ use App\Traits\HandlesTrash;
 
 class Ticket extends Model
 {
+    use \App\Traits\IsolatesClientData;
     use HandlesTrash;
     use SoftDeletes;
     use HasWorkspace, LogsActivity;

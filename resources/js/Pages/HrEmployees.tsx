@@ -1,23 +1,46 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from "react-i18next";
 import { ResourcePage } from "@/components/resource-page";
 import { QuickForm, type FieldDef } from "@/components/quick-form";
 import { StatusBadge } from "@/components/status-badge";
+import { StatCard } from "@/components/stat-card";
+import { StaggerList } from "@/components/animations/StaggerList";
 import { useCollection, add, update, remove } from "@/mocks/store";
-import { makeId, type Employee } from "@/mocks/data";
+import { type Employee } from "@/mocks/data";
 import { money, shortDate } from "@/lib/format";
 import { useAuth } from "@/store/auth";
+import { roleHas, type Role } from "@/lib/permissions";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
+import { Users, UserCheck, DollarSign, CalendarOff } from "lucide-react";
 
 export default function EmployeesPage() {
+  const { user } = useAuth();
+  const canEdit = user ? roleHas(user.role as Role, "hr.manage") : false;
+
   const { t } = useTranslation();
   const rows = useCollection("employees");
   const departments = useCollection("departments");
-  const { user } = useAuth();
-  
   const [editingRow, setEditingRow] = useState<Employee | null>(null);
-  const canEdit = ["super_admin", "ceo", "hr"].includes(user?.role || "");
+
+  // Mini Dashboard Calculation
+  const stats = useMemo(() => {
+    const totalCount = rows.length;
+    const activeCount = rows.filter((r: any) => !r.status || r.status === "active").length;
+    const onLeaveCount = rows.filter((r: any) => r.status === "on_leave").length;
+    const totalMonthlySalary = rows.reduce((sum, r: any) => sum + (Number(r.salary) || 0), 0);
+
+    return { totalCount, activeCount, onLeaveCount, totalMonthlySalary };
+  }, [rows]);
+
+  const dashboardHeader = (
+    <StaggerList className="grid grid-cols-2 gap-3 sm:grid-cols-4" staggerDelay={0.05}>
+      <StatCard label="Total Employees" value={stats.totalCount} icon={Users} />
+      <StatCard label="Active Staff" value={stats.activeCount} icon={UserCheck} accent="success" />
+      <StatCard label="Monthly Payroll Cost" value={money(stats.totalMonthlySalary)} icon={DollarSign} accent="primary" />
+      <StatCard label="On Leave" value={stats.onLeaveCount} icon={CalendarOff} accent="warning" />
+    </StaggerList>
+  );
 
   const formFields: FieldDef[] = [
     { name: "name", label: t("common.fields.fullName") || "Full Name", type: "text", required: true },
@@ -98,10 +121,13 @@ export default function EmployeesPage() {
 
   return (
     <ResourcePage<Employee>
+      hideNewButton={!canEdit}
+      hideTrashButton={!canEdit}
       collectionKey="employees"
       title={t("nav.employees")}
-      description="Team roster"
+      description="Team roster & employee profiles"
       rows={rows}
+      headerContent={dashboardHeader}
       newLabel="New employee"
       editingRow={editingRow}
       onCloseEdit={() => setEditingRow(null)}
@@ -134,9 +160,9 @@ export default function EmployeesPage() {
         { key: "name", header: t("common.name"), cell: (r) => <div><div className="font-medium">{r.name}</div><div className="text-xs text-muted-foreground">{r.email}</div></div> },
         { key: "dept", header: "Department", cell: (r) => r.department, hideOnMobile: true },
         { key: "position", header: "Position", cell: (r) => r.position },
-        { key: "salary", header: "Salary", cell: (r) => <span className="tabular-nums">{money(r.salary)}</span>, hideOnMobile: true },
+        { key: "salary", header: "Salary", cell: (r) => <span className="tabular-nums font-semibold">{money(r.salary)}</span>, hideOnMobile: true },
         { key: "hire", header: "Hired", cell: (r) => shortDate(r.hireDate), hideOnMobile: true },
-        { key: "status", header: t("common.status"), cell: (r) => <StatusBadge value={r.status} /> },
+        { key: "status", header: t("common.status"), cell: (r) => <StatusBadge value={r.status || "active"} /> },
         { 
           key: "actions", 
           header: t("common.actions") || "Actions", 
@@ -145,7 +171,7 @@ export default function EmployeesPage() {
               {canEdit && (
                 <>
                   <button 
-                    className="text-primary hover:underline text-sm"
+                    className="text-primary hover:underline text-sm font-medium"
                     onClick={(e) => {
                       e.stopPropagation();
                       setEditingRow(r);
@@ -157,12 +183,12 @@ export default function EmployeesPage() {
                     onConfirm={async () => {
                       try {
                         await remove('employees', r.id);
-                        toast('Employee deleted successfully.');
+                        toast.success('Employee deleted successfully.');
                       } catch (err) {
-                        toast('Failed to delete employee.');
+                        toast.error('Failed to delete employee.');
                       }
                     }}
-                    className="text-red-500 hover:text-red-700 text-sm"
+                    className="text-red-500 hover:text-red-700 text-sm font-medium"
                   />
                 </>
               )}
@@ -186,10 +212,11 @@ export default function EmployeesPage() {
                 hire_date: new Date().toISOString().split("T")[0],
                 status: "active",
               });
+              toast.success("Employee added successfully.");
               close();
             } catch (err: any) {
               console.error("Failed to add employee", err);
-              toast(err.response?.data?.message || "Failed to save employee.");
+              toast.error(err.response?.data?.message || "Failed to save employee.");
             }
           }}
           fields={formFields}
@@ -221,10 +248,10 @@ export default function EmployeesPage() {
               dataToUpdate.salary = Number(v.salary || 0);
               
               await update("employees", row.id, dataToUpdate);
-              toast("Employee updated successfully.");
+              toast.success("Employee updated successfully.");
               close();
             } catch (err: any) {
-              toast("Failed to update employee.");
+              toast.error("Failed to update employee.");
             }
           }}
           fields={formFields}

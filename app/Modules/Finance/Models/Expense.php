@@ -20,14 +20,48 @@ class Expense extends Model
     use HasWorkspace, LogsActivity;
 
     protected $fillable = [
-        'category', 'title', 'amount', 'payment_method', 'created_by', 'notes',
+        'category', 'title', 'amount', 'unit_price', 'quantity', 'payment_method', 'method', 'transfer_proof', 'receipt_path', 'expense_date', 'created_by', 'notes',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'unit_price' => 'decimal:2',
+        'quantity' => 'decimal:2',
+        'expense_date' => 'date',
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
+
+    public function getMethodAttribute()
+    {
+        return $this->attributes['payment_method'] ?? null;
+    }
+
+    public function getDateAttribute()
+    {
+        return $this->attributes['expense_date'] ?? $this->attributes['created_at'] ?? null;
+    }
+
+    protected static function booted()
+    {
+        static::saving(function ($expense) {
+            if (isset($expense->attributes['method'])) {
+                $expense->attributes['payment_method'] = $expense->attributes['method'];
+                unset($expense->attributes['method']);
+            }
+            if (isset($expense->attributes['date'])) {
+                $expense->attributes['expense_date'] = $expense->attributes['date'];
+                unset($expense->attributes['date']);
+            }
+            if (isset($expense->attributes['invoice_proof'])) {
+                $expense->attributes['receipt_path'] = $expense->attributes['invoice_proof'];
+                unset($expense->attributes['invoice_proof']);
+            }
+            if (isset($expense->attributes['description']) && empty($expense->attributes['notes'])) {
+                $expense->attributes['notes'] = $expense->attributes['description'];
+            }
+        });
+    }
 
     public function creator()
     {

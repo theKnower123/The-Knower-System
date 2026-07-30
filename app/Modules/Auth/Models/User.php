@@ -125,6 +125,16 @@ class User extends Authenticatable
     public function getAllPermissions(): array
     {
         return match ($this->role) {
+            'administrator' => [
+                "dashboard.view", "crm.view", "lead.manage", "client.manage", "quotation.manage", "contract.manage",
+                "project.view", "project.manage", "task.view", "task.manage", "task.update_status", "bug.manage", "file.upload",
+                "finance.view", "invoice.manage", "payment.manage", "expense.manage",
+                "hosting.view", "hosting.manage", "domain.manage", "server.manage", "ssl.manage",
+                "hr.view", "hr.manage", "attendance.manage", "leave.manage", "payroll.manage",
+                "support.view", "support.inbox", "support.tickets", "support.canned", "support.kb_read", "support.manage", "ticket.manage", "ticket.reply",
+                "report.view", "settings.manage", "user.manage", "cms.manage",
+                "code.review", "design.upload", "qa.test", "ai.use"
+            ],
             'ceo' => [
                 "dashboard.view", "crm.view", "client.manage", "project.view", 
                 "finance.view", "report.view", "hr.view", "hosting.view", 
@@ -133,6 +143,9 @@ class User extends Authenticatable
             'sales' => [
                 "dashboard.view", "crm.view", "lead.manage", "client.manage", 
                 "quotation.manage", "contract.manage", "ai.use"
+            ],
+            'marketing' => [
+                "dashboard.view", "crm.view", "lead.manage", "cms.manage", "ai.use"
             ],
             'project_manager' => [
                 "dashboard.view", "crm.view", "project.view", "project.manage", 
@@ -143,9 +156,13 @@ class User extends Authenticatable
                 "dashboard.view", "project.view", "task.view", "task.manage", 
                 "code.review", "bug.manage", "file.upload", "ai.use"
             ],
-            'developer' => [
+            'developer', 'backend_developer', 'frontend_developer', 'full_stack_developer', 'mobile_developer' => [
                 "dashboard.view", "project.view", "task.view", "task.update_status", 
-                "bug.manage", "file.upload", "ai.use"
+                "code.review", "bug.manage", "file.upload", "ai.use"
+            ],
+            'devops' => [
+                "dashboard.view", "hosting.view", "hosting.manage", "domain.manage",
+                "server.manage", "ssl.manage", "file.upload"
             ],
             'designer' => [
                 "dashboard.view", "project.view", "task.view", "task.update_status", 
@@ -155,7 +172,7 @@ class User extends Authenticatable
                 "dashboard.view", "project.view", "task.view", "qa.test", 
                 "bug.manage", "file.upload"
             ],
-            'accountant' => [
+            'accountant', 'finance' => [
                 "dashboard.view", "finance.view", "invoice.manage", "payment.manage", 
                 "expense.manage", "report.view"
             ],
@@ -163,7 +180,7 @@ class User extends Authenticatable
                 "dashboard.view", "hr.view", "hr.manage", "attendance.manage", 
                 "leave.manage", "payroll.manage", "report.view"
             ],
-            'support' => [
+            'support', 'support_agent' => [
                 "dashboard.view", "support.view", "ticket.manage", "ticket.reply", 
                 "client.manage", "support.inbox", "support.tickets", "support.canned",
                 "support.kb_read"
@@ -173,7 +190,9 @@ class User extends Authenticatable
                 "client.manage", "support.inbox", "support.tickets", "support.canned",
                 "support.kb_read", "support.manage"
             ],
-            'client' => ["client_portal.view"],
+            'client' => [
+                "dashboard.view", "client_portal.view",
+            ],
             default => []
         };
     }

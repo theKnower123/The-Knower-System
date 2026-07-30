@@ -31,6 +31,7 @@ class HandleInertiaRequests extends Middleware
     {
         $user = $request->user();
         
+        $userData = null;
         if ($user) {
             $defaultPerms = $user->getAllPermissions();
             $customPerms = $user->permissions ?? [];
@@ -40,12 +41,15 @@ class HandleInertiaRequests extends Middleware
             } else {
                 $user->permissions = array_values(array_unique(array_merge($defaultPerms, $customPerms)));
             }
+            
+            $userData = $user->toArray();
+            $userData['client_id'] = $user->client()->value('id');
         }
 
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $user,
+                'user' => $userData,
             ],
         ];
     }

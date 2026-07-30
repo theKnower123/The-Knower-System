@@ -13,6 +13,7 @@ use App\Traits\HandlesTrash;
 
 class Contract extends Model
 {
+    use \App\Traits\IsolatesClientData;
     use HandlesTrash;
     use SoftDeletes;
     use HasWorkspace, LogsActivity;
@@ -29,14 +30,17 @@ class Contract extends Model
     public function client()
     {
         return $this->belongsTo(Client::class);
-    
-}
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(\App\Modules\Projects\Models\Project::class);
+    }
 
     public function quotation()
     {
         return $this->belongsTo(Quotation::class);
-    
-}
+    }
 
 
     public function getActivitylogOptions(): LogOptions

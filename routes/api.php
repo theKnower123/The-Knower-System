@@ -164,9 +164,7 @@ Route::prefix('v1')->group(function () {
 
         // ── Finance ───────────────────────────────────────────────────────────────
         Route::apiResource('invoices',  InvoiceController::class);
-        Route::get   ('payments',       [PaymentController::class, 'index']);
-        Route::post  ('payments',       [PaymentController::class, 'store']);
-        Route::delete('payments/{id}',  [PaymentController::class, 'destroy']);
+        Route::apiResource('payments',  PaymentController::class);
         Route::apiResource('expenses',  ExpenseController::class);
 
         // ── Hosting ───────────────────────────────────────────────────────────────

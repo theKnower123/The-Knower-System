@@ -27,7 +27,7 @@ class ContractController extends Controller
         $contracts = $this->contractService->getAll();
         
         // Load relations if needed
-        $contracts->load(['client', 'quotation']);
+        $contracts->load(['client', 'project', 'quotation']);
 
         return response()->json([
             'success' => true,
@@ -39,6 +39,7 @@ class ContractController extends Controller
     public function store(StoreContractRequest $request): JsonResponse
     {
         $contract = $this->contractService->create($request->all());
+        $contract->load(['client', 'project', 'quotation']);
 
         return response()->json([
             'success' => true,
@@ -50,7 +51,7 @@ class ContractController extends Controller
     public function show(Contract $contract): JsonResponse
     {
         Gate::authorize('view', $contract);
-        $contract->load(['client', 'quotation']);
+        $contract->load(['client', 'project', 'quotation']);
 
         return response()->json([
             'success' => true,

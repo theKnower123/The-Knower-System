@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Traits\HandlesTrash;
 
+use App\Traits\HasWorkspace;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
 class TaskComment extends Model
 {
     use HandlesTrash;
@@ -32,5 +36,10 @@ class TaskComment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
 }

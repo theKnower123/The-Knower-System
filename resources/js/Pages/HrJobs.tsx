@@ -1,14 +1,16 @@
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/page-header";
 import { QuickForm } from "@/components/quick-form";
 import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
-import { Plus, Briefcase } from "lucide-react";
+import { StatCard } from "@/components/stat-card";
+import { StaggerList } from "@/components/animations/StaggerList";
+import { Plus, Briefcase, CheckCircle2, Clock, FolderX } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useState } from "react";
 import { StatusBadge } from "@/components/status-badge";
 
 export default function HrJobsPage() {
@@ -17,7 +19,7 @@ export default function HrJobsPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<any>(null);
 
-  const { data: jobs = [], isLoading } = useQuery({
+  const { data: jobs = [] } = useQuery({
     queryKey: ["job-postings"],
     queryFn: async () => {
       const res = await axios.get("/api/v1/job-postings");
@@ -43,13 +45,32 @@ export default function HrJobsPage() {
     },
   });
 
+  // Mini Dashboard Calculation
+  const stats = useMemo(() => {
+    const totalCount = jobs.length;
+    const publishedCount = jobs.filter((j: any) => j.status === "published" || j.status === "active" || j.status === "open").length;
+    const draftCount = jobs.filter((j: any) => j.status === "draft").length;
+    const closedCount = jobs.filter((j: any) => j.status === "closed" || j.status === "filled").length;
+
+    return { totalCount, publishedCount, draftCount, closedCount };
+  }, [jobs]);
+
+  const dashboardHeader = (
+    <StaggerList className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-6" staggerDelay={0.05}>
+      <StatCard label="Total Job Openings" value={stats.totalCount} icon={Briefcase} />
+      <StatCard label="Active / Published" value={stats.publishedCount} icon={CheckCircle2} accent="success" />
+      <StatCard label="Draft Postings" value={stats.draftCount} icon={Clock} accent="warning" />
+      <StatCard label="Closed / Filled" value={stats.closedCount} icon={FolderX} accent="destructive" />
+    </StaggerList>
+  );
+
   const columns = [
     { key: "title", header: "Job Title", cell: (r: any) => <div className="font-medium">{r.title}</div> },
-    { key: "departmentName", header: "Department", cell: (r: any) => r.departmentName },
-    { key: "type", header: "Type", cell: (r: any) => <span className="capitalize">{r.type.replace("-", " ")}</span> },
-    { key: "location", header: "Location", cell: (r: any) => r.location },
+    { key: "departmentName", header: "Department", cell: (r: any) => r.departmentName || "—" },
+    { key: "type", header: "Type", cell: (r: any) => <span className="capitalize">{r.type?.replace("-", " ") || "Full Time"}</span> },
+    { key: "location", header: "Location", cell: (r: any) => r.location || "Remote" },
     { key: "status", header: "Status", cell: (r: any) => <StatusBadge value={r.status} /> },
-    { key: "closingDate", header: "Closing Date", cell: (r: any) => r.closingDate },
+    { key: "closingDate", header: "Closing Date", cell: (r: any) => r.closingDate || "—" },
     { key: "actions", header: "Actions", cell: (r: any) => (
         <Button variant="ghost" size="sm" onClick={() => {
             setEditingJob(r);
@@ -71,6 +92,8 @@ export default function HrJobsPage() {
           </Button>
         }
       />
+
+      {dashboardHeader}
 
       <div className="rounded-xl border border-border bg-card shadow-sm p-4">
         <DataTable

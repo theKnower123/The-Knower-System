@@ -1,15 +1,18 @@
 export const money = (n: number, currency = "USD") =>
   new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 0 }).format(n);
 
-export const shortDate = (iso: string) => {
+export const shortDate = (iso: string | null | undefined) => {
+  if (!iso) return "—";
   try {
-    return new Date(iso).toLocaleDateString("en-US", {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "—";
+    return d.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
     });
   } catch {
-    return iso;
+    return "—";
   }
 };
 

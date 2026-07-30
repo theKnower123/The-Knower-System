@@ -12,26 +12,36 @@ class FilePolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_files');
+        return $user->hasPermissionTo('project.view') || $user->hasPermissionTo('file.manage');
     }
 
     public function view(User $user, File $file): bool
     {
-        return $user->hasPermissionTo('view_files');
+        return $user->hasPermissionTo('project.view') || $user->hasPermissionTo('file.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_files');
+        return $user->hasPermissionTo('file.manage');
     }
 
     public function update(User $user, File $file): bool
     {
-        return $user->hasPermissionTo('edit_files');
+        return $user->hasPermissionTo('file.manage');
     }
 
     public function delete(User $user, File $file): bool
     {
-        return $user->hasPermissionTo('delete_files');
+        return $user->hasPermissionTo('file.manage');
+    }
+
+    public function restore(User $user, File $file): bool
+    {
+        return $user->hasPermissionTo('file.manage');
+    }
+
+    public function forceDelete(User $user, File $file): bool
+    {
+        return $user->hasPermissionTo('file.manage');
     }
 }

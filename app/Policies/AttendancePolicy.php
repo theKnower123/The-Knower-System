@@ -12,26 +12,36 @@ class AttendancePolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_attendances');
+        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('attendance.manage');
     }
 
     public function view(User $user, Attendance $attendance): bool
     {
-        return $user->hasPermissionTo('view_attendances');
+        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('attendance.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_attendances');
+        return $user->hasPermissionTo('attendance.manage');
     }
 
     public function update(User $user, Attendance $attendance): bool
     {
-        return $user->hasPermissionTo('edit_attendances');
+        return $user->hasPermissionTo('attendance.manage');
     }
 
     public function delete(User $user, Attendance $attendance): bool
     {
-        return $user->hasPermissionTo('delete_attendances');
+        return $user->hasPermissionTo('attendance.manage');
+    }
+
+    public function restore(User $user, Attendance $attendance): bool
+    {
+        return $user->hasPermissionTo('attendance.manage');
+    }
+
+    public function forceDelete(User $user, Attendance $attendance): bool
+    {
+        return $user->hasPermissionTo('attendance.manage');
     }
 }

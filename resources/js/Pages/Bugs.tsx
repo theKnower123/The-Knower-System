@@ -1,8 +1,14 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from "react-i18next";
 import { ResourcePage } from "@/components/resource-page";
+import { useAuth } from "@/store/auth";
+import { roleHas, type Role } from "@/lib/permissions";
 import { StatusBadge } from "@/components/status-badge";
-import { useCollection, add } from "@/mocks/store";
+import { StatCard } from "@/components/stat-card";
+import { StaggerList } from "@/components/animations/StaggerList";
+import { useCollection, add, remove } from "@/mocks/store";
+import { toast } from 'sonner';
+import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 import { makeId, type Bug } from "@/mocks/data";
 import { shortDate } from "@/lib/format";
 import { Label } from "@/components/ui/label";
@@ -17,13 +23,38 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SearchableSelect } from "@/components/searchable-select";
+import { Bug as BugIcon, AlertCircle, PlayCircle, CheckCircle2, Zap } from "lucide-react";
 
 export default function BugsPage() {
+  const { user } = useAuth();
+  const canEdit = user ? roleHas(user.role as Role, "bug.manage") : false;
+
   const { t } = useTranslation();
   const rows = useCollection("bugs");
   const projects = useCollection("projects");
   const clients = useCollection("clients");
   const employees = useCollection("employees");
+
+  // Mini Dashboard Calculation
+  const stats = useMemo(() => {
+    const totalCount = rows.length;
+    const openCount = rows.filter((r: any) => r.status === "open" || r.status === "new" || r.status === "pending").length;
+    const inProgressCount = rows.filter((r: any) => r.status === "in_progress" || r.status === "investigating").length;
+    const resolvedCount = rows.filter((r: any) => r.status === "resolved" || r.status === "closed" || r.status === "completed").length;
+    const criticalCount = rows.filter((r: any) => r.severity === "high" || r.severity === "critical").length;
+
+    return { totalCount, openCount, inProgressCount, resolvedCount, criticalCount };
+  }, [rows]);
+
+  const dashboardHeader = (
+    <StaggerList className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5" staggerDelay={0.05}>
+      <StatCard label="Total Issues" value={stats.totalCount} icon={BugIcon} />
+      <StatCard label="Open / Pending" value={stats.openCount} icon={AlertCircle} accent="warning" />
+      <StatCard label="In Progress" value={stats.inProgressCount} icon={PlayCircle} accent="primary" />
+      <StatCard label="Resolved" value={stats.resolvedCount} icon={CheckCircle2} accent="success" />
+      <StatCard label="High / Critical" value={stats.criticalCount} icon={Zap} accent="destructive" />
+    </StaggerList>
+  );
 
   // Roles we consider "categories"
   const ROLE_LABELS: Record<string, string> = {
@@ -65,13 +96,16 @@ export default function BugsPage() {
 
   return (
     <ResourcePage<Bug>
+      hideNewButton={!canEdit}
+      hideTrashButton={!canEdit}
       collectionKey="bugs"
       title="Maintenance & Bugs"
       description="Defects and maintenance requests across projects"
       rows={rows}
+      headerContent={dashboardHeader}
       newLabel="Report Bug / Maintenance"
       columns={[
-        { key: "type", header: "Type", cell: (r) => <span className="capitalize">{r.type || "Bug"}</span> },
+        { key: "type", header: "Type", cell: (r) => <span className="capitalize text-xs font-medium">{r.type || "Bug"}</span> },
         { key: "title", header: t("common.title"), cell: (r) => <span className="font-medium">{r.title}</span> },
         { key: "project", header: "Project", cell: (r) => projects.find((p) => p.id === r.projectId)?.name ?? "—" },
         { key: "severity", header: "Severity", cell: (r) => <StatusBadge value={r.severity} /> },
@@ -80,6 +114,25 @@ export default function BugsPage() {
         { key: "assignee", header: "Assigned to", cell: (r) => r.assignedTo },
         { key: "reporter", header: "Reported by", cell: (r) => r.reportedBy },
         { key: "created", header: t("common.created"), cell: (r) => <span className="text-xs text-muted-foreground">{shortDate(r.createdAt)}</span> },
+        ...(canEdit ? [{
+          key: "actions",
+          header: "",
+          cell: (r: any) => (
+            <div className="flex justify-end">
+              <ConfirmDeleteButton
+                onConfirm={async () => {
+                  try {
+                    await remove('bugs', r.id);
+                    toast.success('Bug moved to Trash');
+                  } catch (e) {
+                    toast.error('Delete failed');
+                  }
+                }}
+                className="text-red-500 hover:text-red-700 text-sm font-medium px-2"
+              />
+            </div>
+          )
+        }] : [])
       ]}
       renderForm={(close) => (
         <form

@@ -1,15 +1,25 @@
 import { useTranslation } from "react-i18next";
 import { ResourcePage } from "@/components/resource-page";
+import { useAuth } from "@/store/auth";
+import { roleHas, type Role } from "@/lib/permissions";
 import { QuickForm } from "@/components/quick-form";
 import { StatusBadge } from "@/components/status-badge";
-import { useCollection, add } from "@/mocks/store";
+import { useCollection, add, remove } from "@/mocks/store";
+import { toast } from "sonner";
+import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 import { makeId, type Server as ServerT } from "@/mocks/data";
 
 export default function ServersPage() {
+  const { user } = useAuth();
+  const canEdit = user ? roleHas(user.role as Role, "server.manage") : false;
+  
+
   const { t } = useTranslation();
   const rows = useCollection("servers");
   return (
     <ResourcePage<ServerT>
+      hideNewButton={!canEdit}
+      hideTrashButton={!canEdit}
       collectionKey="servers"
       title={t("nav.servers")}
       description="Provisioned infrastructure"
@@ -22,6 +32,25 @@ export default function ServersPage() {
         { key: "location", header: "Location", cell: (r) => r.location },
         { key: "os", header: "OS", cell: (r) => r.os },
         { key: "status", header: t("common.status"), cell: (r) => <StatusBadge value={r.status} /> },
+        ...(canEdit ? [{
+          key: "actions",
+          header: "",
+          cell: (r: any) => (
+            <div className="flex justify-end">
+              <ConfirmDeleteButton
+                onConfirm={async () => {
+                  try {
+                    await remove('servers', r.id);
+                    toast.success('Moved to Trash');
+                  } catch (e) {
+                    toast.error('Delete failed');
+                  }
+                }}
+                className="text-red-500 hover:text-red-700 text-sm font-medium px-2"
+              />
+            </div>
+          )
+        }] : [])
       ]}
       renderForm={(close) => (
         <QuickForm

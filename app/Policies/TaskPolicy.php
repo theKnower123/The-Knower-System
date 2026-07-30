@@ -12,26 +12,36 @@ class TaskPolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_tasks');
+        return $user->hasPermissionTo('task.view') || $user->hasPermissionTo('project.view') || $user->hasPermissionTo('task.manage');
     }
 
     public function view(User $user, Task $task): bool
     {
-        return $user->hasPermissionTo('view_tasks');
+        return $user->hasPermissionTo('task.view') || $user->hasPermissionTo('project.view') || $user->hasPermissionTo('task.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_tasks');
+        return $user->hasPermissionTo('task.manage');
     }
 
     public function update(User $user, Task $task): bool
     {
-        return $user->hasPermissionTo('edit_tasks');
+        return $user->hasPermissionTo('task.manage');
     }
 
     public function delete(User $user, Task $task): bool
     {
-        return $user->hasPermissionTo('delete_tasks');
+        return $user->hasPermissionTo('task.manage');
+    }
+
+    public function restore(User $user, Task $task): bool
+    {
+        return $user->hasPermissionTo('task.manage');
+    }
+
+    public function forceDelete(User $user, Task $task): bool
+    {
+        return $user->hasPermissionTo('task.manage');
     }
 }

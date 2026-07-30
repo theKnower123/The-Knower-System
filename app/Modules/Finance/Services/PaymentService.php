@@ -14,11 +14,17 @@ class PaymentService
 
     public function create(array $data): Payment
     {
+        if (isset($data['transfer_proof']) && $data['transfer_proof'] instanceof \Illuminate\Http\UploadedFile) {
+            $data['transfer_proof'] = $data['transfer_proof']->store('payments/receipts', 'public');
+        }
         return Payment::create($data);
     }
 
     public function update(Payment $payment, array $data): Payment
     {
+        if (isset($data['transfer_proof']) && $data['transfer_proof'] instanceof \Illuminate\Http\UploadedFile) {
+            $data['transfer_proof'] = $data['transfer_proof']->store('payments/receipts', 'public');
+        }
         $payment->update($data);
         return $payment;
     }

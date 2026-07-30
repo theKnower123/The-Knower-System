@@ -8,7 +8,7 @@ class StoreJobPostingRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create', \App\Modules\HR\Models\JobPosting::class);
     }
 
     public function rules(): array

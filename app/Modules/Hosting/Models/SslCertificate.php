@@ -13,6 +13,7 @@ use App\Traits\HandlesTrash;
 
 class SslCertificate extends Model
 {
+    use \App\Traits\IsolatesClientData;
     use HandlesTrash;
     use SoftDeletes;
     use HasWorkspace, LogsActivity;

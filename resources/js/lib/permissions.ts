@@ -179,6 +179,7 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "project.view",
     "task.view",
     "task.update_status",
+    "code.review",
     "bug.manage",
     "file.upload",
     "ai.use",
@@ -239,7 +240,10 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "support.kb_read",
     "support.manage", // queue, SLA, escalations, automation, agents, reports, widget
   ],
-  client: ["client_portal.view"],
+  client: [
+    "dashboard.view",
+    "client_portal.view",
+  ],
 };
 
 export const ROLE_LABELS: Record<Role, string> = {

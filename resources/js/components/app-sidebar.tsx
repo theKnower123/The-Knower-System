@@ -150,7 +150,13 @@ const groups: Group[] = [
   },
   {
     labelKey: "nav.clientPortal",
-    items: [{ to: "/portal", labelKey: "nav.clientPortal", icon: Trophy, perm: "client_portal.view" }],
+    items: [
+      { to: "/projects", labelKey: "nav.projects", icon: FolderKanban, perm: "client_portal.view" },
+      { to: "/finance/invoices", labelKey: "nav.invoices", icon: Receipt, perm: "client_portal.view" },
+      { to: "/finance/payments", labelKey: "nav.payments", icon: CreditCard, perm: "client_portal.view" },
+      { to: "/crm/contracts", labelKey: "nav.contracts", icon: Handshake, perm: "client_portal.view" },
+      { to: "/support/tickets", labelKey: "Support Tickets", icon: Ticket, perm: "client_portal.view" },
+    ],
   },
   {
     labelKey: "nav.settings",
@@ -185,16 +191,23 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         {groups.map((g) => {
+          // If the user is a client, explicitly hide all groups except Dashboard and Client Portal
+          if (role === 'client' && g.labelKey !== 'nav.dashboard' && g.labelKey !== 'nav.clientPortal') {
+            return null;
+          }
+
           const visible = g.items.filter((i) => {
             if (!i.perm) return true;
             
             // Check if backend specifically passed '*' (super_admin)
             if (user?.permissions?.includes('*')) return true;
             
-            // Check if backend user object has this specific permission
-            if (user?.permissions?.includes(i.perm)) return true;
+            // If backend permissions array exists, it is the absolute truth
+            if (user?.permissions && Array.isArray(user.permissions)) {
+              return user.permissions.includes(i.perm);
+            }
             
-            // Fallback to frontend role check if backend permissions array is missing
+            // Fallback to frontend role check ONLY if backend permissions array is missing entirely
             return role && roleHas(role, i.perm);
           });
           

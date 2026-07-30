@@ -1,5 +1,7 @@
 import { toast } from 'sonner';
 import { ResourcePage } from "@/components/resource-page";
+import { useAuth } from "@/store/auth";
+import { roleHas, type Role } from "@/lib/permissions";
 import { QuickForm } from "@/components/quick-form";
 import { useCollection, add, update, remove } from "@/mocks/store";
 import { Switch } from "@/components/ui/switch";
@@ -7,11 +9,17 @@ import { useState } from "react";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 
 export default function CmsServicesPage() {
+  const { user } = useAuth();
+  const canEdit = user ? roleHas(user.role as Role, "cms.manage") : false;
+  
+
   const rows = useCollection("servicesCms");
   const [editingRow, setEditingRow] = useState<any>(null);
 
   return (
     <ResourcePage
+      hideNewButton={!canEdit}
+      hideTrashButton={!canEdit}
       collectionKey="servicesCms"
       title="Services"
       description="Manage services offered"

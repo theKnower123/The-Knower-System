@@ -53,6 +53,7 @@ class TrashController extends Controller
         $class = $this->getModelClass($module);
         $record = $class::withTrashed()->find($id);
         if (!$record) abort(404);
+        \Illuminate\Support\Facades\Gate::authorize('restore', $record);
         $record->restore();
         return response()->json(['message' => 'Restored successfully.']);
     }
@@ -62,6 +63,7 @@ class TrashController extends Controller
         $class = $this->getModelClass($module);
         $record = $class::withTrashed()->find($id);
         if (!$record) abort(404);
+        \Illuminate\Support\Facades\Gate::authorize('forceDelete', $record);
         $record->forceDelete();
         return response()->json(['message' => 'Permanently deleted successfully.']);
     }

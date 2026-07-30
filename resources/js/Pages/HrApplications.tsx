@@ -1,13 +1,15 @@
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/page-header";
 import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
-import { FileBadge, Download, ExternalLink } from "lucide-react";
+import { StatCard } from "@/components/stat-card";
+import { StaggerList } from "@/components/animations/StaggerList";
+import { Download, ExternalLink, FileUser, Clock, UserCheck, CheckCircle2, XCircle } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useState } from "react";
 import { StatusBadge } from "@/components/status-badge";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -17,7 +19,7 @@ export default function HrApplicationsPage() {
   const queryClient = useQueryClient();
   const [selectedApp, setSelectedApp] = useState<any>(null);
 
-  const { data: apps = [], isLoading } = useQuery({
+  const { data: apps = [] } = useQuery({
     queryKey: ["job-applications"],
     queryFn: async () => {
       const res = await axios.get("/api/v1/job-applications");
@@ -35,6 +37,27 @@ export default function HrApplicationsPage() {
     },
     onError: () => toast.error("Failed to update status."),
   });
+
+  // Mini Dashboard Calculation
+  const stats = useMemo(() => {
+    const totalCount = apps.length;
+    const pendingCount = apps.filter((a: any) => a.status === "pending" || a.status === "new" || a.status === "reviewing").length;
+    const interviewingCount = apps.filter((a: any) => a.status === "interviewing" || a.status === "shortlisted").length;
+    const hiredCount = apps.filter((a: any) => a.status === "hired" || a.status === "accepted").length;
+    const rejectedCount = apps.filter((a: any) => a.status === "rejected").length;
+
+    return { totalCount, pendingCount, interviewingCount, hiredCount, rejectedCount };
+  }, [apps]);
+
+  const dashboardHeader = (
+    <StaggerList className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 mb-6" staggerDelay={0.05}>
+      <StatCard label="Total Applications" value={stats.totalCount} icon={FileUser} />
+      <StatCard label="Pending Review" value={stats.pendingCount} icon={Clock} accent="warning" />
+      <StatCard label="Interviewing" value={stats.interviewingCount} icon={UserCheck} accent="primary" />
+      <StatCard label="Hired" value={stats.hiredCount} icon={CheckCircle2} accent="success" />
+      <StatCard label="Rejected" value={stats.rejectedCount} icon={XCircle} accent="destructive" />
+    </StaggerList>
+  );
 
   const columns = [
     { key: "name", header: "Candidate", cell: (r: any) => <div className="font-medium">{r.name}</div> },
@@ -55,6 +78,8 @@ export default function HrApplicationsPage() {
         title={t("nav.applications")}
         description="Review incoming candidates and manage the hiring pipeline."
       />
+
+      {dashboardHeader}
 
       <div className="rounded-xl border border-border bg-card shadow-sm p-4">
         <DataTable

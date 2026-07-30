@@ -1,23 +1,27 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from "react-i18next";
 import { ResourcePage } from "@/components/resource-page";
 import { QuickForm, type FieldDef } from "@/components/quick-form";
 import { StatusBadge } from "@/components/status-badge";
+import { StatCard } from "@/components/stat-card";
+import { StaggerList } from "@/components/animations/StaggerList";
 import { type Leave } from "@/mocks/data";
 import { shortDate } from "@/lib/format";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth } from "@/store/auth";
+import { roleHas, type Role } from "@/lib/permissions";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
+import { CalendarOff, Clock, CheckCircle2, XCircle, Stethoscope } from "lucide-react";
 
 export default function LeavesPage() {
+  const { user } = useAuth();
+  const canEdit = user ? roleHas(user.role as Role, "leave.manage") : false;
+
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
-
   const [editingRow, setEditingRow] = useState<Leave | null>(null);
-  const canEdit = ["super_admin", "ceo", "hr"].includes(user?.role || "");
 
   const { data: rows = [] } = useQuery({
     queryKey: ["leaves"],
@@ -35,13 +39,34 @@ export default function LeavesPage() {
     },
   });
 
+  // Mini Dashboard Calculation
+  const stats = useMemo(() => {
+    const totalCount = rows.length;
+    const pendingCount = rows.filter((r: any) => !r.status || r.status === "pending").length;
+    const approvedCount = rows.filter((r: any) => r.status === "approved").length;
+    const rejectedCount = rows.filter((r: any) => r.status === "rejected").length;
+    const sickCount = rows.filter((r: any) => (r.leave_type || r.leaveType || r.type) === "sick").length;
+
+    return { totalCount, pendingCount, approvedCount, rejectedCount, sickCount };
+  }, [rows]);
+
+  const dashboardHeader = (
+    <StaggerList className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5" staggerDelay={0.05}>
+      <StatCard label="Total Requests" value={stats.totalCount} icon={CalendarOff} />
+      <StatCard label="Pending Approval" value={stats.pendingCount} icon={Clock} accent="warning" />
+      <StatCard label="Approved Leaves" value={stats.approvedCount} icon={CheckCircle2} accent="success" />
+      <StatCard label="Rejected Requests" value={stats.rejectedCount} icon={XCircle} accent="destructive" />
+      <StatCard label="Sick Leaves" value={stats.sickCount} icon={Stethoscope} accent="primary" />
+    </StaggerList>
+  );
+
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
       return axios.post("/api/v1/leaves", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["leaves"] });
-      toast.success("Created!");
+      toast.success("Leave request submitted successfully.");
     },
     onError: (err: any) => {
       toast.error(err.response?.data?.message || "Failed to request leave.");
@@ -111,20 +136,22 @@ export default function LeavesPage() {
   return (
     <ResourcePage<Leave>
       title={t("nav.leaves")}
-      description="Time off requests"
+      description="Time off requests & leave management"
       rows={rows}
+      collectionKey="leaves"
+      headerContent={dashboardHeader}
       getSearchable={(r: any) => `${r.reason} ${r.status} ${r.leave_type || r.leaveType}`}
       newLabel="Request leave"
       editingRow={editingRow}
       onCloseEdit={() => setEditingRow(null)}
       columns={[
         {
-  key: "employee",
-  header: "Employee",
-  cell: (r: any) =>
-    employees.find((e: any) => e.id === (r.employee_id || r.employeeId))?.name ??
-    (r.employee_id || r.employeeId ? `Employee ${r.employee_id || r.employeeId}` : "—"),
-},
+          key: "employee",
+          header: "Employee",
+          cell: (r: any) =>
+            employees.find((e: any) => e.id === (r.employee_id || r.employeeId))?.name ??
+            (r.employee_id || r.employeeId ? `Employee ${r.employee_id || r.employeeId}` : "—"),
+        },
         { key: "type", header: "Type", cell: (r: any) => <StatusBadge value={r.leave_type || r.leaveType || r.type} /> },
         { key: "dates", header: "Dates", cell: (r: any) => (
           <div className="text-xs">
@@ -142,7 +169,7 @@ export default function LeavesPage() {
               {canEdit && (
                 <>
                   <button
-                    className="text-primary hover:underline text-sm"
+                    className="text-primary hover:underline text-sm font-medium"
                     onClick={(e) => {
                       e.stopPropagation();
                       setEditingRow(r);
@@ -154,7 +181,7 @@ export default function LeavesPage() {
                     onConfirm={() => {
                       deleteMutation.mutate(r.id);
                     }}
-                    className="text-red-500 hover:text-red-700 text-sm"
+                    className="text-red-500 hover:text-red-700 text-sm font-medium"
                   />
                 </>
               )}

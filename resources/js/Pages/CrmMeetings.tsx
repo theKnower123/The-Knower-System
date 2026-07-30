@@ -7,16 +7,18 @@ import { useCollection, add, update, remove } from "@/mocks/store";
 import { makeId, type Meeting } from "@/mocks/data";
 import { shortDate } from "@/lib/format";
 import { useAuth } from "@/store/auth";
+import { roleHas, type Role } from "@/lib/permissions";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 import type { FilterDef } from "@/components/data-table";
 export default function MeetingsPage() {
+    const { user } = useAuth();
+    const canEdit = user ? roleHas(user.role as Role, "client.manage") : false;
+
   const { t } = useTranslation();
   const rows = useCollection("meetings");
   const clients = useCollection("clients");
-  const { user } = useAuth();
-
-  const [editingRow, setEditingRow] = useState<Meeting | null>(null);
-  const canEdit = ["super_admin", "ceo", "project_manager", "team_leader", "hr"].includes(user?.role || "");
+    const [editingRow, setEditingRow] = useState<Meeting | null>(null);
+  
 
   const formFields: FieldDef[] = [
     { name: "title", label: t("common.fields.title") || "Title", type: "text", required: true },
@@ -28,6 +30,8 @@ export default function MeetingsPage() {
 
   return (
     <ResourcePage<Meeting>
+      hideNewButton={!canEdit}
+      hideTrashButton={!canEdit}
       collectionKey="meetings"
       title={t("nav.meetings")}
       description="Scheduled calls & workshops"

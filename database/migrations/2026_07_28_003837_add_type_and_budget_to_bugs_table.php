@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bugs', function (Blueprint $table) {
-            $table->string('type')->default('bug'); // bug or maintenance
-            $table->decimal('budget', 12, 2)->default(0);
+            if (!Schema::hasColumn('bugs', 'type')) {
+                $table->string('type')->default('bug');
+            }
+            if (!Schema::hasColumn('bugs', 'budget')) {
+                $table->decimal('budget', 12, 2)->default(0);
+            }
         });
     }
 

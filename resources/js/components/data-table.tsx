@@ -177,22 +177,31 @@ export function DataTable<T extends { id: string | number }>({
             <div className="flex flex-col gap-3 rounded-lg border border-border/60 bg-muted/30 p-3">
               <div className="flex flex-wrap items-end gap-3">
                 {filters.map((f) => (
-                  <div key={f.key} className={`space-y-1 flex-1 ${f.type === 'date-range' ? 'min-w-[300px] max-w-[400px]' : 'min-w-[140px] max-w-[280px]'}`}>
-                    <label className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  <div
+                    key={f.key}
+                    className={`space-y-1.5 ${
+                      f.type === "date-range"
+                        ? "w-full sm:w-auto min-w-[260px] max-w-full"
+                        : "w-full sm:w-auto min-w-[150px] flex-1 max-w-[220px]"
+                    }`}
+                  >
+                    <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block">
                       {f.label}
                     </label>
                     {f.type === "date-range" ? (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5 w-full">
                         <Input
                           type="date"
-                          className="h-8 text-xs"
+                          className="h-8 text-xs min-w-0 flex-1 px-2"
                           value={activeFilters[`${f.key}_from`] || ""}
                           onChange={(e) => setFilter(`${f.key}_from`, e.target.value)}
                         />
-                        <span className="text-xs text-muted-foreground">to</span>
+                        <span className="text-xs text-muted-foreground shrink-0 font-medium px-0.5">
+                          to
+                        </span>
                         <Input
                           type="date"
-                          className="h-8 text-xs"
+                          className="h-8 text-xs min-w-0 flex-1 px-2"
                           value={activeFilters[`${f.key}_to`] || ""}
                           onChange={(e) => setFilter(`${f.key}_to`, e.target.value)}
                         />
@@ -202,7 +211,7 @@ export function DataTable<T extends { id: string | number }>({
                         value={activeFilters[f.key] || "__all__"}
                         onValueChange={(v) => setFilter(f.key, v)}
                       >
-                        <SelectTrigger className="h-8 text-xs">
+                        <SelectTrigger className="h-8 text-xs w-full">
                           <SelectValue placeholder={`All ${f.label}`} />
                         </SelectTrigger>
                         <SelectContent>
@@ -331,34 +340,60 @@ export function DataTable<T extends { id: string | number }>({
       </div>
 
       {/* ── Pagination Controls ── */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-4">
-          <p className="text-sm text-muted-foreground">
-            Showing {(currentPage - 1) * (pageSize || 10) + 1} to {Math.min(currentPage * (pageSize || 10), filtered.length)} of {filtered.length} results
-          </p>
+      {filtered.length > 0 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-border/60 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            >
-              <ChevronLeft className="h-4 w-4" />
-              <span className="sr-only">Previous</span>
-            </Button>
-            <span className="text-sm font-medium">
-              Page {currentPage} of {totalPages}
+            <span>
+              Showing <strong className="font-semibold text-foreground">{(currentPage - 1) * (pageSize || 10) + 1}</strong> to <strong className="font-semibold text-foreground">{Math.min(currentPage * (pageSize || 10), filtered.length)}</strong> of <strong className="font-semibold text-foreground">{filtered.length}</strong> items
             </span>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            >
-              <ChevronRight className="h-4 w-4" />
-              <span className="sr-only">Next</span>
-            </Button>
           </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center gap-1.5">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 px-2.5 gap-1 text-xs"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              >
+                <ChevronLeft className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Previous</span>
+              </Button>
+
+              {/* Page number buttons */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                .map((p, idx, arr) => {
+                  const prevP = arr[idx - 1];
+                  const showEllipsis = prevP && p - prevP > 1;
+                  return (
+                    <div key={p} className="flex items-center gap-1">
+                      {showEllipsis && <span className="px-1 text-xs text-muted-foreground">...</span>}
+                      <Button
+                        variant={currentPage === p ? "default" : "outline"}
+                        size="sm"
+                        className="h-8 w-8 p-0 text-xs font-semibold"
+                        onClick={() => setCurrentPage(p)}
+                      >
+                        {p}
+                      </Button>
+                    </div>
+                  );
+                })}
+
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 px-2.5 gap-1 text-xs"
+                disabled={currentPage >= totalPages}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              >
+                <span className="hidden sm:inline">Next</span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

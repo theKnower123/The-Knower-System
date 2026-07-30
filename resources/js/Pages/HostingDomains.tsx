@@ -1,25 +1,58 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from "react-i18next";
 import { ResourcePage } from "@/components/resource-page";
 import { QuickForm, type FieldDef } from "@/components/quick-form";
 import { StatusBadge } from "@/components/status-badge";
+import { StatCard } from "@/components/stat-card";
+import { StaggerList } from "@/components/animations/StaggerList";
 import { useCollection, add, update, remove } from "@/mocks/store";
 import { makeId, type Domain } from "@/mocks/data";
 import { shortDate } from "@/lib/format";
 import { useAuth } from "@/store/auth";
+import { roleHas, type Role } from "@/lib/permissions";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 import type { FilterDef } from "@/components/data-table";
+import { Globe, ShieldCheck, Clock, AlertOctagon, RefreshCw } from "lucide-react";
 
 export default function DomainsPage() {
+  const { user } = useAuth();
+  const canEdit = user ? roleHas(user.role as Role, "domain.manage") : false;
+
   const { t } = useTranslation();
   const rows = useCollection("domains");
   const clients = useCollection("clients");
   const projects = useCollection("projects");
-  const { user } = useAuth();
-
   const [editingRow, setEditingRow] = useState<Domain | null>(null);
-  const canEdit = ["super_admin", "ceo", "project_manager", "team_leader"].includes(user?.role || "");
+
+  // Mini Dashboard Calculation
+  const stats = useMemo(() => {
+    const totalCount = rows.length;
+    const activeCount = rows.filter((r: any) => r.status === "active").length;
+    const expiredCount = rows.filter((r: any) => r.status === "expired").length;
+    const autoRenewCount = rows.filter((r: any) => r.autoRenew).length;
+    
+    // Expiring within 30 days
+    const now = new Date();
+    const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const expiringSoonCount = rows.filter((r: any) => {
+      if (!r.expiryDate || r.status === "expired") return false;
+      const exp = new Date(r.expiryDate);
+      return exp >= now && exp <= in30Days;
+    }).length;
+
+    return { totalCount, activeCount, expiredCount, autoRenewCount, expiringSoonCount };
+  }, [rows]);
+
+  const dashboardHeader = (
+    <StaggerList className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5" staggerDelay={0.05}>
+      <StatCard label="Total Domains" value={stats.totalCount} icon={Globe} />
+      <StatCard label="Active Domains" value={stats.activeCount} icon={ShieldCheck} accent="success" />
+      <StatCard label="Expiring Soon" value={stats.expiringSoonCount} icon={Clock} accent="warning" description="Within 30 days" />
+      <StatCard label="Expired Domains" value={stats.expiredCount} icon={AlertOctagon} accent="destructive" />
+      <StatCard label="Auto-Renew On" value={stats.autoRenewCount} icon={RefreshCw} accent="primary" />
+    </StaggerList>
+  );
 
   // Filters
   const filters: FilterDef[] = [
@@ -70,10 +103,13 @@ export default function DomainsPage() {
 
   return (
     <ResourcePage<Domain>
+      hideNewButton={!canEdit}
+      hideTrashButton={!canEdit}
       collectionKey="domains"
       title={t("nav.domains")}
       description="Registered domains & renewals — linked to clients and projects"
       rows={rows}
+      headerContent={dashboardHeader}
       newLabel="Add domain"
       editingRow={editingRow}
       onCloseEdit={() => setEditingRow(null)}
@@ -103,7 +139,7 @@ export default function DomainsPage() {
               {canEdit && (
                 <>
                   <button
-                    className="text-primary hover:underline text-sm"
+                    className="text-primary hover:underline text-sm font-medium"
                     onClick={(e) => {
                       e.stopPropagation();
                       setEditingRow(r);
@@ -115,12 +151,12 @@ export default function DomainsPage() {
                     onConfirm={async () => {
                       try {
                         await remove("domains", r.id);
-                        toast("Domain deleted.");
+                        toast.success("Domain deleted.");
                       } catch {
-                        toast("Failed to delete domain.");
+                        toast.error("Failed to delete domain.");
                       }
                     }}
-                    className="text-red-500 hover:text-red-700 text-sm"
+                    className="text-red-500 hover:text-red-700 text-sm font-medium"
                   />
                 </>
               )}
@@ -143,10 +179,10 @@ export default function DomainsPage() {
                 autoRenew: v.autoRenew === "yes",
                 status: v.status || "active",
               });
-              toast("Domain added successfully.");
+              toast.success("Domain added successfully.");
               close();
             } catch (err: any) {
-              toast(err.response?.data?.message || "Failed to add domain.");
+              toast.error(err.response?.data?.message || "Failed to add domain.");
             }
           }}
           fields={formFields}
@@ -173,10 +209,10 @@ export default function DomainsPage() {
                 autoRenew: v.autoRenew === "yes",
                 expiryDate: v.expiryDate ? new Date(v.expiryDate).toISOString() : row.expiryDate,
               });
-              toast("Domain updated successfully.");
+              toast.success("Domain updated successfully.");
               close();
             } catch (err: any) {
-              toast("Failed to update domain.");
+              toast.error("Failed to update domain.");
             }
           }}
           fields={formFields}

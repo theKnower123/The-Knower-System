@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHero, Section, CTABand, Badge } from "@/components/public/blocks";
-import { portfolio as staticPortfolio } from "@/mocks/marketing";
+import { ProjectCardBanner } from "@/components/public/ProjectCardBanner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -20,50 +20,61 @@ export const Route = createFileRoute("/_public/portfolio/")({
 
 function PortfolioIndex() {
   const [q, setQ] = useState("");
-  const [cat, setCat] = useState<string>("All");
-  const { data: dynamicPortfolio } = useQuery({
+  const { data: portfolio = [], isLoading } = useQuery({
     queryKey: ['public', 'portfolio'],
     queryFn: async () => {
-      const res = await axios.get('/api/v1/public/portfolio');
-      return res.data.projects.map((p: any) => ({
-        slug: p.id.toString(), title: p.name, category: p.public_category || "App", client: "Client", year: new Date(p.created_at).getFullYear(), cover: "hero-app", summary: p.public_summary || p.description
-      }));
+      try {
+        const res = await axios.get('/api/v1/public/portfolio');
+        const projects = res.data?.projects || [];
+        return projects.map((p: any) => ({
+          slug: String(p.id),
+          title: p.name || "Untitled Project",
+          summary: p.description || p.details || "No description provided.",
+          category: p.type || "Project",
+          images: p.images || [],
+          year: p.start_date ? new Date(p.start_date).getFullYear() : (p.created_at ? new Date(p.created_at).getFullYear() : new Date().getFullYear()),
+        }));
+      } catch (e) {
+        return [];
+      }
     }
   });
-  const portfolio = dynamicPortfolio || staticPortfolio;
 
-  const categories = useMemo(() => ["All", ...Array.from(new Set(portfolio.map((p: any) => p.category)))], [portfolio]);
-  const filtered = portfolio.filter((p: any) => (cat === "All" || p.category === cat) && (q === "" || p.title.toLowerCase().includes(q.toLowerCase())));
+  const filtered = useMemo(() => {
+    return portfolio.filter((p: any) => 
+      q === "" || 
+      p.title.toLowerCase().includes(q.toLowerCase()) || 
+      p.summary.toLowerCase().includes(q.toLowerCase())
+    );
+  }, [portfolio, q]);
+
   return (
     <div>
-      <PageHero eyebrow="Portfolio" title="Work we're proud of" subtitle="500+ projects delivered. Here's a curated selection." />
+      <PageHero eyebrow="Portfolio" title="Work we're proud of" subtitle="Projects delivered across industries." />
       <Section>
-        <div className="mb-8 flex flex-wrap items-center gap-3">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
           <Input placeholder="Search projects…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
-          <div className="flex flex-wrap gap-1.5">
-            {categories.map((c: any) => (
-              <Button key={c} size="sm" variant={cat === c ? "default" : "outline"} onClick={() => setCat(c)}>{c}</Button>
-            ))}
-          </div>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((p: any) => (
-            <Link key={p.slug} to="/portfolio/$slug" params={{ slug: p.slug }}
-              className="group overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-0.5 hover:border-primary/50">
-              <div className="relative flex h-44 items-center justify-center overflow-hidden bg-gradient-to-br from-primary/25 via-primary/10 to-accent/20">
-                <span className="font-display text-4xl font-bold text-primary/40">{p.client.split(" ").map((w: any) => w[0]).join("")}</span>
-              </div>
-              <div className="p-5">
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <Badge>{p.category}</Badge><span>{p.year}</span>
+            <div key={p.slug} className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:border-primary/50 hover:shadow-md flex flex-col justify-between">
+              <ProjectCardBanner title={p.title} images={p.images} />
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <Badge variant="outline">{p.category}</Badge>
+                  <span className="text-xs font-semibold text-muted-foreground">{p.year}</span>
                 </div>
-                <div className="mt-2 font-display text-base font-semibold">{p.title}</div>
-                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{p.summary}</p>
+                <h3 className="font-display text-lg font-bold text-foreground">{p.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground line-clamp-4 leading-relaxed">{p.summary}</p>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
-        {filtered.length === 0 && <div className="rounded-xl border border-dashed border-border p-10 text-center text-muted-foreground">No projects match.</div>}
+        {!isLoading && filtered.length === 0 && (
+          <div className="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground">
+            No portfolio projects to show right now. Enable project visibility from the admin dashboard to display them here!
+          </div>
+        )}
       </Section>
       <CTABand title="Your project could be next" primary={{ label: "Start a project", to: "/contact" }} />
     </div>

@@ -6,17 +6,34 @@ import { StatusBadge } from "@/components/status-badge";
 import { useCollection, add } from "@/mocks/store";
 import { makeId, type Ticket } from "@/mocks/data";
 import { shortDate } from "@/lib/format";
+import { useAuth } from "@/store/auth";
+import { roleHas, type Role } from "@/lib/permissions";
 
 export default function TicketsPage() {
+  const { user } = useAuth();
+  const canEdit = user ? roleHas(user.role as Role, "ticket.manage") : false;
+  
+
   const { t } = useTranslation();
   const rows = useCollection("tickets");
   const clients = useCollection("clients");
+  
+  const isReadOnly = user?.role === "client";
+  const visibleRows = isReadOnly
+    ? rows.filter((r: any) => {
+        const cid = String(user.client_id);
+        return String(r.clientId) === cid || String(r.client_id) === cid;
+      })
+    : rows;
+
   return (
     <ResourcePage<Ticket>
+      hideNewButton={!canEdit}
+      hideTrashButton={!canEdit}
       collectionKey="tickets"
       title={t("nav.tickets")}
       description="Client support conversations"
-      rows={rows}
+      rows={visibleRows}
       newLabel="New ticket"
       columns={[
         { key: "number", header: "Number", cell: (r) => <Link href={`/support/tickets/${r.id}`} className="font-mono text-xs hover:text-primary">{r.number}</Link> },

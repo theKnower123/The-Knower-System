@@ -118,7 +118,7 @@ export default function ReportsPage() {
               <YAxis stroke="var(--muted-foreground)" fontSize={11} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
               <Tooltip
                 contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }}
-                formatter={(v: number) => money(v)}
+                formatter={(v: any) => money(Number(v) || 0)}
               />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar dataKey="revenue" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />

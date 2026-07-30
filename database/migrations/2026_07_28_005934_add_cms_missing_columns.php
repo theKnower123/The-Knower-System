@@ -12,14 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('faqs', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true);
+            if (!Schema::hasColumn('faqs', 'is_active')) {
+                $table->boolean('is_active')->default(true);
+            }
         });
         Schema::table('blog_posts', function (Blueprint $table) {
-            $table->string('author_name')->nullable();
-            $table->string('cover_image')->nullable();
+            if (!Schema::hasColumn('blog_posts', 'author_name')) {
+                $table->string('author_name')->nullable();
+            }
+            if (!Schema::hasColumn('blog_posts', 'cover_image')) {
+                $table->string('cover_image')->nullable();
+            }
         });
         Schema::table('services', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true);
+            if (!Schema::hasColumn('services', 'is_active')) {
+                $table->boolean('is_active')->default(true);
+            }
         });
     }
 

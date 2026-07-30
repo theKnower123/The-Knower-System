@@ -16,11 +16,39 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("auth_token");
-  if (token) {
+  if (token && token !== "undefined" && token !== "null") {
     config.headers.Authorization = `Bearer ${token}`;
+  } else if (config.headers) {
+    delete config.headers.Authorization;
+    delete config.headers.authorization;
+    if (typeof config.headers.delete === "function") {
+      config.headers.delete("Authorization");
+      config.headers.delete("authorization");
+    }
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      localStorage.removeItem("auth_token");
+      if (originalRequest.headers) {
+        delete originalRequest.headers.Authorization;
+        delete originalRequest.headers.authorization;
+        if (typeof originalRequest.headers.delete === "function") {
+          originalRequest.headers.delete("Authorization");
+          originalRequest.headers.delete("authorization");
+        }
+      }
+      return api(originalRequest);
+    }
+    return Promise.reject(error);
+  }
+);
 
 const endpointMap: Record<string, string> = {
   companies: "companies",
@@ -76,6 +104,7 @@ function toCamel(str: string): string {
 }
 
 function normalize(val: unknown): unknown {
+  if (val instanceof File || val instanceof Blob) return val;
   if (Array.isArray(val)) return val.map(normalize);
   if (val !== null && typeof val === "object") {
     return Object.fromEntries(
@@ -88,20 +117,56 @@ function normalize(val: unknown): unknown {
   return val;
 }
 
+const pageRouteMap: Record<string, string> = {
+  companies: "/crm/companies",
+  clients: "/crm/clients",
+  contacts: "/support/contacts",
+  leads: "/crm/leads",
+  meetings: "/crm/meetings",
+  quotations: "/crm/quotations",
+  contracts: "/crm/contracts",
+  projects: "/projects",
+  milestones: "/projects",
+  tasks: "/tasks",
+  bugs: "/bugs",
+  files: "/projects",
+  invoices: "/finance/invoices",
+  payments: "/finance/payments",
+  expenses: "/finance/expenses",
+  domains: "/hosting/domains",
+  hostingAccounts: "/hosting/accounts",
+  servers: "/hosting/servers",
+  ssls: "/hosting/ssl",
+  tickets: "/support/tickets",
+  employees: "/hr/employees",
+  departments: "/hr/departments",
+  attendance: "/hr/attendance",
+  leaves: "/hr/leaves",
+  marketingPlans: "/cms/pricing",
+  testimonials: "/cms/testimonials",
+  faqs: "/cms/faqs",
+  blogPosts: "/cms/blog",
+  teamMembers: "/cms/team",
+  servicesCms: "/cms/services",
+};
+
 export function useCollection<K extends keyof typeof endpointMap>(
   key: K, 
   options?: { trashed?: boolean }
 ): any[] {
-  const trashed = options?.trashed ?? (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get("trash") === "1");
-  
+  const targetRoute = pageRouteMap[key as string];
+  const isCurrentResource = typeof window !== 'undefined' && targetRoute
+    ? (window.location.pathname.toLowerCase() === targetRoute.toLowerCase() || window.location.pathname.toLowerCase().startsWith(`${targetRoute.toLowerCase()}/`))
+    : false;
+  const trashed = options?.trashed ?? (isCurrentResource && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get("trash") === "1");
+
   const { data } = useQuery({
     queryKey: [key, { trashed }],
     queryFn: async () => {
       const res = await api.get(`/${endpointMap[key as string]}${trashed ? '?trashed=1' : ''}`);
-      const raw = res.data?.data || [];
+      const raw = res.data?.data || (Array.isArray(res.data) ? res.data : []);
       return normalize(raw) as any[];
     },
-    initialData: [],
   });
 
   return Array.isArray(data) ? data : [];
@@ -122,6 +187,7 @@ function toSnake(str: string): string {
 }
 
 function denormalize(val: unknown): unknown {
+  if (val instanceof File || val instanceof Blob) return val;
   if (Array.isArray(val)) return val.map(denormalize);
   if (val !== null && typeof val === "object") {
     return Object.fromEntries(
@@ -134,9 +200,28 @@ function denormalize(val: unknown): unknown {
   return val;
 }
 
+// Check if an object contains File instances (for multipart upload)
+function hasFiles(obj: Record<string, unknown>): boolean {
+  return Object.values(obj).some((v) => v instanceof File);
+}
+
+function toFormData(obj: Record<string, unknown>): FormData {
+  const fd = new FormData();
+  for (const [key, value] of Object.entries(obj)) {
+    if (value instanceof File) {
+      fd.append(key, value);
+    } else if (value !== null && value !== undefined) {
+      fd.append(key, String(value));
+    }
+  }
+  return fd;
+}
+
 export async function add<K extends keyof typeof endpointMap>(key: K, item: any) {
-  const payload = denormalize(item);
-  const res = await api.post(`/${endpointMap[key as string]}`, payload);
+  const payload = denormalize(item) as Record<string, unknown>;
+  const useMultipart = hasFiles(payload);
+  const body = useMultipart ? toFormData(payload) : payload;
+  const res = await api.post(`/${endpointMap[key as string]}`, body, useMultipart ? { headers: { 'Content-Type': 'multipart/form-data' } } : {});
   await invalidate(key as string);
   return res.data;
 }
@@ -146,8 +231,17 @@ export async function update<K extends keyof typeof endpointMap>(
   id: string | number,
   patch: any,
 ) {
-  const payload = denormalize(patch);
-  const res = await api.put(`/${endpointMap[key as string]}/${id}`, payload);
+  const payload = denormalize(patch) as Record<string, unknown>;
+  const useMultipart = hasFiles(payload);
+  const body = useMultipart ? toFormData(payload) : payload;
+  // Use POST with _method=PUT for multipart file uploads
+  if (useMultipart) {
+    (body as FormData).append('_method', 'PUT');
+    const res = await api.post(`/${endpointMap[key as string]}/${id}`, body, { headers: { 'Content-Type': 'multipart/form-data' } });
+    await invalidate(key as string);
+    return res.data;
+  }
+  const res = await api.put(`/${endpointMap[key as string]}/${id}`, body);
   await invalidate(key as string);
   return res.data;
 }

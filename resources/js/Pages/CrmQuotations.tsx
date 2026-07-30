@@ -1,25 +1,53 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from "react-i18next";
 import { ResourcePage } from "@/components/resource-page";
 import { QuickForm, type FieldDef } from "@/components/quick-form";
 import { StatusBadge } from "@/components/status-badge";
+import { StatCard } from "@/components/stat-card";
+import { StaggerList } from "@/components/animations/StaggerList";
 import { useCollection, add, update, remove } from "@/mocks/store";
 import { type Quotation } from "@/mocks/data";
 import { money, shortDate } from "@/lib/format";
 import { useAuth } from "@/store/auth";
+import { roleHas, type Role } from "@/lib/permissions";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 import type { FilterDef } from "@/components/data-table";
+import { FileSpreadsheet, CheckCircle2, Clock, XCircle, DollarSign } from "lucide-react";
 
 export default function QuotationsPage() {
+  const { user } = useAuth();
+  const canEdit = user ? roleHas(user.role as Role, "quotation.manage") : false;
+
   const { t } = useTranslation();
   const rows = useCollection("quotations");
   const clients = useCollection("clients");
   const leads = useCollection("leads");
-  const { user } = useAuth();
-  
   const [editingRow, setEditingRow] = useState<Quotation | null>(null);
-  const canEdit = ["super_admin", "ceo", "sales", "project_manager"].includes(user?.role || "");
+
+  // Mini Dashboard Calculation
+  const stats = useMemo(() => {
+    const totalCount = rows.length;
+    const totalValue = rows.reduce((sum, r: any) => sum + (Number(r.totalAmount || r.price) || 0), 0);
+    const acceptedRows = rows.filter((r: any) => r.status === "accepted");
+    const acceptedValue = acceptedRows.reduce((sum, r: any) => sum + (Number(r.totalAmount || r.price) || 0), 0);
+    const sentRows = rows.filter((r: any) => r.status === "sent");
+    const sentValue = sentRows.reduce((sum, r: any) => sum + (Number(r.totalAmount || r.price) || 0), 0);
+    const draftCount = rows.filter((r: any) => r.status === "draft").length;
+    const rejectedCount = rows.filter((r: any) => r.status === "rejected").length;
+
+    return { totalCount, totalValue, acceptedCount: acceptedRows.length, acceptedValue, sentCount: sentRows.length, sentValue, draftCount, rejectedCount };
+  }, [rows]);
+
+  const dashboardHeader = (
+    <StaggerList className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5" staggerDelay={0.05}>
+      <StatCard label="Total Proposals" value={money(stats.totalValue)} icon={FileSpreadsheet} description={`${stats.totalCount} quotations`} />
+      <StatCard label="Accepted Value" value={money(stats.acceptedValue)} icon={CheckCircle2} accent="success" description={`${stats.acceptedCount} accepted`} />
+      <StatCard label="Pending Sent" value={money(stats.sentValue)} icon={Clock} accent="primary" description={`${stats.sentCount} sent`} />
+      <StatCard label="Draft Quotations" value={stats.draftCount} icon={DollarSign} accent="warning" />
+      <StatCard label="Rejected" value={stats.rejectedCount} icon={XCircle} accent="destructive" />
+    </StaggerList>
+  );
 
   const targetOptions = [
     ...clients.map((c) => ({ value: `client_${c.id}`, label: `(Client) ${c.name}` })),
@@ -102,10 +130,13 @@ export default function QuotationsPage() {
 
   return (
     <ResourcePage<Quotation>
+      hideNewButton={!canEdit}
+      hideTrashButton={!canEdit}
       collectionKey="quotations"
       title={t("nav.quotations")}
-      description="Price proposals sent to clients"
+      description="Price proposals & quotations sent to clients"
       rows={rows}
+      headerContent={dashboardHeader}
       newLabel="New quotation"
       editingRow={editingRow}
       onCloseEdit={() => setEditingRow(null)}
@@ -128,12 +159,12 @@ export default function QuotationsPage() {
       ] as FilterDef[]}
       columns={[
         { key: "number", header: "Number", cell: (r) => <span className="font-mono text-xs">{r.number}</span> },
-        { key: "client", header: "Client", cell: (r) => {
+        { key: "client", header: "Client / Lead", cell: (r) => {
           const client = clients.find((c) => c.id === r.clientId);
           const lead = leads.find((l) => l.id === (r as any).leadId);
           return client?.name || lead?.name || "—";
         }},
-        { key: "price", header: "Price", cell: (r) => <span className="tabular-nums">{money(r.price || (r as any).totalAmount || 0, r.currency)}</span> },
+        { key: "price", header: "Price", cell: (r) => <span className="tabular-nums font-semibold">{money(r.price || (r as any).totalAmount || 0, r.currency)}</span> },
         { key: "status", header: t("common.status"), cell: (r) => <StatusBadge value={r.status} /> },
         { key: "valid", header: "Valid until", cell: (r) => shortDate(r.validUntil), hideOnMobile: true },
         { 
@@ -144,7 +175,7 @@ export default function QuotationsPage() {
               {canEdit && (
                 <>
                   <button 
-                    className="text-primary hover:underline text-sm"
+                    className="text-primary hover:underline text-sm font-medium"
                     onClick={(e) => {
                       e.stopPropagation();
                       setEditingRow(r);
@@ -156,12 +187,12 @@ export default function QuotationsPage() {
                     onConfirm={async () => {
                       try {
                         await remove('quotations', r.id);
-                        toast('Quotation deleted successfully.');
+                        toast.success('Quotation deleted successfully.');
                       } catch (err) {
-                        toast('Failed to delete quotation.');
+                        toast.error('Failed to delete quotation.');
                       }
                     }}
-                    className="text-red-500 hover:text-red-700 text-sm"
+                    className="text-red-500 hover:text-red-700 text-sm font-medium"
                   />
                 </>
               )}
@@ -186,9 +217,10 @@ export default function QuotationsPage() {
                 issueDate: new Date().toISOString(),
                 validUntil: v.validUntil ? new Date(v.validUntil).toISOString() : new Date().toISOString(),
               });
+              toast.success("Quotation created successfully.");
               close();
             } catch (err: any) {
-              toast(err.response?.data?.message || "Failed to save quotation.");
+              toast.error(err.response?.data?.message || "Failed to save quotation.");
             }
           }}
           fields={formFields}
@@ -226,10 +258,10 @@ export default function QuotationsPage() {
                   status: v.status,
                   validUntil: v.validUntil ? new Date(v.validUntil).toISOString() : row.validUntil,
                 });
-                toast("Quotation updated successfully.");
+                toast.success("Quotation updated successfully.");
                 close();
               } catch (err: any) {
-                toast("Failed to update quotation.");
+                toast.error("Failed to update quotation.");
               }
             }}
             fields={formFields}

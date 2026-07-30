@@ -25,46 +25,41 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/calendar', function () { return Inertia::render('Calendar'); });
     Route::get('/time-logs', function () { return Inertia::render('Time-Logs'); });
 
-    // Dynamic Role-Based Dashboard
-    Route::get('/dashboard', function (\Illuminate\Http\Request $request) {
-        $role = $request->user()?->role;
-        
-        return match ($role) {
-            'hr' => Inertia::render('Dashboards/HRDashboard'),
-            'ceo' => Inertia::render('Dashboards/CEODashboard'),
-            'developer', 'designer', 'qa' => Inertia::render('Dashboards/DeveloperDashboard'),
-            'client' => Inertia::render('Dashboards/ClientDashboard'),
-            default => Inertia::render('Dashboard') // super_admin, etc.
-        };
-    });
+    // Dynamic Role-Based Dashboard (single route, single controller)
+    Route::get('/dashboard', [\App\Modules\Core\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
     // CRM
     Route::middleware(['permission:crm.view'])->group(function () {
         Route::get('/crm/clients', function () { return Inertia::render('CrmClients'); });
-        Route::get('/crm/contracts', function () { return Inertia::render('CrmContracts'); });
         Route::get('/crm/leads', function () { return Inertia::render('CrmLeads'); });
         Route::get('/crm/meetings', function () { return Inertia::render('CrmMeetings'); });
         Route::get('/crm/quotations', function () { return Inertia::render('CrmQuotations'); });
     });
 
+    Route::middleware(['permission:crm.view|client_portal.view'])->group(function () {
+        Route::get('/crm/contracts', function () { return Inertia::render('CrmContracts'); });
+    });
+
     // Projects
-    Route::middleware(['permission:project.view'])->group(function () {
+    Route::middleware(['permission:project.view|client_portal.view'])->group(function () {
         Route::get('/projects', function () { return Inertia::render('ProjectsIndex'); });
         Route::get('/projects/{id}', function () { return Inertia::render('Projects$Id'); });
     });
 
     // Tasks & Bugs
-    Route::middleware(['permission:task.view'])->group(function () {
+    Route::middleware(['permission:task.view|project.view'])->group(function () {
         Route::get('/tasks', function () { return Inertia::render('Tasks'); });
     });
-    Route::middleware(['permission:bug.manage'])->group(function () {
+    Route::middleware(['permission:bug.manage|project.view'])->group(function () {
         Route::get('/bugs', function () { return Inertia::render('Bugs'); });
     });
 
     // Finance
-    Route::middleware(['permission:finance.view'])->group(function () {
+    Route::middleware(['permission:finance.view|client_portal.view'])->group(function () {
         Route::get('/finance/invoices', function () { return Inertia::render('FinanceInvoices'); });
         Route::get('/finance/payments', function () { return Inertia::render('FinancePayments'); });
+    });
+    Route::middleware(['permission:finance.view'])->group(function () {
         Route::get('/finance/expenses', function () { return Inertia::render('FinanceExpenses'); });
         Route::get('/finance/revenue', function () { return Inertia::render('FinanceRevenue'); });
     });
@@ -93,8 +88,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/support/widget', function () { return Inertia::render('Support/Widget'); });
     });
     
-    // Support (Legacy)
-    Route::middleware(['permission:support.view'])->group(function () {
+    // Support Tickets
+    Route::middleware(['permission:support.view|client_portal.view'])->group(function () {
         Route::get('/support/tickets', function () { return Inertia::render('SupportTicketsIndex'); });
         Route::get('/support/tickets/{id}', function () { return Inertia::render('SupportTickets$Id'); });
     });

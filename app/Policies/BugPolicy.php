@@ -12,26 +12,36 @@ class BugPolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_bugs');
+        return $user->hasPermissionTo('project.view') || $user->hasPermissionTo('bug.manage');
     }
 
     public function view(User $user, Bug $bug): bool
     {
-        return $user->hasPermissionTo('view_bugs');
+        return $user->hasPermissionTo('project.view') || $user->hasPermissionTo('bug.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_bugs');
+        return $user->hasPermissionTo('bug.manage');
     }
 
     public function update(User $user, Bug $bug): bool
     {
-        return $user->hasPermissionTo('edit_bugs');
+        return $user->hasPermissionTo('bug.manage');
     }
 
     public function delete(User $user, Bug $bug): bool
     {
-        return $user->hasPermissionTo('delete_bugs');
+        return $user->hasPermissionTo('bug.manage');
+    }
+
+    public function restore(User $user, Bug $bug): bool
+    {
+        return $user->hasPermissionTo('bug.manage');
+    }
+
+    public function forceDelete(User $user, Bug $bug): bool
+    {
+        return $user->hasPermissionTo('bug.manage');
     }
 }

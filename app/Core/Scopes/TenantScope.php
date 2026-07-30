@@ -14,7 +14,7 @@ class TenantScope implements Scope
             $user = auth()->user();
             
             // Super Admins bypass tenant scope
-            if ($user->hasRole('Super Admin')) {
+            if ($user->role === 'super_admin' || $user->hasRole('Super Admin')) {
                 return;
             }
 

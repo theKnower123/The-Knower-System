@@ -12,26 +12,36 @@ class LeavePolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_leaves');
+        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('leave.manage');
     }
 
     public function view(User $user, Leave $leave): bool
     {
-        return $user->hasPermissionTo('view_leaves');
+        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('leave.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_leaves');
+        return $user->hasPermissionTo('leave.manage');
     }
 
     public function update(User $user, Leave $leave): bool
     {
-        return $user->hasPermissionTo('edit_leaves');
+        return $user->hasPermissionTo('leave.manage');
     }
 
     public function delete(User $user, Leave $leave): bool
     {
-        return $user->hasPermissionTo('delete_leaves');
+        return $user->hasPermissionTo('leave.manage');
+    }
+
+    public function restore(User $user, Leave $leave): bool
+    {
+        return $user->hasPermissionTo('leave.manage');
+    }
+
+    public function forceDelete(User $user, Leave $leave): bool
+    {
+        return $user->hasPermissionTo('leave.manage');
     }
 }

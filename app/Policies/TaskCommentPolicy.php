@@ -12,26 +12,36 @@ class TaskCommentPolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_taskcomments');
+        return $user->hasPermissionTo('project.view') || $user->hasPermissionTo('task.manage');
     }
 
-    public function view(User $user, TaskComment $taskcomment): bool
+    public function view(User $user, TaskComment $taskComment): bool
     {
-        return $user->hasPermissionTo('view_taskcomments');
+        return $user->hasPermissionTo('project.view') || $user->hasPermissionTo('task.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_taskcomments');
+        return $user->hasPermissionTo('task.manage');
     }
 
-    public function update(User $user, TaskComment $taskcomment): bool
+    public function update(User $user, TaskComment $taskComment): bool
     {
-        return $user->hasPermissionTo('edit_taskcomments');
+        return $user->hasPermissionTo('task.manage');
     }
 
-    public function delete(User $user, TaskComment $taskcomment): bool
+    public function delete(User $user, TaskComment $taskComment): bool
     {
-        return $user->hasPermissionTo('delete_taskcomments');
+        return $user->hasPermissionTo('task.manage');
+    }
+
+    public function restore(User $user, TaskComment $taskComment): bool
+    {
+        return $user->hasPermissionTo('task.manage');
+    }
+
+    public function forceDelete(User $user, TaskComment $taskComment): bool
+    {
+        return $user->hasPermissionTo('task.manage');
     }
 }

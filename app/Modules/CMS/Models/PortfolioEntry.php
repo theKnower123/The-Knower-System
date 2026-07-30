@@ -31,7 +31,7 @@ class PortfolioEntry extends Model
     }
 
     // Guard: can only be shown publicly once the client has approved it.
-    public function makeVisible(): void
+    public function publishEntry(): void
     {
         if (! $this->client_approved) {
             throw new \RuntimeException('Cannot show a project publicly before client approval.');

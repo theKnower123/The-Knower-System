@@ -12,26 +12,39 @@ class HostingAccountPolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_hostingaccounts');
+        return $user->hasPermissionTo('client_portal.view') || $user->hasPermissionTo('hosting.view') || $user->hasPermissionTo('hosting.manage');
     }
 
-    public function view(User $user, HostingAccount $hostingaccount): bool
+    public function view(User $user, HostingAccount $hostingAccount): bool
     {
-        return $user->hasPermissionTo('view_hostingaccounts');
+        if ($user->hasPermissionTo('client_portal.view')) {
+            return $user->client()->value('id') && $user->client()->value('id') === $hostingAccount->client_id;
+        }
+        return $user->hasPermissionTo('hosting.view') || $user->hasPermissionTo('hosting.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_hostingaccounts');
+        return $user->hasPermissionTo('hosting.manage');
     }
 
-    public function update(User $user, HostingAccount $hostingaccount): bool
+    public function update(User $user, HostingAccount $hostingAccount): bool
     {
-        return $user->hasPermissionTo('edit_hostingaccounts');
+        return $user->hasPermissionTo('hosting.manage');
     }
 
-    public function delete(User $user, HostingAccount $hostingaccount): bool
+    public function delete(User $user, HostingAccount $hostingAccount): bool
     {
-        return $user->hasPermissionTo('delete_hostingaccounts');
+        return $user->hasPermissionTo('hosting.manage');
+    }
+
+    public function restore(User $user, HostingAccount $hostingAccount): bool
+    {
+        return $user->hasPermissionTo('hosting.manage');
+    }
+
+    public function forceDelete(User $user, HostingAccount $hostingAccount): bool
+    {
+        return $user->hasPermissionTo('hosting.manage');
     }
 }

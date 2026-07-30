@@ -16,6 +16,7 @@ use App\Traits\HandlesTrash;
 
 class Domain extends Model
 {
+    use \App\Traits\IsolatesClientData;
     use HandlesTrash;
     use SoftDeletes;
     use HasWorkspace, LogsActivity;

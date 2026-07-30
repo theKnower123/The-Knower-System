@@ -27,7 +27,7 @@ class ProjectController extends Controller
         $projects = $this->projectService->getAll();
         
         // Load relations if needed
-        $projects->load(['client', 'creator']);
+        $projects->load(['client', 'creator', 'users']);
 
         return response()->json([
             'success' => true,
@@ -50,7 +50,7 @@ class ProjectController extends Controller
     public function show(Project $project): JsonResponse
     {
         Gate::authorize('view', $project);
-        $project->load(['client', 'creator', 'milestones', 'tasks.assignee', 'bugs', 'files']);
+        $project->load(['client', 'creator', 'users', 'milestones', 'tasks.assignee', 'bugs', 'files']);
 
         return response()->json([
             'success' => true,

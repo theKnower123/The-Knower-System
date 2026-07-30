@@ -32,6 +32,8 @@ export function ResourcePage<T extends { id: string | number }>({
   filters,
   headerContent,
   collectionKey,
+  hideNewButton,
+  hideTrashButton,
 }: {
   title: string;
   description?: string;
@@ -51,13 +53,16 @@ export function ResourcePage<T extends { id: string | number }>({
   headerContent?: ReactNode;
   /** Pass the endpoint key to enable Trash mode automatically */
   collectionKey?: string;
+  hideNewButton?: boolean;
+  hideTrashButton?: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const canCreate = !!renderForm || !!onSubmit;
+  const canCreate = (!!renderForm || !!onSubmit) && !hideNewButton;
   
-  const isTrashMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get("trash") === "1";
+  const isTrashMode = !hideTrashButton && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get("trash") === "1";
 
   const toggleTrash = () => {
+    if (hideTrashButton) return;
     const params = new URLSearchParams(window.location.search);
     if (isTrashMode) params.delete("trash");
     else params.set("trash", "1");
@@ -82,6 +87,7 @@ export function ResourcePage<T extends { id: string | number }>({
                 }
               }}>Restore</Button>
               <ConfirmDeleteButton
+                isPermanent={true}
                 onConfirm={async () => {
                   try {
                     await forceDelete(collectionKey as any, r.id);
@@ -107,7 +113,7 @@ export function ResourcePage<T extends { id: string | number }>({
         actions={
           <div className="flex items-center gap-2">
             {extraActions}
-            {collectionKey && (
+            {collectionKey && !hideTrashButton && (
               <Button variant={isTrashMode ? "secondary" : "outline"} onClick={toggleTrash}>
                 <Trash2 className="me-1 h-4 w-4" />
                 {isTrashMode ? "Exit Trash" : "Trash"}
@@ -121,7 +127,7 @@ export function ResourcePage<T extends { id: string | number }>({
                     {newLabel}
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-lg">
+                <DialogContent className="sm:max-w-xl max-h-[85vh]">
                   <DialogHeader>
                     <DialogTitle>{newLabel}</DialogTitle>
                     <DialogDescription>
@@ -156,7 +162,7 @@ export function ResourcePage<T extends { id: string | number }>({
       {/* Edit Dialog */}
       {renderEditForm && editingRow && (
         <Dialog open={!!editingRow} onOpenChange={(v) => !v && onCloseEdit?.()}>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="sm:max-w-xl max-h-[85vh]">
             <DialogHeader>
               <DialogTitle>Edit Details</DialogTitle>
             </DialogHeader>

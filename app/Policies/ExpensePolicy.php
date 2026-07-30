@@ -12,26 +12,36 @@ class ExpensePolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_expenses');
+        return $user->hasPermissionTo('finance.view') || $user->hasPermissionTo('expense.manage');
     }
 
     public function view(User $user, Expense $expense): bool
     {
-        return $user->hasPermissionTo('view_expenses');
+        return $user->hasPermissionTo('finance.view') || $user->hasPermissionTo('expense.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_expenses');
+        return $user->hasPermissionTo('expense.manage');
     }
 
     public function update(User $user, Expense $expense): bool
     {
-        return $user->hasPermissionTo('edit_expenses');
+        return $user->hasPermissionTo('expense.manage');
     }
 
     public function delete(User $user, Expense $expense): bool
     {
-        return $user->hasPermissionTo('delete_expenses');
+        return $user->hasPermissionTo('expense.manage');
+    }
+
+    public function restore(User $user, Expense $expense): bool
+    {
+        return $user->hasPermissionTo('expense.manage');
+    }
+
+    public function forceDelete(User $user, Expense $expense): bool
+    {
+        return $user->hasPermissionTo('expense.manage');
     }
 }

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Sparkles, Globe, Smartphone, Server, Cloud, Brain, Palette, ShieldCheck, LineChart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container, Eyebrow, SectionHeading, StatCounter, FeatureCard, PricingCard, LogoCloud, CTABand, Section, Badge } from "@/components/public/blocks";
+import { ProjectCardBanner } from "@/components/public/ProjectCardBanner";
 import { stats, services, products, plans, portfolio, testimonials, trustedBy, blog } from "@/mocks/marketing";
 
 export const Route = createFileRoute("/_public/")({
@@ -61,7 +62,12 @@ function HomePage() {
           slug: p.slug, title: p.title, excerpt: p.excerpt, category: "Blog", author: p.author_name, readTime: "5 min", date: p.published_at
         })),
         projects: prRes.data.projects.map((p: any) => ({
-          slug: p.slug, title: p.title, description: p.description, tags: [p.industry || "General"], image: p.image_url || "/project-1.jpg"
+          slug: String(p.id),
+          title: p.name || "Untitled Project",
+          summary: p.description || p.details || "",
+          category: p.type || "Project",
+          images: p.images || [],
+          year: p.start_date ? new Date(p.start_date).getFullYear() : (p.created_at ? new Date(p.created_at).getFullYear() : new Date().getFullYear()),
         }))
       };
     },
@@ -71,10 +77,10 @@ function HomePage() {
   const previewServices = services.slice(0, 8);
   const previewProducts = products;
   
-  const activePlans = dynamicData?.plans || plans;
-  const previewProjects = dynamicData?.projects.slice(0, 6) || portfolio.slice(0, 6);
-  const previewPosts = dynamicData?.posts.slice(0, 3) || blog.slice(0, 3);
-  const activeTestimonials = dynamicData?.testimonials || testimonials;
+  const activePlans = dynamicData?.plans || [];
+  const previewProjects = dynamicData?.projects || [];
+  const previewPosts = dynamicData?.posts || [];
+  const activeTestimonials = dynamicData?.testimonials || [];
 
   return (
     <div>
@@ -149,9 +155,15 @@ function HomePage() {
       {/* Pricing */}
       <Section>
         <SectionHeading eyebrow="Pricing" align="center" title="Simple, transparent pricing" subtitle="Start free. Scale when you're ready. Enterprise SLAs available." />
-        <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {activePlans.map((p: any) => <PricingCard key={p.name} plan={p} cycle="monthly" />)}
-        </div>
+        {activePlans.length > 0 ? (
+          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {activePlans.map((p: any) => <PricingCard key={p.name} plan={p} cycle="monthly" />)}
+          </div>
+        ) : (
+          <div className="mt-8 text-center text-sm text-muted-foreground">
+            No pricing plans uploaded yet. Manage your pricing plans from the CMS dashboard.
+          </div>
+        )}
         <div className="mt-8 text-center">
           <Button asChild variant="outline"><Link to="/pricing">Full pricing details <ArrowRight className="ms-1 h-4 w-4" /></Link></Button>
         </div>
@@ -178,23 +190,28 @@ function HomePage() {
           <SectionHeading eyebrow="Portfolio" title="Recent work" subtitle="A snapshot of the products we've shipped for clients around the world." />
           <Button asChild variant="outline"><Link to="/portfolio">See portfolio <ArrowRight className="ms-1 h-4 w-4" /></Link></Button>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {previewProjects.map((p: any) => (
-            <Link key={p.slug} to="/portfolio/$slug" params={{ slug: p.slug }}
-              className="group overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-0.5 hover:border-primary/50">
-              <div className="relative flex h-44 items-center justify-center overflow-hidden bg-gradient-to-br from-primary/25 via-primary/10 to-accent/20">
-                <span className="font-display text-4xl font-bold text-primary/40">{p.client.split(" ").map((w: string) => w[0]).join("")}</span>
-              </div>
-              <div className="p-5">
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <Badge>{p.category}</Badge><span>{p.year}</span>
+        {previewProjects.length > 0 ? (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {previewProjects.map((p: any) => (
+              <div key={p.slug}
+                className="group overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:border-primary/50 hover:shadow-md flex flex-col justify-between">
+                <ProjectCardBanner title={p.title} images={p.images} />
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3 text-xs text-muted-foreground">
+                    <Badge variant="outline">{p.category}</Badge>
+                    <span className="font-semibold">{p.year}</span>
+                  </div>
+                  <h3 className="font-display text-lg font-bold text-foreground">{p.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground line-clamp-4 leading-relaxed">{p.summary}</p>
                 </div>
-                <div className="mt-2 font-display text-base font-semibold">{p.title}</div>
-                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{p.summary}</p>
               </div>
-            </Link>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+            No portfolio projects published yet. Enable project visibility from the admin dashboard to display them here!
+          </div>
+        )}
       </Section>
 
       {/* Testimonials */}

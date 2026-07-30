@@ -8,14 +8,17 @@ import { money, shortDate } from "@/lib/format";
 import { useCollection, add, update, remove } from "@/mocks/store";
 import { toast } from "sonner";
 import { useAuth } from "@/store/auth";
+import { roleHas, type Role } from "@/lib/permissions";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 import type { FilterDef } from "@/components/data-table";
 
 export default function LeadsPage() {
+    const { user } = useAuth();
+    const canEdit = user ? roleHas(user.role as Role, "lead.manage") : false;
+
   const { t } = useTranslation();
-  const { user } = useAuth();
-  const [editingRow, setEditingRow] = useState<Lead | null>(null);
-  const canEdit = ["super_admin", "ceo", "project_manager", "team_leader", "hr"].includes(user?.role || "");
+    const [editingRow, setEditingRow] = useState<Lead | null>(null);
+  
   const rows = useCollection("leads");
   const employees = useCollection("employees");
 
@@ -43,6 +46,8 @@ export default function LeadsPage() {
 
   return (
     <ResourcePage<Lead>
+      hideNewButton={!canEdit}
+      hideTrashButton={!canEdit}
       collectionKey="leads"
       title={t("nav.leads")}
       description="Prospects moving through the sales pipeline"

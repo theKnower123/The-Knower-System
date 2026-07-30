@@ -9,9 +9,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('subtasks', function (Blueprint $table) {
-            $table->foreignId('task_id')->after('id')->constrained('tasks')->cascadeOnDelete();
-            $table->string('title')->after('task_id');
-            $table->boolean('is_done')->default(false)->after('title');
+            if (!Schema::hasColumn('subtasks', 'task_id')) {
+                $table->foreignId('task_id')->after('id')->constrained('tasks')->cascadeOnDelete();
+            }
+            if (!Schema::hasColumn('subtasks', 'title')) {
+                $table->string('title')->after('task_id');
+            }
+            if (!Schema::hasColumn('subtasks', 'is_done')) {
+                $table->boolean('is_done')->default(false)->after('title');
+            }
         });
     }
 

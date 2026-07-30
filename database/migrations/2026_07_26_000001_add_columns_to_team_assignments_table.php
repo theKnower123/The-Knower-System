@@ -12,10 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('team_assignments', function (Blueprint $table) {
-            $table->foreignId('project_id')->after('id')->constrained('projects')->cascadeOnDelete();
-            $table->foreignId('user_id')->after('project_id')->constrained('users')->cascadeOnDelete();
-            $table->string('role_in_project')->nullable()->after('user_id');
-            $table->unique(['project_id', 'user_id']);
+            if (!Schema::hasColumn('team_assignments', 'project_id')) {
+                $table->foreignId('project_id')->after('id')->constrained('projects')->cascadeOnDelete();
+            }
+            if (!Schema::hasColumn('team_assignments', 'user_id')) {
+                $table->foreignId('user_id')->after('project_id')->constrained('users')->cascadeOnDelete();
+            }
+            if (!Schema::hasColumn('team_assignments', 'role_in_project')) {
+                $table->string('role_in_project')->nullable()->after('user_id');
+            }
         });
     }
 

@@ -9,10 +9,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('invoice_items', function (Blueprint $table) {
-            $table->foreignId('invoice_id')->after('id')->constrained('invoices')->cascadeOnDelete();
-            $table->string('description')->after('invoice_id');
-            $table->unsignedInteger('qty')->default(1)->after('description');
-            $table->decimal('unit_price', 10, 2)->after('qty');
+            if (!Schema::hasColumn('invoice_items', 'invoice_id')) {
+                $table->foreignId('invoice_id')->after('id')->constrained('invoices')->cascadeOnDelete();
+            }
+            if (!Schema::hasColumn('invoice_items', 'description')) {
+                $table->string('description')->after('invoice_id');
+            }
+            if (!Schema::hasColumn('invoice_items', 'qty')) {
+                $table->unsignedInteger('qty')->default(1)->after('description');
+            }
+            if (!Schema::hasColumn('invoice_items', 'unit_price')) {
+                $table->decimal('unit_price', 10, 2)->after('qty');
+            }
         });
     }
 

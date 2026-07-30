@@ -12,26 +12,39 @@ class ContractPolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_contracts');
+        return $user->hasPermissionTo('client_portal.view') || $user->hasPermissionTo('crm.view') || $user->hasPermissionTo('contract.manage');
     }
 
     public function view(User $user, Contract $contract): bool
     {
-        return $user->hasPermissionTo('view_contracts');
+        if ($user->hasPermissionTo('client_portal.view')) {
+            return $user->client()->value('id') && $user->client()->value('id') === $contract->client_id;
+        }
+        return $user->hasPermissionTo('crm.view') || $user->hasPermissionTo('contract.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_contracts');
+        return $user->hasPermissionTo('contract.manage');
     }
 
     public function update(User $user, Contract $contract): bool
     {
-        return $user->hasPermissionTo('edit_contracts');
+        return $user->hasPermissionTo('contract.manage');
     }
 
     public function delete(User $user, Contract $contract): bool
     {
-        return $user->hasPermissionTo('delete_contracts');
+        return $user->hasPermissionTo('contract.manage');
+    }
+
+    public function restore(User $user, Contract $contract): bool
+    {
+        return $user->hasPermissionTo('contract.manage');
+    }
+
+    public function forceDelete(User $user, Contract $contract): bool
+    {
+        return $user->hasPermissionTo('contract.manage');
     }
 }

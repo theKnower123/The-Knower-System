@@ -23,7 +23,6 @@ class BlogPost extends Model
     protected $casts = [
         'is_published' => 'boolean',
         'published_at' => 'date',
-        'body' => 'array',
     ];
 
     public function getActivitylogOptions(): LogOptions

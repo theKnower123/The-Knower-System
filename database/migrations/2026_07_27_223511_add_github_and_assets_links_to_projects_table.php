@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->string('github_link')->nullable()->after('language');
-            $table->string('assets_link')->nullable()->after('github_link');
+            if (!Schema::hasColumn('projects', 'github_link')) {
+                $table->string('github_link')->nullable();
+            }
+            if (!Schema::hasColumn('projects', 'assets_link')) {
+                $table->string('assets_link')->nullable();
+            }
         });
     }
 

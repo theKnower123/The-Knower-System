@@ -17,9 +17,10 @@ interface ConfirmDeleteButtonProps {
   className?: string;
   children?: React.ReactNode;
   asChild?: boolean;
+  isPermanent?: boolean;
 }
 
-export function ConfirmDeleteButton({ onConfirm, className, children, asChild }: ConfirmDeleteButtonProps) {
+export function ConfirmDeleteButton({ onConfirm, className, children, asChild, isPermanent = false }: ConfirmDeleteButtonProps) {
   const { t } = useTranslation();
   return (
     <AlertDialog>
@@ -28,15 +29,19 @@ export function ConfirmDeleteButton({ onConfirm, className, children, asChild }:
           children
         ) : (
           <button className={className} onClick={(e) => e.stopPropagation()}>
-            {children || t("common.delete")}
+            {children || (isPermanent ? "Permanent Delete" : t("common.delete"))}
           </button>
         )}
       </AlertDialogTrigger>
       <AlertDialogContent onClick={(e) => e.stopPropagation()}>
         <AlertDialogHeader>
-          <AlertDialogTitle>{t("common.confirmDeleteTitle") || "Are you absolutely sure?"}</AlertDialogTitle>
+          <AlertDialogTitle>
+            {isPermanent ? "Permanently Delete Item?" : "Move to Trash?"}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            {t("common.confirmDeleteDesc") || "This action cannot be undone. This will permanently delete the record."}
+            {isPermanent
+              ? "This action cannot be undone. This record will be permanently deleted from the database."
+              : "This record will be moved to the Trash. You can restore it or permanently delete it later from the Trash view."}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -46,9 +51,9 @@ export function ConfirmDeleteButton({ onConfirm, className, children, asChild }:
               e.stopPropagation();
               onConfirm();
             }}
-            className="bg-red-500 hover:bg-red-600 text-white"
+            className="bg-red-600 hover:bg-red-700 text-white font-medium"
           >
-            {t("common.delete")}
+            {isPermanent ? "Permanently Delete" : "Move to Trash"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -18,9 +18,13 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $query = User::where('email', $request->email);
+        $sql = $query->toSql();
+        $bindings = $query->getBindings();
+        $user = $query->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
+            \Log::error('Login failed for ' . $request->email . '. Query: ' . $sql . ' Bindings: ' . json_encode($bindings));
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid credentials.',
@@ -44,6 +48,7 @@ class AuthController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'role' => $user->role ?? 'client',
+                    'client_id' => $user->client()->value('id'),
                 ]
             ]
         ]);
@@ -75,6 +80,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->role ?? 'client',
+                'client_id' => $user->client()->value('id'),
             ]
         ]);
     }

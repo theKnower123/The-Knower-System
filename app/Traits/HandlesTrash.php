@@ -9,7 +9,7 @@ trait HandlesTrash
     protected static function bootHandlesTrash()
     {
         static::addGlobalScope('trash', function (Builder $builder) {
-            if (request() && request()->query('trashed') == '1') {
+            if (request() && in_array(request()->query('trashed'), ['1', 'true', true], true)) {
                 $builder->onlyTrashed();
             }
         });

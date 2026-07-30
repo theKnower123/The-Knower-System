@@ -4,46 +4,75 @@ namespace App\Modules\CRM\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Modules\Projects\Models\Meeting;
 
 class MeetingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return response()->json([
+            'success' => true,
+            'data' => Meeting::latest()->get()
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'client_id' => 'nullable',
+            'project_id' => 'nullable',
+            'description' => 'nullable|string',
+            'start_time' => 'nullable|date',
+            'end_time' => 'nullable|date',
+            'location' => 'nullable|string',
+        ]);
+
+        $meeting = Meeting::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Meeting created successfully.',
+            'data' => $meeting
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Meeting $meeting)
     {
-        //
+        return response()->json([
+            'success' => true,
+            'data' => $meeting
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Meeting $meeting)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'sometimes|string|max:255',
+            'client_id' => 'nullable',
+            'project_id' => 'nullable',
+            'description' => 'nullable|string',
+            'start_time' => 'nullable|date',
+            'end_time' => 'nullable|date',
+            'location' => 'nullable|string',
+        ]);
+
+        $meeting->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Meeting updated successfully.',
+            'data' => $meeting
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Meeting $meeting)
     {
-        //
+        $meeting->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Meeting deleted successfully.'
+        ]);
     }
 }

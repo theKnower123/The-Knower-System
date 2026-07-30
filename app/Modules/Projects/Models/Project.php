@@ -19,6 +19,7 @@ use App\Traits\HandlesTrash;
 
 class Project extends Model
 {
+    use \App\Traits\IsolatesClientData;
     use HandlesTrash;
     use SoftDeletes;
     use HasWorkspace, LogsActivity;
@@ -26,7 +27,7 @@ class Project extends Model
     protected $fillable = [
         'client_id', 'name', 'description', 'type', 'status',
         'priority', 'start_date', 'deadline', 'budget', 'progress', 'created_by',
-        'tech_stack', 'language', 'github_link', 'assets_link'
+        'tech_stack', 'language', 'github_link', 'assets_link', 'is_public', 'images'
     ];
 
     protected $casts = [
@@ -35,6 +36,7 @@ class Project extends Model
         'budget'     => 'decimal:2',
         'is_public'  => 'boolean',
         'public_stack' => 'array',
+        'images'     => 'array',
     ];
 
     public function client()        { return $this->belongsTo(Client::class); 

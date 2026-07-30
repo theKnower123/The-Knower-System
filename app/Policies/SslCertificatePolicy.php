@@ -12,26 +12,39 @@ class SslCertificatePolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_sslcertificates');
+        return $user->hasPermissionTo('client_portal.view') || $user->hasPermissionTo('hosting.view') || $user->hasPermissionTo('ssl.manage');
     }
 
-    public function view(User $user, SslCertificate $sslcertificate): bool
+    public function view(User $user, SslCertificate $sslCertificate): bool
     {
-        return $user->hasPermissionTo('view_sslcertificates');
+        if ($user->hasPermissionTo('client_portal.view')) {
+            return $user->client()->value('id') && $user->client()->value('id') === $sslCertificate->client_id;
+        }
+        return $user->hasPermissionTo('hosting.view') || $user->hasPermissionTo('ssl.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create_sslcertificates');
+        return $user->hasPermissionTo('ssl.manage');
     }
 
-    public function update(User $user, SslCertificate $sslcertificate): bool
+    public function update(User $user, SslCertificate $sslCertificate): bool
     {
-        return $user->hasPermissionTo('edit_sslcertificates');
+        return $user->hasPermissionTo('ssl.manage');
     }
 
-    public function delete(User $user, SslCertificate $sslcertificate): bool
+    public function delete(User $user, SslCertificate $sslCertificate): bool
     {
-        return $user->hasPermissionTo('delete_sslcertificates');
+        return $user->hasPermissionTo('ssl.manage');
+    }
+
+    public function restore(User $user, SslCertificate $sslCertificate): bool
+    {
+        return $user->hasPermissionTo('ssl.manage');
+    }
+
+    public function forceDelete(User $user, SslCertificate $sslCertificate): bool
+    {
+        return $user->hasPermissionTo('ssl.manage');
     }
 }

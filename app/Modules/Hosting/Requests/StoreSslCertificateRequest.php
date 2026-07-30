@@ -7,7 +7,9 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreSslCertificateRequest extends FormRequest
 {
     public function authorize(): bool
-    { return true; }
+    {
+        return $this->user()->can('create', \App\Modules\Hosting\Models\SslCertificate::class);
+    }
 
     public function rules(): array
     { return []; }
