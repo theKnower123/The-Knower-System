@@ -9,7 +9,7 @@ class TicketService
 {
     public function getAll(): Collection
     {
-        return Ticket::orderBy("id", "desc")->get(); // Add default relations if needed
+        return Ticket::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): Ticket

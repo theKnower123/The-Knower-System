@@ -43,6 +43,7 @@ export function DataTable<T extends { id: string | number }>({
   empty = "Nothing here yet",
   filters,
   pageSize = 10,
+  rowClassName,
 }: {
   rows: T[];
   columns: Column<T>[];
@@ -51,6 +52,8 @@ export function DataTable<T extends { id: string | number }>({
   empty?: string;
   filters?: FilterDef[];
   pageSize?: number;
+  /** Extra classes applied to every data row (e.g. trash highlight) */
+  rowClassName?: string;
 }) {
   const [q, setQ] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -288,7 +291,10 @@ export function DataTable<T extends { id: string | number }>({
               {paginated.map((row) => (
                 <tr
                   key={row.id}
-                  className="border-t border-border/60 transition-colors hover:bg-muted/30"
+                  className={
+                    "border-t border-border/60 transition-colors hover:bg-muted/30 " +
+                    (rowClassName ?? "")
+                  }
                 >
                   {columns.map((c) => (
                     <td key={c.key} className={"px-4 py-3 " + (c.className ?? "")}>
@@ -312,7 +318,10 @@ export function DataTable<T extends { id: string | number }>({
         {paginated.map((row) => (
           <div
             key={row.id}
-            className="rounded-xl border border-border bg-card p-4 space-y-2"
+            className={
+              "rounded-xl border border-border bg-card p-4 space-y-2 " +
+              (rowClassName ?? "")
+            }
           >
             {mobileColumns.map((c, i) => (
               <div

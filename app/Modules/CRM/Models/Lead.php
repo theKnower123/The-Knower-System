@@ -35,6 +35,12 @@ class Lead extends Model
     }
 
     public function assignee(): BelongsTo { return $this->belongsTo(User::class, 'assigned_to'); }
+    public function assignedAgent(): BelongsTo { return $this->belongsTo(User::class, 'assigned_to'); }
     public function creator(): BelongsTo { return $this->belongsTo(User::class, 'created_by'); }
     public function updater(): BelongsTo { return $this->belongsTo(User::class, 'updated_by'); }
+
+    public function followups()
+    {
+        return $this->hasMany(\App\Modules\CRM\Models\LeadFollowup::class, 'lead_id');
+    }
 }

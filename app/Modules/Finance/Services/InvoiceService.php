@@ -9,7 +9,7 @@ class InvoiceService
 {
     public function getAll(): Collection
     {
-        return Invoice::orderBy("id", "desc")->get(); // Add default relations if needed
+        return Invoice::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): Invoice

@@ -8,7 +8,7 @@ class QuotationService
 {
     public function getAll()
     {
-        return Quotation::with(['lead', 'contact'])->latest()->paginate(25);
+        return Quotation::trashMode()->with(['lead', 'client'])->latest()->paginate(25);
     }
 
     public function create(array $data): Quotation

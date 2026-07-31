@@ -89,6 +89,7 @@ Route::prefix('v1')->group(function () {
     // ── Public Jobs (Landing Page) ────────────────────────────────────────────
     Route::get('job-postings/active', [JobPostingController::class, 'active']);
     Route::post('job-applications', [JobApplicationController::class, 'store']);
+    Route::get('job-applications/status', [JobApplicationController::class, 'checkStatus']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('auth/logout', [\App\Modules\Auth\Controllers\AuthController::class, 'logout']);
@@ -121,6 +122,35 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('blog-posts', \App\Modules\CMS\Controllers\BlogPostController::class);
         Route::apiResource('team-members', \App\Modules\CMS\Controllers\TeamMemberController::class);
         Route::apiResource('services-cms', \App\Modules\CMS\Controllers\ServiceController::class);
+
+        // ── Marketing Ops ─────────────────────────────────────────────────────────
+        Route::prefix('marketing-ops')->name('marketing-ops.')->group(function () {
+            Route::get('/bootstrap', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'bootstrap']);
+            Route::get('/kpis', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'kpis']);
+            Route::get('/leads-by-source', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'leadsBySource']);
+
+            Route::post('/accounts', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'storeAccount']);
+            Route::patch('/accounts/{account}/status', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'setAccountStatus']);
+            Route::patch('/accounts/{account}/team', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'setAccountTeam']);
+
+            Route::post('/posts', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'storePost']);
+            Route::patch('/posts/{post}/status', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'setPostStatus']);
+
+            Route::post('/campaigns', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'storeCampaign']);
+            Route::patch('/campaigns/{campaign}', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'updateCampaign']);
+            Route::get('/campaigns/{campaign}/analytics', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'campaignAnalytics']);
+
+            Route::post('/portfolio/{entry}/toggle', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'togglePortfolioVisible']);
+            Route::patch('/portfolio/{entry}', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'updatePortfolioEntry']);
+
+            Route::post('/sections/{section}/toggle', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'toggleSection']);
+            Route::post('/sections/reorder', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'reorderSections']);
+
+            Route::post('/testimonials', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'storeTestimonial']);
+            Route::post('/testimonials/{testimonial}/toggle', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'toggleTestimonial']);
+
+            Route::post('/follow-ups', [\App\Modules\Marketing\Controllers\MarketingOpsController::class, 'storeFollowUp']);
+        });
 
         // ── Notifications ─────────────────────────────────────────────────────────
         Route::get('notifications', [App\Modules\Notifications\Controllers\NotificationController::class, 'index']);
@@ -188,14 +218,8 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('job-postings', JobPostingController::class);
         // Exclude store since it's public
         Route::apiResource('job-applications', JobApplicationController::class)->except(['store']);
-        Route::get   ('attendance',      [AttendanceController::class, 'index']);
-        Route::post  ('attendance',      [AttendanceController::class, 'store']);
-        Route::delete('attendance/{id}', [AttendanceController::class, 'destroy']);
-        Route::get   ('leaves',          [LeaveController::class, 'index']);
-        Route::post  ('leaves',          [LeaveController::class, 'store']);
-        Route::get   ('leaves/{id}',     [LeaveController::class, 'show']);
-        Route::put   ('leaves/{id}',     [LeaveController::class, 'update']);
-        Route::delete('leaves/{id}',     [LeaveController::class, 'destroy']);
+        Route::apiResource('attendance', AttendanceController::class);
+        Route::apiResource('leaves', LeaveController::class);
 
         // ── Reports ───────────────────────────────────────────────────────────────
         Route::get('reports/revenue',   [ReportController::class, 'revenue']);

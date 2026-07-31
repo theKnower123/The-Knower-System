@@ -14,10 +14,11 @@ class StoreEmployeeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8',
-            'role' => 'required|string|max:255',
+            'user_id' => 'nullable|exists:users,id|unique:employees,user_id',
+            'name' => 'required_without:user_id|nullable|string|max:255',
+            'email' => 'required_without:user_id|nullable|email|max:255|unique:users,email',
+            'password' => 'nullable|string|min:6',
+            'role' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:255',
             'id_number' => 'nullable|string|max:255',
@@ -25,7 +26,7 @@ class StoreEmployeeRequest extends FormRequest
             'department' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
             'salary' => 'nullable|numeric|min:0',
-            'status' => 'required|in:active,on_leave,terminated',
+            'status' => 'required|in:active,inactive,on_leave,terminated',
             'hire_date' => 'nullable|date',
         ];
     }

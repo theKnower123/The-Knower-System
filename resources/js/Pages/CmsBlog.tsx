@@ -7,6 +7,7 @@ import { useCollection, add, update, remove } from "@/mocks/store";
 import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
+import { EditIconButton } from "@/components/edit-icon-button";
 
 export default function CmsBlogPage() {
   const { user } = useAuth();
@@ -71,12 +72,12 @@ export default function CmsBlogPage() {
           header: "Actions",
           cell: (r: any) => (
             <div className="flex gap-2 justify-end">
-              <button 
-                className="text-primary hover:underline text-sm"
-                onClick={(e) => { e.stopPropagation(); setEditingRow(r); }}
-              >
-                Edit
-              </button>
+              <EditIconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditingRow(r);
+                    }}
+                  />
               <ConfirmDeleteButton
                 onConfirm={async () => {
                   try {
@@ -86,7 +87,6 @@ export default function CmsBlogPage() {
                     toast.error('Failed to delete.');
                   }
                 }}
-                className="text-red-500 hover:text-red-700 text-sm"
               />
             </div>
           )

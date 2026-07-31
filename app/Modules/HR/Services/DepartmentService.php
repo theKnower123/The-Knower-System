@@ -9,7 +9,7 @@ class DepartmentService
 {
     public function getAll(): Collection
     {
-        return Department::orderBy("id", "desc")->get();
+        return Department::trashMode()->orderBy("id", "desc")->get();
     }
 
     public function create(array $data): Department

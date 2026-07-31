@@ -8,20 +8,34 @@ class UpdateEmployeeRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->route('employee'));
+        $employee = $this->route('employee');
+        if (is_numeric($employee) || is_string($employee)) {
+            $employee = \App\Modules\HR\Models\Employee::find($employee);
+        }
+        if ($employee) {
+            return $this->user()->can('update', $employee);
+        }
+        return $this->user()->hasPermissionTo('hr.manage') || $this->user()->hasPermissionTo('hr.view');
     }
 
     public function rules(): array
     {
-        return [
+        $employee = $this->route('employee');
+        $employeeId = is_object($employee) ? $employee->id : $employee;
 
-            'user_id' => 'sometimes|required|exists:users,id|unique:employees,user_id,' . $employee->id,
+        return [
+            'user_id' => 'nullable|exists:users,id|unique:employees,user_id,' . $employeeId,
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:50',
+            'address' => 'nullable|string|max:255',
+            'id_number' => 'nullable|string|max:255',
+            'id_photo' => 'nullable|string|max:255',
             'department' => 'nullable|string|max:100',
             'position' => 'nullable|string|max:100',
             'salary' => 'nullable|numeric|min:0',
             'hire_date' => 'nullable|date',
             'status' => 'sometimes|required|in:active,inactive,on_leave,terminated',
-        
         ];
     }
 }

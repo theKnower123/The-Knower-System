@@ -36,7 +36,8 @@ return new class extends Migration
             'invoices', 'payments', 'expenses',
             'servers', 'hosting_accounts', 'domains', 'ssl_certificates',
             'tickets', 'ticket_messages',
-            'employees', 'attendances', 'leaves'
+            'employees', 'attendances', 'attendance', 'leaves',
+            'job_postings', 'job_applications'
         ];
 
         foreach ($tables as $tableName) {
@@ -59,7 +60,8 @@ return new class extends Migration
             'invoices', 'payments', 'expenses',
             'servers', 'hosting_accounts', 'domains', 'ssl_certificates',
             'tickets', 'ticket_messages',
-            'employees', 'attendances', 'leaves'
+            'employees', 'attendances', 'attendance', 'leaves',
+            'job_postings', 'job_applications'
         ];
 
         foreach ($tables as $tableName) {

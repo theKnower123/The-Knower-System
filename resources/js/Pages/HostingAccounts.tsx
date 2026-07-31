@@ -48,7 +48,6 @@ export default function AccountsPage() {
                     toast.error('Delete failed');
                   }
                 }}
-                className="text-red-500 hover:text-red-700 text-sm font-medium px-2"
               />
             </div>
           )

@@ -28,7 +28,11 @@ export default function AppLayout({ children }: Props) {
       if (backendRole === "organization_admin") backendRole = "ceo";
       if (backendRole === "hr_manager") backendRole = "hr";
       
-      const validRole = ["super_admin", "ceo", "sales", "project_manager", "team_leader", "developer", "designer", "qa", "accountant", "hr", "support", "client"].includes(backendRole) ? backendRole : "client";
+      const validRole = [
+        "super_admin", "administrator", "ceo", "sales", "marketing_admin", "social_manager", 
+        "ads_specialist", "content_creator", "project_manager", "team_leader", "developer", 
+        "designer", "qa", "accountant", "hr", "support", "support_manager", "client"
+      ].includes(backendRole) ? backendRole : "client";
 
       setUser({
         id: serverUser.id,

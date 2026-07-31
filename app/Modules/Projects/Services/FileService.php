@@ -9,7 +9,7 @@ class FileService
 {
     public function getAll(): Collection
     {
-        return File::orderBy("id", "desc")->get(); // Add default relations if needed
+        return File::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): File

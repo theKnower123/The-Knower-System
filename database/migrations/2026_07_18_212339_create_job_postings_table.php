@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('requirements')->nullable();
             $table->enum('status', ['draft', 'published', 'closed'])->default('draft');
             $table->date('closing_date')->nullable();
+            $table->foreignId('workspace_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

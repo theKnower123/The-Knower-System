@@ -12,7 +12,7 @@ class MeetingController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => Meeting::latest()->get()
+            'data' => Meeting::trashMode()->latest()->get()
         ]);
     }
 

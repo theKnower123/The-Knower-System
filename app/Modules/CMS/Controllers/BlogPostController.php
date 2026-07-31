@@ -12,7 +12,7 @@ class BlogPostController extends Controller
 {
     public function index()
     {
-        return response()->json(["data" => BlogPost::latest()->get()]);
+        return response()->json(["data" => BlogPost::trashMode()->latest()->get()]);
     }
 
     public function store(Request $request)

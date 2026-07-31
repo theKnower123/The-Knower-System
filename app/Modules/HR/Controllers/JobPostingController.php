@@ -21,6 +21,7 @@ class JobPostingController extends Controller
 
     public function index(): JsonResponse
     {
+        \Illuminate\Support\Facades\Gate::authorize('viewAny', JobPosting::class);
         $postings = $this->service->getAll();
         return response()->json([
             'success' => true,
@@ -48,28 +49,30 @@ class JobPostingController extends Controller
         ], 201);
     }
 
-    public function show(JobPosting $job): JsonResponse
+    public function show(JobPosting $job_posting): JsonResponse
     {
-        $job->load('department');
+        \Illuminate\Support\Facades\Gate::authorize('view', $job_posting);
+        $job_posting->load('department');
         return response()->json([
             'success' => true,
-            'data' => new JobPostingResource($job)
+            'data' => new JobPostingResource($job_posting)
         ]);
     }
 
-    public function update(UpdateJobPostingRequest $request, JobPosting $job): JsonResponse
+    public function update(UpdateJobPostingRequest $request, JobPosting $job_posting): JsonResponse
     {
-        $job = $this->service->update($job, $request->all());
+        $job_posting = $this->service->update($job_posting, $request->all());
         return response()->json([
             'success' => true,
             'message' => 'Job posting updated successfully.',
-            'data' => new JobPostingResource($job)
+            'data' => new JobPostingResource($job_posting)
         ]);
     }
 
-    public function destroy(JobPosting $job): JsonResponse
+    public function destroy(JobPosting $job_posting): JsonResponse
     {
-        $this->service->delete($job);
+        \Illuminate\Support\Facades\Gate::authorize('delete', $job_posting);
+        $this->service->delete($job_posting);
         return response()->json([
             'success' => true,
             'message' => 'Job posting deleted successfully.'

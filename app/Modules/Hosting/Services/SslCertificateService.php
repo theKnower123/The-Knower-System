@@ -9,7 +9,7 @@ class SslCertificateService
 {
     public function getAll(): Collection
     {
-        return SslCertificate::orderBy("id", "desc")->get(); // Add default relations if needed
+        return SslCertificate::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): SslCertificate

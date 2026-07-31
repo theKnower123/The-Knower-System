@@ -8,7 +8,14 @@ class UpdateJobPostingRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->route('jobposting'));
+        $posting = $this->route('job_posting') ?? $this->route('job_posting_id');
+        if (is_numeric($posting) || is_string($posting)) {
+            $posting = \App\Modules\HR\Models\JobPosting::find($posting);
+        }
+        if ($posting) {
+            return $this->user()->can('update', $posting);
+        }
+        return $this->user()->hasPermissionTo('hr.manage') || $this->user()->hasPermissionTo('hr.view');
     }
 
     public function rules(): array

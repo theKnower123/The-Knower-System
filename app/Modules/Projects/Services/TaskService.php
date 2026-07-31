@@ -9,7 +9,7 @@ class TaskService
 {
     public function getAll(): Collection
     {
-        return Task::orderBy("id", "desc")->get(); // Add default relations if needed
+        return Task::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): Task

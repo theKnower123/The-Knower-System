@@ -11,7 +11,7 @@ class ContractService
 {
     public function getAll(): Collection
     {
-        return Contract::orderBy("id", "desc")->get();
+        return Contract::trashMode()->orderBy("id", "desc")->get();
     }
 
     public function create(array $data): Contract

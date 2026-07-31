@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -12,13 +12,122 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Search, X } from "lucide-react";
+
+export type FieldOption = {
+  value: string;
+  label: string;
+  avatar?: string;
+  description?: string;
+};
 
 export type FieldDef =
   | { name: string; label: string; type: "text" | "email" | "password" | "number" | "date" | "file"; required?: boolean; defaultValue?: string | number; accept?: string }
   | { name: string; label: string; type: "textarea"; required?: boolean; defaultValue?: string }
   | { name: string; label: string; type: "image_assets"; required?: boolean; defaultValue?: string[] }
-  | { name: string; label: string; type: "select"; options: { value: string; label: string }[]; required?: boolean; defaultValue?: string }
-  | { name: string; label: string; type: "multiselect"; options: { value: string; label: string }[]; required?: boolean; defaultValue?: string[] };
+  | { name: string; label: string; type: "select"; options: FieldOption[]; required?: boolean; defaultValue?: string }
+  | { name: string; label: string; type: "multiselect"; options: FieldOption[]; required?: boolean; defaultValue?: string[] };
+
+function SearchableMultiSelect({
+  options,
+  value,
+  onChange,
+  placeholder = "Search team members…",
+}: {
+  options: FieldOption[];
+  value: string[];
+  onChange: (next: string[]) => void;
+  placeholder?: string;
+}) {
+  const [query, setQuery] = useState("");
+  const selected = value.map(String);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return options;
+    return options.filter((o) => {
+      const hay = `${o.label} ${o.description || ""}`.toLowerCase();
+      return hay.includes(q);
+    });
+  }, [options, query]);
+
+  const selectedOptions = options.filter((o) => selected.includes(String(o.value)));
+
+  const toggle = (id: string, checked: boolean) => {
+    if (checked) onChange([...selected, id]);
+    else onChange(selected.filter((x) => x !== id));
+  };
+
+  return (
+    <div className="space-y-2 rounded-md border border-border bg-muted/20 p-3">
+      {selectedOptions.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {selectedOptions.map((o) => (
+            <span
+              key={o.value}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-2 py-0.5 text-xs"
+            >
+              {o.avatar ? (
+                <img src={o.avatar} alt="" className="h-4 w-4 rounded-full" />
+              ) : null}
+              <span className="font-medium">{o.label}</span>
+              <button
+                type="button"
+                className="rounded-full p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+                onClick={() => toggle(String(o.value), false)}
+                aria-label={`Remove ${o.label}`}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className="relative">
+        <Search className="pointer-events-none absolute inset-s-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={placeholder}
+          className="h-8 ps-8 text-sm"
+        />
+      </div>
+
+      <div className="max-h-40 space-y-1 overflow-y-auto">
+        {filtered.length === 0 && (
+          <p className="px-1 py-3 text-center text-xs text-muted-foreground">
+            No team members match “{query}”.
+          </p>
+        )}
+        {filtered.map((opt) => {
+          const id = String(opt.value);
+          const checked = selected.includes(id);
+          return (
+            <label
+              key={id}
+              className="flex cursor-pointer items-center gap-2 rounded-md px-1.5 py-1.5 text-sm hover:bg-muted/60"
+            >
+              <Checkbox
+                checked={checked}
+                onCheckedChange={(c) => toggle(id, Boolean(c))}
+              />
+              {opt.avatar ? (
+                <img src={opt.avatar} alt="" className="h-7 w-7 rounded-full border border-border" />
+              ) : null}
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-medium leading-tight">{opt.label}</span>
+                {opt.description ? (
+                  <span className="block truncate text-[11px] text-muted-foreground">{opt.description}</span>
+                ) : null}
+              </span>
+            </label>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 export function QuickForm({
   fields,
@@ -134,27 +243,12 @@ export function QuickForm({
                 </SelectContent>
               </Select>
             ) : f.type === "multiselect" ? (
-              <div className="flex flex-col gap-2 border p-3 rounded-md max-h-36 overflow-y-auto bg-muted/20">
-                {f.options.map(opt => {
-                  const checked = (values[f.name] || []).includes(opt.value);
-                  return (
-                    <label key={opt.value} className="flex items-center gap-2 text-sm">
-                      <Checkbox 
-                        checked={checked} 
-                        onCheckedChange={(c) => {
-                          const current = values[f.name] || [];
-                          if (c) {
-                            set(f.name, [...current, opt.value]);
-                          } else {
-                            set(f.name, current.filter((x: string) => x !== opt.value));
-                          }
-                        }} 
-                      />
-                      {opt.label}
-                    </label>
-                  );
-                })}
-              </div>
+              <SearchableMultiSelect
+                options={f.options}
+                value={Array.isArray(values[f.name]) ? values[f.name].map(String) : []}
+                onChange={(next) => set(f.name, next)}
+                placeholder={`Search ${f.label.toLowerCase()}…`}
+              />
             ) : f.type === "file" ? (
               <Input
                 id={f.name}

@@ -8,7 +8,7 @@ class StoreCampaignRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('marketing.campaigns.manage');
+        return $this->user() !== null;
     }
 
     public function rules(): array

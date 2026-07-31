@@ -9,7 +9,7 @@ class LeaveService
 {
     public function getAll(): Collection
     {
-        return Leave::orderBy('id', 'desc')->get(); // Add default relations if needed
+        return Leave::trashMode()->orderBy('id', 'desc')->get(); // Add default relations if needed
     }
 
     public function create(array $data): Leave

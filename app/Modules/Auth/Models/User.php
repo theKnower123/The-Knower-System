@@ -15,13 +15,15 @@ use Laravel\Sanctum\HasApiTokens;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use App\Traits\HandlesTrash;
-
 class User extends Authenticatable
 {
-    use HandlesTrash;
     use SoftDeletes;
     use HasApiTokens, HasFactory, Notifiable;
+
+    protected static function newFactory()
+    {
+        return \Database\Factories\UserFactory::new();
+    }
 
     protected $fillable = [
         'name',
@@ -125,7 +127,7 @@ class User extends Authenticatable
     public function getAllPermissions(): array
     {
         return match ($this->role) {
-            'administrator' => [
+            'administrator', 'admin' => [
                 "dashboard.view", "crm.view", "lead.manage", "client.manage", "quotation.manage", "contract.manage",
                 "project.view", "project.manage", "task.view", "task.manage", "task.update_status", "bug.manage", "file.upload",
                 "finance.view", "invoice.manage", "payment.manage", "expense.manage",
@@ -133,19 +135,35 @@ class User extends Authenticatable
                 "hr.view", "hr.manage", "attendance.manage", "leave.manage", "payroll.manage",
                 "support.view", "support.inbox", "support.tickets", "support.canned", "support.kb_read", "support.manage", "ticket.manage", "ticket.reply",
                 "report.view", "settings.manage", "user.manage", "cms.manage",
-                "code.review", "design.upload", "qa.test", "ai.use"
+                "code.review", "design.upload", "qa.test", "ai.use",
+                "marketing.view", "marketing.manage"
             ],
             'ceo' => [
                 "dashboard.view", "crm.view", "client.manage", "project.view", 
-                "finance.view", "report.view", "hr.view", "hosting.view", 
-                "support.view", "ai.use"
+                "finance.view", "report.view", "hr.view", "hr.manage", "hosting.view", 
+                "support.view", "ai.use",
+                "marketing.view", "marketing.manage"
             ],
             'sales' => [
-                "dashboard.view", "crm.view", "lead.manage", "client.manage", 
-                "quotation.manage", "contract.manage", "ai.use"
+                "dashboard.view", "crm.view", "lead.manage",
+                "marketing.view", "pipeline.manage",
+                "client.manage", "quotation.manage", "contract.manage", "ai.use",
             ],
-            'marketing' => [
-                "dashboard.view", "crm.view", "lead.manage", "cms.manage", "ai.use"
+            'marketing_admin' => [
+                "dashboard.view", "crm.view", "lead.manage",
+                "marketing.view", "marketing.manage", "social.post", "ads.manage",
+                "content.draft", "content.approve", "landing.manage", "pipeline.manage",
+                "report.view", "ai.use",
+            ],
+            'social_manager' => [
+                "dashboard.view", "marketing.view", "social.post",
+                "content.draft", "content.approve", "ai.use",
+            ],
+            'ads_specialist' => [
+                "dashboard.view", "marketing.view", "ads.manage", "report.view", "ai.use",
+            ],
+            'content_creator' => [
+                "dashboard.view", "marketing.view", "content.draft", "design.upload", "file.upload",
             ],
             'project_manager' => [
                 "dashboard.view", "crm.view", "project.view", "project.manage", 
@@ -176,7 +194,7 @@ class User extends Authenticatable
                 "dashboard.view", "finance.view", "invoice.manage", "payment.manage", 
                 "expense.manage", "report.view"
             ],
-            'hr' => [
+            'hr', 'hr_manager' => [
                 "dashboard.view", "hr.view", "hr.manage", "attendance.manage", 
                 "leave.manage", "payroll.manage", "report.view"
             ],

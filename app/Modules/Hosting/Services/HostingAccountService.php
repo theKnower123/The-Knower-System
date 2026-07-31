@@ -9,7 +9,7 @@ class HostingAccountService
 {
     public function getAll(): Collection
     {
-        return HostingAccount::orderBy("id", "desc")->get(); // Add default relations if needed
+        return HostingAccount::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): HostingAccount

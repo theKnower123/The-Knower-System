@@ -9,7 +9,7 @@ class ExpenseService
 {
     public function getAll(): Collection
     {
-        return Expense::orderBy("id", "desc")->get(); // Add default relations if needed
+        return Expense::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): Expense

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,6 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 
 interface ConfirmDeleteButtonProps {
   onConfirm: () => void;
@@ -20,18 +21,45 @@ interface ConfirmDeleteButtonProps {
   isPermanent?: boolean;
 }
 
-export function ConfirmDeleteButton({ onConfirm, className, children, asChild, isPermanent = false }: ConfirmDeleteButtonProps) {
+export function ConfirmDeleteButton({
+  onConfirm,
+  className,
+  children,
+  asChild,
+  isPermanent = false,
+}: ConfirmDeleteButtonProps) {
   const { t } = useTranslation();
+
+  const defaultTrigger = isPermanent ? (
+    <button
+      type="button"
+      className={cn(
+        "text-sm font-medium text-red-600 hover:text-red-700 hover:underline",
+        className
+      )}
+      onClick={(e) => e.stopPropagation()}
+    >
+      Permanently Delete
+    </button>
+  ) : (
+    <button
+      type="button"
+      title={t("common.delete") || "Delete"}
+      aria-label={t("common.delete") || "Delete"}
+      className={cn(
+        "inline-flex h-8 w-8 items-center justify-center rounded-md text-red-600 transition-colors hover:bg-red-500/10 hover:text-red-700",
+        className
+      )}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <Trash2 className="h-4 w-4" />
+    </button>
+  );
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        {asChild ? (
-          children
-        ) : (
-          <button className={className} onClick={(e) => e.stopPropagation()}>
-            {children || (isPermanent ? "Permanent Delete" : t("common.delete"))}
-          </button>
-        )}
+        {asChild ? children : defaultTrigger}
       </AlertDialogTrigger>
       <AlertDialogContent onClick={(e) => e.stopPropagation()}>
         <AlertDialogHeader>

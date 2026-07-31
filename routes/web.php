@@ -120,6 +120,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/cms/services', function () { return Inertia::render('CmsServices'); });
     });
 
+    // Sales & Digital Marketing Module
+    Route::middleware(['permission:marketing.view|cms.manage|lead.manage'])->group(function () {
+        Route::get('/marketing/accounts', [\App\Modules\Marketing\Controllers\SocialAccountController::class, 'index']);
+        Route::get('/marketing/posts', [\App\Modules\Marketing\Controllers\PostController::class, 'index']);
+        Route::get('/marketing/campaigns', [\App\Modules\Marketing\Controllers\CampaignController::class, 'index']);
+        Route::get('/cms/landing-builder', [\App\Modules\CMS\Controllers\LandingBuilderController::class, 'index']);
+        Route::get('/crm/leads/followups', [\App\Modules\CRM\Controllers\LeadFollowupController::class, 'index']);
+        Route::get('/marketing/activity-log', [\App\Modules\Marketing\Controllers\MarketingActivityLogController::class, 'index']);
+    });
+
     // AI & Settings
     Route::middleware(['permission:ai.use'])->group(function () {
         Route::get('/ai', function () { return Inertia::render('Ai'); });
@@ -135,7 +145,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 });
 Route::fallback(function (\Illuminate\Http\Request $request) {
-    $erpPrefixes = ['/dashboard', '/crm', '/projects', '/tasks', '/bugs', '/calendar', '/time-logs', '/finance', '/hosting', '/support', '/hr', '/reports', '/cms', '/ai', '/settings', '/profile', '/portal', '/notifications'];
+    $erpPrefixes = ['/dashboard', '/crm', '/projects', '/tasks', '/bugs', '/calendar', '/time-logs', '/finance', '/hosting', '/support', '/hr', '/reports', '/cms', '/marketing', '/ai', '/settings', '/profile', '/portal', '/notifications'];
     
     foreach ($erpPrefixes as $prefix) {
         if (str_starts_with($request->getPathInfo(), $prefix)) {

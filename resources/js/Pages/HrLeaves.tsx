@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/store/auth";
 import { roleHas, type Role } from "@/lib/permissions";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
+import { EditIconButton } from "@/components/edit-icon-button";
 import { CalendarOff, Clock, CheckCircle2, XCircle, Stethoscope } from "lucide-react";
 
 export default function LeavesPage() {
@@ -168,20 +169,16 @@ export default function LeavesPage() {
             <div className="flex gap-2 justify-end">
               {canEdit && (
                 <>
-                  <button
-                    className="text-primary hover:underline text-sm font-medium"
+                  <EditIconButton
                     onClick={(e) => {
                       e.stopPropagation();
                       setEditingRow(r);
                     }}
-                  >
-                    {t("common.edit")}
-                  </button>
+                  />
                   <ConfirmDeleteButton
                     onConfirm={() => {
                       deleteMutation.mutate(r.id);
                     }}
-                    className="text-red-500 hover:text-red-700 text-sm font-medium"
                   />
                 </>
               )}

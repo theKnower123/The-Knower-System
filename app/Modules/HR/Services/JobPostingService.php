@@ -9,7 +9,7 @@ class JobPostingService
 {
     public function getAll(): Collection
     {
-        return JobPosting::with('department')->orderBy("id", "desc")->get();
+        return JobPosting::trashMode()->with('department')->orderBy("id", "desc")->get();
     }
 
     public function getActive(): Collection

@@ -12,6 +12,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { StatusBadge } from "@/components/status-badge";
+import { EditIconButton } from "@/components/edit-icon-button";
 
 export default function HrJobsPage() {
   const { t } = useTranslation();
@@ -72,12 +73,15 @@ export default function HrJobsPage() {
     { key: "status", header: "Status", cell: (r: any) => <StatusBadge value={r.status} /> },
     { key: "closingDate", header: "Closing Date", cell: (r: any) => r.closingDate || "—" },
     { key: "actions", header: "Actions", cell: (r: any) => (
-        <Button variant="ghost" size="sm" onClick={() => {
-            setEditingJob(r);
-            setFormOpen(true);
-        }}>
-            Edit
-        </Button>
+        <div className="flex justify-end">
+          <EditIconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditingJob(r);
+              setFormOpen(true);
+            }}
+          />
+        </div>
     )}
   ];
 

@@ -9,7 +9,7 @@ class TicketMessageService
 {
     public function getAll(): Collection
     {
-        return TicketMessage::orderBy("id", "desc")->get(); // Add default relations if needed
+        return TicketMessage::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): TicketMessage

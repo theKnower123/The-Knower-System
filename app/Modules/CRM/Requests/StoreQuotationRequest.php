@@ -7,7 +7,10 @@ use Illuminate\Validation\Rules\Enum;
 
 class StoreQuotationRequest extends FormRequest
 {
-    public function authorize() { return true; }
+    public function authorize(): bool
+    {
+        return $this->user()->can('create', \App\Modules\CRM\Models\Quotation::class);
+    }
     public function rules() {
         return [
             'quotation_number' => 'nullable|string|max:50|unique:quotations',

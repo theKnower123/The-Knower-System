@@ -7,7 +7,17 @@ use Illuminate\Validation\Rules\Enum;
 
 class UpdateQuotationRequest extends FormRequest
 {
-    public function authorize() { return true; }
+    public function authorize(): bool
+    {
+        $q = $this->route('quotation') ?? $this->route('id');
+        if (is_numeric($q) || is_string($q)) {
+            $q = \App\Modules\CRM\Models\Quotation::find($q);
+        }
+        if ($q) {
+            return $this->user()->can('update', $q);
+        }
+        return $this->user()->hasPermissionTo('crm.view') || $this->user()->hasPermissionTo('crm.manage') || $this->user()->hasPermissionTo('quotation.manage');
+    }
     public function rules() {
         return [
             'quotation_number' => 'nullable|string|max:50',

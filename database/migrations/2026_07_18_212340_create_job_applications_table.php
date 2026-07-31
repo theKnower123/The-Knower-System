@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('portfolio_url')->nullable();
             $table->enum('status', ['pending', 'reviewing', 'interviewing', 'hired', 'rejected'])->default('pending');
             $table->text('notes')->nullable();
+            $table->foreignId('workspace_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

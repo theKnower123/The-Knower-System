@@ -12,5 +12,13 @@ class StoreAttendanceRequest extends FormRequest
     }
 
     public function rules(): array
-    { return []; }
+    {
+        return [
+            'employee_id' => 'required|exists:employees,id',
+            'date' => 'required|date',
+            'check_in' => 'nullable|string',
+            'check_out' => 'nullable|string',
+            'status' => 'required|in:present,absent,late,on_leave,half_day',
+        ];
+    }
 }

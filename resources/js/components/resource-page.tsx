@@ -76,16 +76,22 @@ export function ResourcePage<T extends { id: string | number }>({
         return {
           ...c,
           cell: (r: any) => (
-            <div className="flex gap-2 justify-end">
-              <Button size="sm" variant="outline" onClick={async (e) => {
-                e.stopPropagation();
-                try {
-                  await restore(collectionKey as any, r.id);
-                  toast.success("Restored successfully.");
-                } catch (err) {
-                  toast.error("Failed to restore.");
-                }
-              }}>Restore</Button>
+            <div className="flex items-center gap-3 justify-end">
+              <button
+                type="button"
+                className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  try {
+                    await restore(collectionKey as any, r.id);
+                    toast.success("Restored successfully.");
+                  } catch (err) {
+                    toast.error("Failed to restore.");
+                  }
+                }}
+              >
+                Restore
+              </button>
               <ConfirmDeleteButton
                 isPermanent={true}
                 onConfirm={async () => {
@@ -157,7 +163,17 @@ export function ResourcePage<T extends { id: string | number }>({
 
       {headerContent}
 
-      <DataTable rows={rows} columns={actualColumns} getSearchable={getSearchable} filters={filters} />
+      <DataTable
+        rows={rows}
+        columns={actualColumns}
+        getSearchable={getSearchable}
+        filters={filters}
+        rowClassName={
+          isTrashMode
+            ? "bg-red-50/90 hover:bg-red-100/90 dark:bg-red-950/40 dark:hover:bg-red-950/55 border-red-200/70 dark:border-red-900/50"
+            : undefined
+        }
+      />
 
       {/* Edit Dialog */}
       {renderEditForm && editingRow && (

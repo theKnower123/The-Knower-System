@@ -15,6 +15,9 @@ return new class extends Migration
             $table->string('address')->nullable()->after('salary');
             $table->string('id_number')->nullable()->after('address');
             $table->string('id_photo')->nullable()->after('id_number');
+            if (!Schema::hasColumn('employees', 'updated_at')) {
+                $table->timestamp('updated_at')->nullable();
+            }
         });
     }
 

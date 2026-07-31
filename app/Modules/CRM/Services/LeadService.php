@@ -8,7 +8,7 @@ class LeadService
 {
     public function getAll()
     {
-        return Lead::with(['assignee'])->latest()->paginate(25);
+        return Lead::trashMode()->with(['assignee'])->latest()->paginate(25);
     }
 
     public function create(array $data): Lead

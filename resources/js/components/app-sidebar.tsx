@@ -36,6 +36,11 @@ import {
   MessageSquare,
   Monitor,
   Bot,
+  Share2,
+  Megaphone,
+  LayoutTemplate,
+  CalendarCheck,
+  Activity,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
@@ -115,6 +120,17 @@ const groups: Group[] = [
       { to: "/hr/leaves", labelKey: "nav.leaves", icon: ClipboardList, perm: "leave.manage" },
       { to: "/hr/payroll", labelKey: "nav.payroll", icon: Banknote, perm: "payroll.manage" },
       { to: "/crm/quotations", labelKey: "nav.quotations", icon: FileText, perm: "quotation.manage" },
+    ],
+  },
+  {
+    labelKey: "Sales & Marketing",
+    items: [
+      { to: "/marketing/accounts", labelKey: "Social Accounts", icon: Share2, perm: "marketing.view" },
+      { to: "/marketing/posts", labelKey: "Content & Calendar", icon: Calendar, perm: "marketing.view" },
+      { to: "/marketing/campaigns", labelKey: "Campaigns & Analytics", icon: Megaphone, perm: "marketing.view" },
+      { to: "/cms/landing-builder", labelKey: "Landing Page Builder", icon: LayoutTemplate, perm: "cms.manage" },
+      { to: "/crm/leads/followups", labelKey: "Sales Pipeline Scheduler", icon: CalendarCheck, perm: "lead.manage" },
+      { to: "/marketing/activity-log", labelKey: "Marketing Audit Log", icon: Activity, perm: "marketing.view" },
     ],
   },
   {

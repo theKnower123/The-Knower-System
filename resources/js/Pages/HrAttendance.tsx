@@ -76,7 +76,6 @@ export default function AttendancePage() {
                     toast.error('Delete failed');
                   }
                 }}
-                className="text-red-500 hover:text-red-700 text-sm font-medium px-2"
               />
             </div>
           )

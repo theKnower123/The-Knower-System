@@ -1,7 +1,12 @@
 export type Role =
   | "super_admin"
+  | "administrator"
   | "ceo"
   | "sales"
+  | "marketing_admin"
+  | "social_manager"
+  | "ads_specialist"
+  | "content_creator"
   | "project_manager"
   | "team_leader"
   | "developer"
@@ -15,8 +20,13 @@ export type Role =
 
 export const ALL_ROLES: Role[] = [
   "super_admin",
+  "administrator",
   "ceo",
   "sales",
+  "marketing_admin",
+  "social_manager",
+  "ads_specialist",
+  "content_creator",
   "project_manager",
   "team_leader",
   "developer",
@@ -25,6 +35,7 @@ export const ALL_ROLES: Role[] = [
   "accountant",
   "hr",
   "support",
+  "support_manager",
   "client",
 ];
 
@@ -74,6 +85,14 @@ export const PERMISSIONS = [
   "support.canned",
   "support.kb_read",
   "support.manage",
+  "marketing.view",
+  "marketing.manage",
+  "social.post",
+  "ads.manage",
+  "content.draft",
+  "content.approve",
+  "landing.manage",
+  "pipeline.manage",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -129,6 +148,7 @@ const ALL: Permission[] = [...PERMISSIONS];
 
 export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   super_admin: ALL,
+  administrator: ALL,
   ceo: [
     "dashboard.view",
     "crm.view",
@@ -141,16 +161,56 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "hosting.view",
     "support.view",
     "ai.use",
+    "marketing.view",
+    "marketing.manage"
   ],
   sales: [
     "dashboard.view",
     "crm.view",
     "lead.manage",
     "client.manage",
-
+    "marketing.view",
+    "pipeline.manage",
     "quotation.manage",
     "contract.manage",
     "ai.use",
+  ],
+  marketing_admin: [
+    "dashboard.view",
+    "crm.view",
+    "lead.manage",
+    "marketing.view",
+    "marketing.manage",
+    "social.post",
+    "ads.manage",
+    "content.draft",
+    "content.approve",
+    "landing.manage",
+    "pipeline.manage",
+    "report.view",
+    "ai.use",
+  ],
+  social_manager: [
+    "dashboard.view",
+    "marketing.view",
+    "social.post",
+    "content.draft",
+    "content.approve",
+    "ai.use",
+  ],
+  ads_specialist: [
+    "dashboard.view",
+    "marketing.view",
+    "ads.manage",
+    "report.view",
+    "ai.use",
+  ],
+  content_creator: [
+    "dashboard.view",
+    "marketing.view",
+    "content.draft",
+    "design.upload",
+    "file.upload",
   ],
   project_manager: [
     "dashboard.view",
@@ -248,8 +308,13 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
 
 export const ROLE_LABELS: Record<Role, string> = {
   super_admin: "Super Admin",
+  administrator: "Administrator",
   ceo: "CEO",
   sales: "Sales",
+  marketing_admin: "Marketing Admin",
+  social_manager: "Social Media Manager",
+  ads_specialist: "Ads Specialist",
+  content_creator: "Content Creator",
   project_manager: "Project Manager",
   team_leader: "Team Leader",
   developer: "Software Developer",
@@ -258,6 +323,7 @@ export const ROLE_LABELS: Record<Role, string> = {
   accountant: "Accountant",
   hr: "HR",
   support: "Support",
+  support_manager: "Support Manager",
   client: "Client",
 };
 

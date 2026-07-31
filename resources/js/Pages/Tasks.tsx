@@ -10,6 +10,7 @@ import { shortDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/store/auth";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
+import { EditIconButton } from "@/components/edit-icon-button";
 import { QuickForm, type FieldDef } from "@/components/quick-form";
 import { DataTable, type FilterDef } from "@/components/data-table";
 import { StaggerList } from "@/components/animations/StaggerList";
@@ -27,7 +28,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   Plus,
@@ -312,42 +312,40 @@ export default function TasksPage() {
               key: "actions",
               header: "",
               cell: (r) => (
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="p-2 hover:bg-muted rounded-full">
-                    <MoreHorizontal className="w-4 h-4" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    {COLUMNS.filter((c) => c.key !== r.status).map((c) => (
-                      <DropdownMenuItem key={c.key} onClick={() => move(r.id, c.key)}>
-                        Move to {c.label}
-                      </DropdownMenuItem>
-                    ))}
-                    {canEdit && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => setEditingRow(r)}>Edit Task</DropdownMenuItem>
-                        <ConfirmDeleteButton
-                          asChild
-                          onConfirm={async () => {
-                            try {
-                              await remove("tasks", r.id);
-                              toast("Task deleted.");
-                            } catch {
-                              toast("Failed to delete task.");
-                            }
-                          }}
-                        >
-                          <DropdownMenuItem
-                            className="text-red-600 focus:bg-red-50"
-                            onSelect={(e) => e.preventDefault()}
-                          >
-                            Delete Task
-                          </DropdownMenuItem>
-                        </ConfirmDeleteButton>
-                      </>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex items-center justify-end gap-1">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="p-2 hover:bg-muted rounded-full">
+                      <MoreHorizontal className="w-4 h-4" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {COLUMNS.filter((c) => c.key !== r.status).map((c) => (
+                        <DropdownMenuItem key={c.key} onClick={() => move(r.id, c.key)}>
+                          Move to {c.label}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  {canEdit && (
+                    <>
+                      <EditIconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingRow(r);
+                        }}
+                      />
+                      <ConfirmDeleteButton
+                        onConfirm={async () => {
+                          try {
+                            await remove("tasks", r.id);
+                            toast("Task deleted.");
+                          } catch {
+                            toast("Failed to delete task.");
+                          }
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
               ),
             },
           ]}

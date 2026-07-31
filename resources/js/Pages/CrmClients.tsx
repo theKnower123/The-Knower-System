@@ -12,6 +12,7 @@ import { shortDate } from "@/lib/format";
 import { useAuth } from "@/store/auth";
 import { roleHas, type Role } from "@/lib/permissions";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
+import { EditIconButton } from "@/components/edit-icon-button";
 import { Users, UserCheck, Key, FolderGit2 } from "lucide-react";
 
 export default function ClientsPage() {
@@ -101,15 +102,12 @@ export default function ClientsPage() {
             <div className="flex gap-2 justify-end">
               {canEdit && (
                 <>
-                  <button
-                    className="text-primary hover:underline text-sm font-medium"
+                  <EditIconButton
                     onClick={(e) => {
                       e.stopPropagation();
                       setEditingRow(r);
                     }}
-                  >
-                    {t("common.edit")}
-                  </button>
+                  />
                   <ConfirmDeleteButton
                     onConfirm={async () => {
                       try {
@@ -119,7 +117,6 @@ export default function ClientsPage() {
                         toast.error('Failed to delete client.');
                       }
                     }}
-                    className="text-red-500 hover:text-red-700 text-sm font-medium"
                   />
                 </>
               )}

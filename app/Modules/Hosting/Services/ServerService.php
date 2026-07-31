@@ -9,7 +9,7 @@ class ServerService
 {
     public function getAll(): Collection
     {
-        return Server::orderBy("id", "desc")->get(); // Add default relations if needed
+        return Server::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): Server

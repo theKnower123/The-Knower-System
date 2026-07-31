@@ -9,12 +9,13 @@ import { StatCard } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
 import { useCollection, add, remove, update } from "@/mocks/store";
 import { makeId, type Project } from "@/mocks/data";
-import { money, shortDate } from "@/lib/format";
+import { money, shortDate, normalizeExternalUrl, githubRepoLabel } from "@/lib/format";
 import { MoreHorizontal, FolderKanban, CheckCircle2, PauseCircle, AlertTriangle, Github, Globe } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/store/auth";
 import { roleHas, type Role } from "@/lib/permissions";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
+import { EditIconButton } from "@/components/edit-icon-button";
 import { StaggerList } from "@/components/animations/StaggerList";
 import type { FilterDef } from "@/components/data-table";
 
@@ -31,6 +32,26 @@ export default function ProjectsPage() {
 
   // Roles that see only their assigned projects (read-only)
   const isReadOnly = user ? ["developer", "designer", "qa"].includes(user.role) : false;
+
+  // Leadership / finance can see budget & deadlines; ICs (devs/designers/QA) cannot.
+  const canSeeCommercial = user
+    ? ["super_admin", "ceo", "project_manager", "team_leader", "accountant"].includes(user.role)
+      || roleHas(user.role as Role, "project.manage")
+      || roleHas(user.role as Role, "finance.view")
+    : false;
+
+  const teamMemberOptions = useMemo(
+    () =>
+      users
+        .filter((u: any) => u.userId || u.user_id)
+        .map((u: any) => ({
+          value: String(u.userId || u.user_id),
+          label: u.name || u.email || `User ${u.userId || u.user_id}`,
+          description: u.email || u.role || undefined,
+          avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(u.name || u.email || "TM")}`,
+        })),
+    [users]
+  );
 
   const visibleRows = useMemo(() => {
     if (!user) return rows;
@@ -96,12 +117,7 @@ export default function ProjectsPage() {
       name: "users", 
       label: "Assign Team Members (Optional)", 
       type: "multiselect", 
-      options: users.map((u) => ({ 
-        value: u.id as string, 
-        label: u.name, 
-        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${u.name}`,
-        description: u.email 
-      })) 
+      options: teamMemberOptions,
     },
     { 
       name: "type", 
@@ -261,20 +277,39 @@ export default function ProjectsPage() {
             </div>
           ),
         },
-        ...(isReadOnly ? [] : [{ key: "budget", header: "Budget", cell: (r: any) => <span className="tabular-nums">{money(r.budget)}</span> }]),
-        { key: "duration", header: "Duration", cell: (r) => <span className="text-xs text-muted-foreground whitespace-nowrap">{shortDate((r as any).start_date || (r as any).startDate)} - {shortDate(r.deadline)}</span> },
+        ...(canSeeCommercial ? [{ key: "budget", header: "Budget", cell: (r: any) => <span className="tabular-nums">{money(r.budget ?? 0)}</span> }] : []),
+        {
+          key: "duration",
+          header: canSeeCommercial ? "Duration" : "Start",
+          cell: (r: any) => (
+            <span className="text-xs text-muted-foreground whitespace-nowrap">
+              {canSeeCommercial
+                ? `${shortDate(r.start_date || r.startDate)} - ${shortDate(r.deadline)}`
+                : shortDate(r.start_date || r.startDate)}
+            </span>
+          ),
+        },
         {
           key: "links",
           header: "GitHub",
-          cell: (r) => (
-            <div className="flex gap-2">
-              {((r as any).github_link || (r as any).githubLink) && (
-                <a href={(r as any).github_link || (r as any).githubLink} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-primary" title="GitHub Repository">
-                  <Github className="w-4 h-4" />
-                </a>
-              )}
-            </div>
-          )
+          cell: (r) => {
+            const raw = (r as any).githubLink || (r as any).github_link;
+            const href = normalizeExternalUrl(raw);
+            if (!href) return <span className="text-xs text-muted-foreground">—</span>;
+            return (
+              <a
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex max-w-[180px] items-center gap-1.5 text-primary hover:underline"
+                title={href}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Github className="h-4 w-4 shrink-0" />
+                <span className="truncate text-xs font-medium">{githubRepoLabel(raw)}</span>
+              </a>
+            );
+          }
         },
         ...(canEdit ? [{
           key: "actions",
@@ -291,15 +326,12 @@ export default function ProjectsPage() {
                   <DropdownMenuItem onClick={() => handleStatusChange(r, 'active')}>Set to Active</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <button
-                className="text-primary hover:underline text-sm font-medium px-2"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setEditingRow(r);
-                }}
-              >
-                {t("common.edit") || "Edit"}
-              </button>
+              <EditIconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditingRow(r);
+                    }}
+                  />
               <ConfirmDeleteButton
                 onConfirm={async () => {
                   try {
@@ -309,7 +341,6 @@ export default function ProjectsPage() {
                     toast.error('Delete failed');
                   }
                 }}
-                className="text-red-500 hover:text-red-700 text-sm font-medium px-2"
               />
             </div>
           )
@@ -328,7 +359,7 @@ export default function ProjectsPage() {
                 start_date: v.start_date ? new Date(v.start_date).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
                 deadline: v.deadline ? new Date(v.deadline).toISOString().split("T")[0] : new Date(Date.now() + 90 * 86400000).toISOString().split("T")[0],
                 budget: Number(v.budget || 0),
-                github_link: v.github_link || null,
+                github_link: normalizeExternalUrl(v.github_link) || null,
                 progress: 0,
               });
               toast.success("Project created successfully.");
@@ -351,7 +382,7 @@ export default function ProjectsPage() {
             type: (row as any).type || "",
             tech_stack: (row as any).tech_stack || (row as any).techStack || "",
             language: (row as any).language || "",
-            users: (row as any).users || [],
+            users: ((row as any).users || []).map((u: any) => String(typeof u === "object" ? u.id : u)),
             priority: row.priority || "medium",
             status: row.status || "planning",
             is_public: ((row as any).is_public ?? (row as any).isPublic ?? true) ? "true" : "false",
@@ -373,13 +404,14 @@ export default function ProjectsPage() {
                 type: v.type,
                 tech_stack: v.tech_stack,
                 language: v.language,
+                users: Array.isArray(v.users) ? v.users.map(String) : [],
                 priority: v.priority,
                 status: v.status,
                 images: v.images || [],
                 budget: Number(v.budget || 0),
                 start_date: v.start_date || null,
                 deadline: v.deadline || null,
-                github_link: v.github_link || null,
+                github_link: normalizeExternalUrl(v.github_link) || null,
                 description: v.description || null
               });
               toast.success("Project updated successfully.");

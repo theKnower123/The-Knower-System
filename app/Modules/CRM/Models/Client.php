@@ -19,7 +19,7 @@ use App\Traits\HasWorkspace;
 class Client extends Model
 {
     use \App\Traits\IsolatesClientData;
-    use HasWorkspace, LogsActivity, SoftDeletes, HandlesTrash;
+    use HasWorkspace, LogsActivity, HandlesTrash, SoftDeletes;
 
     protected $fillable = [
         'name', 'email', 'phone', 'position', 'status', 'user_id',

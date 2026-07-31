@@ -9,7 +9,7 @@ class ProjectService
 {
     public function getAll(): Collection
     {
-        return Project::orderBy("id", "desc")->get(); // Add default relations if needed
+        return Project::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): Project
@@ -20,7 +20,7 @@ class ProjectService
         if (!empty($users)) {
             $project->users()->sync($users);
         }
-        return $project;
+        return $project->load(['client', 'creator', 'users']);
     }
 
     public function update(Project $project, array $data): Project
@@ -31,7 +31,7 @@ class ProjectService
         if ($users !== null) {
             $project->users()->sync($users);
         }
-        return $project;
+        return $project->load(['client', 'creator', 'users']);
     }
 
     public function delete(Project $project): ?bool

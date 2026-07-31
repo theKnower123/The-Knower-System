@@ -8,7 +8,7 @@ use App\Modules\CMS\Models\MarketingPlan;
 
 class MarketingPlanController extends Controller
 {
-    public function index() { return response()->json(["data" => MarketingPlan::latest()->get()]); }
+    public function index() { return response()->json(["data" => MarketingPlan::trashMode()->latest()->get()]); }
     public function store(Request $request) {
         $validated = $request->validate([
             'name' => 'required|string',

@@ -12,5 +12,14 @@ class StoreLeaveRequest extends FormRequest
     }
 
     public function rules(): array
-    { return []; }
+    {
+        return [
+            'employee_id' => 'required|exists:employees,id',
+            'type' => 'required|in:annual,sick,emergency,unpaid,other',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'status' => 'nullable|in:pending,approved,rejected',
+            'reason' => 'nullable|string',
+        ];
+    }
 }

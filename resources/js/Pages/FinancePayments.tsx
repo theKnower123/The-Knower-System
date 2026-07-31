@@ -12,6 +12,7 @@ import { money, shortDate } from "@/lib/format";
 import { useAuth } from "@/store/auth";
 import { roleHas, type Role } from "@/lib/permissions";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
+import { EditIconButton } from "@/components/edit-icon-button";
 import { ImageIcon, X, Wallet, Banknote, ArrowDownRight, Smartphone } from "lucide-react";
 import type { FilterDef } from "@/components/data-table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -235,15 +236,12 @@ export default function PaymentsPage() {
               <div className="flex gap-2 justify-end">
                 {canEdit && (
                   <>
-                    <button
-                      className="text-primary hover:underline text-sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditingRow(r);
-                      }}
-                    >
-                      {t("common.edit")}
-                    </button>
+                    <EditIconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditingRow(r);
+                    }}
+                  />
                     <ConfirmDeleteButton
                       onConfirm={async () => {
                         try {
@@ -253,7 +251,6 @@ export default function PaymentsPage() {
                           toast("Failed to delete payment.");
                         }
                       }}
-                      className="text-red-500 hover:text-red-700 text-sm"
                     />
                   </>
                 )}

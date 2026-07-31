@@ -12,36 +12,36 @@ class AttendancePolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('attendance.manage');
+        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('hr.manage') || $user->hasPermissionTo('attendance.manage');
     }
 
     public function view(User $user, Attendance $attendance): bool
     {
-        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('attendance.manage');
+        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('hr.manage') || $user->hasPermissionTo('attendance.manage');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('attendance.manage');
+        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('hr.manage') || $user->hasPermissionTo('attendance.manage');
     }
 
     public function update(User $user, Attendance $attendance): bool
     {
-        return $user->hasPermissionTo('attendance.manage');
+        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('hr.manage') || $user->hasPermissionTo('attendance.manage');
     }
 
     public function delete(User $user, Attendance $attendance): bool
     {
-        return $user->hasPermissionTo('attendance.manage');
+        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('hr.manage') || $user->hasPermissionTo('attendance.manage');
     }
 
     public function restore(User $user, Attendance $attendance): bool
     {
-        return $user->hasPermissionTo('attendance.manage');
+        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('hr.manage') || $user->hasPermissionTo('attendance.manage');
     }
 
     public function forceDelete(User $user, Attendance $attendance): bool
     {
-        return $user->hasPermissionTo('attendance.manage');
+        return $user->hasPermissionTo('hr.view') || $user->hasPermissionTo('hr.manage') || $user->hasPermissionTo('attendance.manage');
     }
 }

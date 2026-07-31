@@ -8,7 +8,11 @@ class StoreSocialAccountRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('marketing.accounts.manage');
+        $user = $this->user();
+        if (!$user) return false;
+        return $user->hasRole(['super_admin', 'administrator', 'admin', 'marketing']) || 
+               $user->hasPermissionTo('marketing.manage') || 
+               $user->hasPermissionTo('marketing.view');
     }
 
     public function rules(): array

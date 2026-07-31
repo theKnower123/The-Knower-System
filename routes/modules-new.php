@@ -1,13 +1,12 @@
 <?php
 
-// Add these routes into your existing routes/web.php inside the
-// authenticated + role-gated middleware group.
-
 use App\Modules\AI\Controllers\AiSuggestionController;
 use App\Modules\CMS\Controllers\LandingBuilderController;
+use App\Modules\CRM\Controllers\LeadFollowupController;
 use App\Modules\Finance\Controllers\TimesheetController;
 use App\Modules\Hosting\Controllers\DeploymentController;
 use App\Modules\Marketing\Controllers\CampaignController;
+use App\Modules\Marketing\Controllers\MarketingActivityLogController;
 use App\Modules\Marketing\Controllers\PostController;
 use App\Modules\Marketing\Controllers\SocialAccountController;
 use App\Modules\Support\Controllers\KbArticleController;
@@ -22,13 +21,18 @@ Route::prefix('marketing')->name('marketing.')->group(function () {
 
     Route::get('posts', [PostController::class, 'index'])->name('posts.index');
     Route::post('posts', [PostController::class, 'store'])->name('posts.store');
+    Route::post('posts/bulk-approve', [PostController::class, 'bulkApprove'])->name('posts.bulkApprove');
+    Route::post('posts/bulk-request-changes', [PostController::class, 'bulkRequestChanges'])->name('posts.bulkRequestChanges');
     Route::post('posts/{post}/submit', [PostController::class, 'submitForApproval'])->name('posts.submit');
     Route::post('posts/{post}/approve', [PostController::class, 'approve'])->name('posts.approve');
     Route::post('posts/{post}/request-changes', [PostController::class, 'requestChanges'])->name('posts.requestChanges');
 
     Route::get('campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
     Route::post('campaigns', [CampaignController::class, 'store'])->name('campaigns.store');
+    Route::get('campaigns/analytics', [CampaignController::class, 'analytics'])->name('campaigns.analytics');
     Route::get('campaigns/{campaign}', [CampaignController::class, 'show'])->name('campaigns.show');
+
+    Route::get('activity-log', [MarketingActivityLogController::class, 'index'])->name('activityLog.index');
 });
 
 // --- CMS: Landing page builder ---
@@ -38,6 +42,16 @@ Route::prefix('cms/landing')->name('cms.landing.')->group(function () {
     Route::post('sections/{section}/toggle', [LandingBuilderController::class, 'toggleSection'])->name('sections.toggle');
     Route::patch('portfolio/{entry}', [LandingBuilderController::class, 'updateShowcaseEntry'])->name('portfolio.update');
     Route::post('portfolio/{entry}/toggle', [LandingBuilderController::class, 'toggleVisibility'])->name('portfolio.toggle');
+    Route::post('portfolio/{entry}/client-approval', [LandingBuilderController::class, 'toggleClientApproval'])->name('portfolio.clientApproval');
+    Route::post('testimonials', [LandingBuilderController::class, 'storeTestimonial'])->name('testimonials.store');
+    Route::post('testimonials/{testimonial}/approve', [LandingBuilderController::class, 'toggleTestimonialApproval'])->name('testimonials.approve');
+});
+
+// --- CRM: Sales Pipeline Scheduler ---
+Route::prefix('crm/leads')->name('crm.leads.')->group(function () {
+    Route::get('followups', [LeadFollowupController::class, 'index'])->name('followups.index');
+    Route::post('{lead}/log-followup', [LeadFollowupController::class, 'store'])->name('followups.store');
+    Route::get('sales-reports', [LeadFollowupController::class, 'salesReports'])->name('salesReports');
 });
 
 // --- Support: Knowledge Base ---

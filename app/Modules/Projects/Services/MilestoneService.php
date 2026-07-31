@@ -9,7 +9,7 @@ class MilestoneService
 {
     public function getAll(): Collection
     {
-        return Milestone::orderBy("id", "desc")->get(); // Add default relations if needed
+        return Milestone::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): Milestone

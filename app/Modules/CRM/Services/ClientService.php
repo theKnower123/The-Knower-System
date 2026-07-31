@@ -12,7 +12,7 @@ class ClientService
 {
     public function getAll(): Collection
     {
-        return Client::orderBy("id", "desc")->get(); // Add default relations if needed
+        return Client::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): Client

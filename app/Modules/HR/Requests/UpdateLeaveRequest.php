@@ -8,7 +8,14 @@ class UpdateLeaveRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->route('leave'));
+        $leave = $this->route('leave') ?? $this->route('id');
+        if (is_numeric($leave) || is_string($leave)) {
+            $leave = \App\Modules\HR\Models\Leave::find($leave);
+        }
+        if ($leave) {
+            return $this->user()->can('update', $leave);
+        }
+        return $this->user()->hasPermissionTo('hr.manage') || $this->user()->hasPermissionTo('leave.manage') || $this->user()->hasPermissionTo('hr.view');
     }
 
     public function rules(): array

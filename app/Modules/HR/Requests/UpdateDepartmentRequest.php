@@ -8,7 +8,14 @@ class UpdateDepartmentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->route('department'));
+        $dept = $this->route('department');
+        if (is_numeric($dept) || is_string($dept)) {
+            $dept = \App\Modules\HR\Models\Department::find($dept);
+        }
+        if ($dept) {
+            return $this->user()->can('update', $dept);
+        }
+        return $this->user()->hasPermissionTo('hr.manage') || $this->user()->hasPermissionTo('hr.view');
     }
 
     public function rules(): array

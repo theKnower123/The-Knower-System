@@ -9,7 +9,7 @@ class TaskCommentService
 {
     public function getAll(): Collection
     {
-        return TaskComment::orderBy("id", "desc")->get(); // Add default relations if needed
+        return TaskComment::trashMode()->orderBy("id", "desc")->get(); // Add default relations if needed
     }
 
     public function create(array $data): TaskComment

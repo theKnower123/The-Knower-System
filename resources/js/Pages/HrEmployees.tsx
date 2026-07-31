@@ -12,6 +12,7 @@ import { money, shortDate } from "@/lib/format";
 import { useAuth } from "@/store/auth";
 import { roleHas, type Role } from "@/lib/permissions";
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
+import { EditIconButton } from "@/components/edit-icon-button";
 import { Users, UserCheck, DollarSign, CalendarOff } from "lucide-react";
 
 export default function EmployeesPage() {
@@ -170,15 +171,12 @@ export default function EmployeesPage() {
             <div className="flex gap-2 justify-end">
               {canEdit && (
                 <>
-                  <button 
-                    className="text-primary hover:underline text-sm font-medium"
+                  <EditIconButton
                     onClick={(e) => {
                       e.stopPropagation();
                       setEditingRow(r);
                     }}
-                  >
-                    {t("common.edit")}
-                  </button>
+                  />
                   <ConfirmDeleteButton
                     onConfirm={async () => {
                       try {
@@ -188,7 +186,6 @@ export default function EmployeesPage() {
                         toast.error('Failed to delete employee.');
                       }
                     }}
-                    className="text-red-500 hover:text-red-700 text-sm font-medium"
                   />
                 </>
               )}
