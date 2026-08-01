@@ -1,16 +1,10 @@
-# استخدام نسخة PHP 8.3
-FROM php:8.3-cli
+# استخدام نسخة PHP 8.4 
+FROM php:8.4-cli
 
-# تسطيب المكتبات الأساسية، وإضافة Node.js و npm عشان الفرونت إند
-RUN apt-get update -y && apt-get install -y \
-    unzip \
-    curl \
-    default-mysql-client \
-    libpq-dev \
-    nodejs \
-    npm
+# تسطيب المكتبات الأساسية، وإضافة Node.js و npm للفرونت إند، ومكتبات قواعد البيانات
+RUN apt-get update -y && apt-get install -y unzip curl default-mysql-client libpq-dev nodejs npm
 
-# تسطيب إضافات الداتابيز (تدعم MySQL و PostgreSQL)
+# تسطيب إضافات الداتابيز (MySQL و PostgreSQL) وإضافة التقويم
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql calendar
 
 # تحميل Composer
@@ -22,15 +16,14 @@ WORKDIR /app
 # نسخ كل ملفات المشروع
 COPY . .
 
-# تسطيب حزم لارافل للباك إند
+# تسطيب حزم لارافل
 RUN composer install --no-dev --optimize-autoloader
 
-# تسطيب حزم النود وعمل Build لملفات الفرونت إند (React)
-# على السيرفر بنستخدم build بدل dev عشان يطلع الملفات النهائية الجاهزة
+# تسطيب حزم الفرونت إند وعمل Build بدل dev للإنتاج
 RUN npm install && npm run build
 
-# إعطاء صلاحيات للكتابة في مجلدات التخزين (مهم جداً عشان رفع الملفات الجديدة)
+# إعطاء صلاحيات للكتابة في مجلدات التخزين
 RUN chmod -R 777 storage bootstrap/cache
 
-# أمر التشغيل: تشغيل السيرفر فقط (بدون تعديل الداتابيز)
+# أمر التشغيل: تشغيل السيرفر فقط بدون أوامر المايجريشن
 CMD php -S 0.0.0.0:$PORT -t public
