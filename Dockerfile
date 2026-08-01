@@ -25,5 +25,7 @@ RUN npm install && npm run build
 # إعطاء صلاحيات للكتابة في مجلدات التخزين
 RUN chmod -R 777 storage bootstrap/cache
 
-# أمر التشغيل: تشغيل السيرفر فقط بدون أوامر المايجريشن
-CMD php -S 0.0.0.0:$PORT -t public
+# أمر التشغيل: عمل المايجريشن أوتوماتيك وبعدين تشغيل السيرفر
+
+CMD php artisan migrate --force && php -S 0.0.0.0:$PORT -t public 
+
