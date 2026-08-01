@@ -9,6 +9,10 @@ class FileResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $data = parent::toArray($request);
+        $url = route('file.show', $this->id);
+        $data['url'] = $url;
+        $data['file_url'] = $url;
+        return $data;
     }
 }

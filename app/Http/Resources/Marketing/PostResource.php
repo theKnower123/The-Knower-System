@@ -14,6 +14,10 @@ class PostResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $data = parent::toArray($request);
+        if (!empty($data['media_path'])) {
+            $data['media_url'] = \App\Support\StorageUrlHelper::url($data['media_path']);
+        }
+        return $data;
     }
 }

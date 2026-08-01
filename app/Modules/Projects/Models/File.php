@@ -23,6 +23,13 @@ class File extends Model
         'project_id', 'uploaded_by', 'file_name', 'file_path', 'size', 'type',
     ];
 
+    protected $appends = ['url'];
+
+    public function getUrlAttribute(): ?string
+    {
+        return route('file.show', $this->id);
+    }
+
     public $timestamps = false; // only custom created_at timestamp in migration
 
     public function project()

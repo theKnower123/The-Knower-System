@@ -7,20 +7,24 @@ use App\Modules\Auth\Controllers\EmailVerificationPromptController;
 use App\Modules\Auth\Controllers\NewPasswordController;
 use App\Modules\Auth\Controllers\PasswordController;
 use App\Modules\Auth\Controllers\PasswordResetLinkController;
-use App\Modules\Auth\Controllers\RegisteredUserController;
 use App\Modules\Auth\Controllers\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
+Route::any('register', function () {
+    abort(404);
+});
+
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
-
-    Route::post('register', [RegisteredUserController::class, 'store']);
-
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+    Route::get('auth/google', [\App\Modules\Auth\Controllers\GoogleAuthController::class, 'redirectToGoogle'])
+        ->name('auth.google');
+
+    Route::get('auth/google/callback', [\App\Modules\Auth\Controllers\GoogleAuthController::class, 'handleGoogleCallback'])
+        ->name('auth.google.callback');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');

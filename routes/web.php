@@ -4,10 +4,16 @@ use Illuminate\Support\Facades\Route;
 
 use Inertia\Inertia;
 require __DIR__.'/modules-new.php';
+require __DIR__.'/auth.php';
+
+use App\Http\Controllers\FileProxyController;
 
 Route::get('/', function () {
     return view('public');
 });
+
+Route::get('/file/{id}', [FileProxyController::class, 'show'])->name('file.show');
+Route::get('/file/{type}/{id}', [FileProxyController::class, 'showByType'])->name('file.show.type');
 
 Route::get('/login', function () {
     return Inertia::render('Login');

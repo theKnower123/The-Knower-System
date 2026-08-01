@@ -37,6 +37,13 @@ class User extends Authenticatable
         'last_login_at',
     ];
 
+    protected $appends = ['avatar_url'];
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return \App\Support\StorageUrlHelper::url($this->avatar);
+    }
+
     protected $hidden = [
         'password',
         'remember_token',

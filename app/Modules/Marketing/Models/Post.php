@@ -17,6 +17,13 @@ class Post extends Model
         'note', 'reach', 'engagement',
     ];
 
+    protected $appends = ['media_url'];
+
+    public function getMediaUrlAttribute(): ?string
+    {
+        return \App\Support\StorageUrlHelper::url($this->media_path);
+    }
+
     protected $casts = [
         'scheduled_at' => 'datetime',
         'published_at' => 'datetime',

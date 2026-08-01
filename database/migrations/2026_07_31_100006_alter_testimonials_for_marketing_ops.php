@@ -6,10 +6,12 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::table('testimonials', function (Blueprint $table) {
-            $table->string('client_name')->nullable()->after('client_id');
-            $table->boolean('anonymous')->default(false)->after('client_name');
-            // client_id already FK'd to clients -- make it nullable if it wasn't,
-            // since these testimonials can be added freestanding by Marketing.
+            if (!Schema::hasColumn('testimonials', 'client_name')) {
+                $table->string('client_name')->nullable();
+            }
+            if (!Schema::hasColumn('testimonials', 'anonymous')) {
+                $table->boolean('anonymous')->default(false);
+            }
         });
     }
     public function down(): void {

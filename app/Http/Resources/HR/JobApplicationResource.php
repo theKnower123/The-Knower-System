@@ -19,7 +19,7 @@ class JobApplicationResource extends JsonResource
             'name' => trim($this->first_name . ' ' . $this->last_name),
             'email' => $this->email,
             'phone' => $this->phone,
-            'resumeUrl' => $this->resume_path ? Storage::url($this->resume_path) : null,
+            'resumeUrl' => \App\Support\StorageUrlHelper::url($this->resume_path),
             'coverLetter' => $this->cover_letter,
             'portfolioUrl' => $this->portfolio_url,
             'status' => $this->status,

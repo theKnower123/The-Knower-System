@@ -25,7 +25,6 @@ import { Route as PublicMaintenanceRouteImport } from './routes/_public.maintena
 import { Route as PublicPartnersRouteImport } from './routes/_public.partners'
 import { Route as PublicPressRouteImport } from './routes/_public.press'
 import { Route as PublicPricingRouteImport } from './routes/_public.pricing'
-import { Route as PublicRegisterRouteImport } from './routes/_public.register'
 import { Route as PublicResourcesRouteImport } from './routes/_public.resources'
 import { Route as PublicStatusRouteImport } from './routes/_public.status'
 import { Route as PublicSupportRouteImport } from './routes/_public.support'
@@ -127,11 +126,6 @@ const PublicPressRoute = PublicPressRouteImport.update({
 const PublicPricingRoute = PublicPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
-  getParentRoute: () => PublicRoute,
-} as any)
-const PublicRegisterRoute = PublicRegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
   getParentRoute: () => PublicRoute,
 } as any)
 const PublicResourcesRoute = PublicResourcesRouteImport.update({
@@ -266,7 +260,6 @@ export interface FileRoutesByFullPath {
   '/partners': typeof PublicPartnersRoute
   '/press': typeof PublicPressRoute
   '/pricing': typeof PublicPricingRoute
-  '/register': typeof PublicRegisterRoute
   '/resources': typeof PublicResourcesRoute
   '/status': typeof PublicStatusRoute
   '/support': typeof PublicSupportRoute
@@ -306,7 +299,6 @@ export interface FileRoutesByTo {
   '/partners': typeof PublicPartnersRoute
   '/press': typeof PublicPressRoute
   '/pricing': typeof PublicPricingRoute
-  '/register': typeof PublicRegisterRoute
   '/resources': typeof PublicResourcesRoute
   '/status': typeof PublicStatusRoute
   '/support': typeof PublicSupportRoute
@@ -349,7 +341,6 @@ export interface FileRoutesById {
   '/_public/partners': typeof PublicPartnersRoute
   '/_public/press': typeof PublicPressRoute
   '/_public/pricing': typeof PublicPricingRoute
-  '/_public/register': typeof PublicRegisterRoute
   '/_public/resources': typeof PublicResourcesRoute
   '/_public/status': typeof PublicStatusRoute
   '/_public/support': typeof PublicSupportRoute
@@ -393,7 +384,6 @@ export interface FileRouteTypes {
     | '/partners'
     | '/press'
     | '/pricing'
-    | '/register'
     | '/resources'
     | '/status'
     | '/support'
@@ -433,7 +423,6 @@ export interface FileRouteTypes {
     | '/partners'
     | '/press'
     | '/pricing'
-    | '/register'
     | '/resources'
     | '/status'
     | '/support'
@@ -475,7 +464,6 @@ export interface FileRouteTypes {
     | '/_public/partners'
     | '/_public/press'
     | '/_public/pricing'
-    | '/_public/register'
     | '/_public/resources'
     | '/_public/status'
     | '/_public/support'
@@ -618,13 +606,6 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PublicPricingRouteImport
-      parentRoute: typeof PublicRoute
-    }
-    '/_public/register': {
-      id: '/_public/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof PublicRegisterRouteImport
       parentRoute: typeof PublicRoute
     }
     '/_public/resources': {
@@ -806,7 +787,6 @@ interface PublicRouteChildren {
   PublicPartnersRoute: typeof PublicPartnersRoute
   PublicPressRoute: typeof PublicPressRoute
   PublicPricingRoute: typeof PublicPricingRoute
-  PublicRegisterRoute: typeof PublicRegisterRoute
   PublicResourcesRoute: typeof PublicResourcesRoute
   PublicStatusRoute: typeof PublicStatusRoute
   PublicSupportRoute: typeof PublicSupportRoute
@@ -848,7 +828,6 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicPartnersRoute: PublicPartnersRoute,
   PublicPressRoute: PublicPressRoute,
   PublicPricingRoute: PublicPricingRoute,
-  PublicRegisterRoute: PublicRegisterRoute,
   PublicResourcesRoute: PublicResourcesRoute,
   PublicStatusRoute: PublicStatusRoute,
   PublicSupportRoute: PublicSupportRoute,

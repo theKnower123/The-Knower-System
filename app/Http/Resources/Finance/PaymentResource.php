@@ -9,6 +9,13 @@ class PaymentResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $data = parent::toArray($request);
+        if (!empty($data['transfer_proof'])) {
+            $data['transfer_proof_url'] = \App\Support\StorageUrlHelper::url($data['transfer_proof']);
+        }
+        if (!empty($data['receipt_path'])) {
+            $data['receipt_url'] = \App\Support\StorageUrlHelper::url($data['receipt_path']);
+        }
+        return $data;
     }
 }

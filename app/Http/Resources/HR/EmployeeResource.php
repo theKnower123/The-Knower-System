@@ -19,6 +19,8 @@ class EmployeeResource extends JsonResource
             'address' => $this->address,
             'idNumber' => $this->id_number,
             'idPhoto' => $this->id_photo,
+            'idPhotoUrl' => \App\Support\StorageUrlHelper::url($this->id_photo),
+            'avatar' => \App\Support\StorageUrlHelper::url($this->user ? $this->user->avatar : null),
             'department' => $this->department,
             'position' => $this->position,
             'salary' => (float) $this->salary,

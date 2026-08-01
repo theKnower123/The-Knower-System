@@ -190,6 +190,8 @@ Route::prefix('v1')->group(function () {
         Route::get   ('projects/{id}/files', [FileController::class, 'index']);
         Route::post  ('projects/{id}/files', [FileController::class, 'store']);
         Route::get   ('files/{id}',          [FileController::class, 'show']);
+        Route::get   ('file/{id}',           [\App\Http\Controllers\FileProxyController::class, 'show']);
+        Route::get   ('file/{type}/{id}',    [\App\Http\Controllers\FileProxyController::class, 'showByType']);
         Route::delete('files/{id}',          [FileController::class, 'destroy']);
 
         // ── Finance ───────────────────────────────────────────────────────────────

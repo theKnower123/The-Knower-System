@@ -24,6 +24,13 @@ class Payment extends Model
         'invoice_id', 'client_id', 'payment_method', 'method', 'amount', 'payment_date', 'paid_at', 'reference', 'transfer_proof', 'notes',
     ];
 
+    protected $appends = ['transfer_proof_url'];
+
+    public function getTransferProofUrlAttribute(): ?string
+    {
+        return \App\Support\StorageUrlHelper::url($this->transfer_proof);
+    }
+
     protected $casts = [
         'payment_date' => 'datetime',
         'paid_at' => 'datetime',

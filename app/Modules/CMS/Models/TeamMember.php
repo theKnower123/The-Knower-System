@@ -20,6 +20,13 @@ class TeamMember extends Model
 
     protected $guarded = [];
 
+    protected $appends = ['avatar_url'];
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return \App\Support\StorageUrlHelper::url($this->attributes['avatar'] ?? $this->attributes['image'] ?? null);
+    }
+
     protected $casts = [
         'is_published' => 'boolean',
     ];

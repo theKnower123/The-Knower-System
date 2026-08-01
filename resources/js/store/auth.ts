@@ -11,6 +11,11 @@ export interface SessionUser {
   permissions?: string[];
   avatar?: string;
   client_id?: string | number | null;
+  phone?: string;
+  address?: string;
+  idNumber?: string;
+  department?: string;
+  position?: string;
 }
 
 interface AuthState {

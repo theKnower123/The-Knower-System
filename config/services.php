@@ -35,7 +35,13 @@ return [
         ],
     ],
     'anthropic' => [
-    'key' => env('ANTHROPIC_API_KEY'),
-],
+        'key' => env('ANTHROPIC_API_KEY'),
+    ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL', 'http://localhost:8000') . '/auth/google/callback'),
+    ],
 
 ];

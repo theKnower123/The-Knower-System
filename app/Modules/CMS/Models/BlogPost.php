@@ -20,6 +20,18 @@ class BlogPost extends Model
 
     protected $guarded = [];
 
+    protected $appends = ['image_url', 'featured_image_url'];
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return \App\Support\StorageUrlHelper::url($this->attributes['image'] ?? $this->attributes['featured_image'] ?? null);
+    }
+
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        return \App\Support\StorageUrlHelper::url($this->attributes['featured_image'] ?? $this->attributes['image'] ?? null);
+    }
+
     protected $casts = [
         'is_published' => 'boolean',
         'published_at' => 'date',

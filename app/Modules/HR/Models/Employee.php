@@ -24,6 +24,13 @@ class Employee extends Model
         'address', 'id_number', 'id_photo'
     ];
 
+    protected $appends = ['id_photo_url'];
+
+    public function getIdPhotoUrlAttribute(): ?string
+    {
+        return \App\Support\StorageUrlHelper::url($this->id_photo);
+    }
+
     protected $casts = [
         'hire_date' => 'date',
         'salary' => 'decimal:2',

@@ -237,7 +237,9 @@ export default function ProfilePage() {
                       <p className="text-xs text-muted-foreground">Sign in with Google</p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => toast.success("Redirecting to Google OAuth...")}>Connect</Button>
+                  <Button variant="outline" size="sm" onClick={() => { toast.success("Redirecting to Google OAuth..."); window.location.href = "/auth/google"; }}>
+                    Connect Google
+                  </Button>
                 </div>
 
                 <div className="flex items-center justify-between">

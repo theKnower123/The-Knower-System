@@ -18,6 +18,13 @@ class PortfolioEntry extends Model
         'description', 'tags', 'show_client_name',
     ];
 
+    protected $appends = ['cover_image_url'];
+
+    public function getCoverImageUrlAttribute(): ?string
+    {
+        return \App\Support\StorageUrlHelper::url($this->cover_image);
+    }
+
     protected $casts = [
         'client_approved' => 'boolean',
         'is_visible' => 'boolean',

@@ -20,6 +20,13 @@ class JobApplication extends Model
         'resume_path', 'cover_letter', 'portfolio_url', 'status', 'notes'
     ];
 
+    protected $appends = ['resume_url'];
+
+    public function getResumeUrlAttribute(): ?string
+    {
+        return \App\Support\StorageUrlHelper::url($this->resume_path);
+    }
+
     public function jobPosting(): BelongsTo
     {
         return $this->belongsTo(JobPosting::class);

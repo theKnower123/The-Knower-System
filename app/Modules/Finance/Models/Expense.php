@@ -23,6 +23,18 @@ class Expense extends Model
         'category', 'title', 'amount', 'unit_price', 'quantity', 'payment_method', 'method', 'transfer_proof', 'receipt_path', 'expense_date', 'created_by', 'notes',
     ];
 
+    protected $appends = ['receipt_url', 'transfer_proof_url'];
+
+    public function getReceiptUrlAttribute(): ?string
+    {
+        return \App\Support\StorageUrlHelper::url($this->receipt_path);
+    }
+
+    public function getTransferProofUrlAttribute(): ?string
+    {
+        return \App\Support\StorageUrlHelper::url($this->transfer_proof ?? $this->receipt_path);
+    }
+
     protected $casts = [
         'amount' => 'decimal:2',
         'unit_price' => 'decimal:2',
