@@ -12,6 +12,7 @@ export default defineConfig({
             routesDirectory: './resources/js/routes',
             generatedRouteTree: './resources/js/routeTree.gen.ts',
         }),
+        ],
         build: {
         reportCompressedSize: false, // السطر ده هيحل مشكلة الرامات
         chunkSizeWarningLimit: 2000,
