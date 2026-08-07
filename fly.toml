@@ -1,31 +1,31 @@
-# اسم التطبيق بتاعك (لازم يكون حروف إنجليزية سمول ومفيش مسافات)
-app = "the-knower-os-app" 
+# fly.toml app configuration file generated for the-knower-system on 2026-08-07T21:44:11Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-# أقرب سيرفر لمصر عشان سرعة الموقع
-primary_region = "ams" 
+app = 'the-knower-system'
+primary_region = 'ams'
 
 [build]
-  # هيستخدم ملف الدوكر اللي إحنا ظبطناه
-  dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
 
 [env]
-  # الإعدادات الأساسية اللي مش سرية
-  APP_ENV = "production"
-  APP_DEBUG = "false"
-  LOG_CHANNEL = "stderr"
-  LOG_LEVEL = "info"
-  PORT = "8080" # البورت اللي السيرفر هيشتغل عليه جوه الدوكر
+  APP_DEBUG = 'false'
+  APP_ENV = 'production'
+  LOG_CHANNEL = 'stderr'
+  LOG_LEVEL = 'info'
+  PORT = '8080'
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 1
-  processes = ["app"]
+  processes = ['app']
 
 [[vm]]
-  # حجم الرامات المبدئي (Fly بيدي 256MB مجاناً، لكن 512MB أفضل للارافل)
-  memory = "512mb"
-  cpu_kind = "shared"
+  memory = '512mb'
+  cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 512
