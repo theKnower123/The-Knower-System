@@ -2,13 +2,10 @@
 FROM php:8.4-cli
 
 # تسطيب المكتبات الأساسية، وإضافة Node.js و npm للفرونت إند، ومكتبات قواعد البيانات
-RUN apt-get update -y && apt-get install -y unzip curl default-mysql-client libpq-dev nodejs npm
-
+RUN apt-get update && apt-get install --no-install-recommends -y php8.3 php8.3-curl php8.3-mbstring php8.3-xml
 # تسطيب إضافات الداتابيز (MySQL و PostgreSQL) وإضافة التقويم
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql calendar
 
-RUN apt-get update --fix-missing
-RUN apt-get install --no-install-recommends -y php8.3 php8.3-curl php8.3-mbstring php8.3-xml
 
 # تحميل Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
