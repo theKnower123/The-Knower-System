@@ -15,7 +15,7 @@ WORKDIR /app
 
 # نسخ كل ملفات المشروع
 COPY . .
-
+RUN rm -f bootstrap/cache/*.php
 # تسطيب حزم لارافل للإنتاج
 RUN composer install --no-dev --optimize-autoloader
 
@@ -28,5 +28,5 @@ RUN chmod -R 777 storage bootstrap/cache
 
 # أمر التشغيل: عمل المايجريشن أوتوماتيك وبعدين تشغيل السيرفر
 
-CMD php artisan migrate --force && php -S 0.0.0.0:$PORT -t public 
+CMD php artisan config:clear && php artisan migrate --force && php -S 0.0.0.0:$PORT -t public
 
