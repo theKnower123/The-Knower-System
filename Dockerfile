@@ -7,6 +7,9 @@ RUN apt-get update -y && apt-get install -y unzip curl default-mysql-client libp
 # تسطيب إضافات الداتابيز (MySQL و PostgreSQL) وإضافة التقويم
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql calendar
 
+RUN apt-get update --fix-missing
+RUN apt-get install --no-install-recommends -y php8.3 php8.3-curl php8.3-mbstring php8.3-xml
+
 # تحميل Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
