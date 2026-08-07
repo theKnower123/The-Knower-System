@@ -9,6 +9,7 @@
     "signInAs": "Sign in as",
     "email": "Email",
     "password": "Password",
+    "profileSettings": "Account settings",
     "chooseRole": "Choose a role to preview",
     "roleDemoNote": "Demo mode — pick any role. All data is mocked in the browser."
   },
@@ -101,6 +102,7 @@
     "dashboard": "Dashboard",
     "crm": "CRM",
     "leads": "Leads",
+    "inquiries": "Website Inquiries",
     "clients": "Clients",
     "companies": "Companies",
     "contacts": "Contacts",
@@ -184,6 +186,18 @@
       "docs": "Write documentation"
     }
   },
+  "theme": {
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "notFound": {
+    "title": "404 — Not Found",
+    "message": "The server cannot find the requested page. It may have been deleted, moved, or the link may be broken.",
+    "returnHome": "Return Home",
+    "goBack": "Go Back"
+  },
   "public": {
     "nav": {
       "solutions": "Solutions",
@@ -195,7 +209,44 @@
       "more": "More",
       "goToApp": "Go to app",
       "signIn": "Sign in",
-      "startProject": "Start your project"
+      "startProject": "Start your project",
+      "caseStudies": "Case Studies",
+      "technologies": "Technologies",
+      "aiSolutions": "AI Solutions",
+      "hostingCloud": "Hosting & Cloud",
+      "domains": "Domains",
+      "maintenance": "Maintenance",
+      "blog": "Blog",
+      "docs": "Docs",
+      "careers": "Careers",
+      "team": "Team",
+      "partners": "Partners",
+      "clients": "Clients",
+      "events": "Events",
+      "press": "Press",
+      "resources": "Resources",
+      "downloads": "Downloads",
+      "support": "Support",
+      "faq": "FAQ",
+      "status": "Status",
+      "contact": "Contact"
+    },
+    "pricingPage": {
+      "heroTitle": "Flexible pricing, scaled to your needs",
+      "heroSubtitle": "All plans are dynamically managed from the dashboard and update instantly.",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "mostPopular": "Most popular",
+      "custom": "Custom",
+      "getStarted": "Get started",
+      "mo": "mo",
+      "yr": "yr",
+      "noPlansTitle": "No plans configured",
+      "noPlansDesc": "Pricing plans are directly managed from the system dashboard. Once configured in the admin panel, they will appear here automatically.",
+      "contactSales": "Contact sales for a custom quote",
+      "hostingSubtitle": "Managed cloud hosting with 24/7 monitoring.",
+      "maintenanceSubtitle": "Keep your software fast, secure and improving.",
+      "compareTitle": "Compare plans"
     },
     "hero": {
       "tagline": "INTRODUCING THE KNOWER OS 2026",
@@ -204,7 +255,190 @@
       "subtitle": "CRM, projects, hosting, HR, invoicing and an AI copilot — one platform to build products, run operations, and delight every client. English & العربية out of the box.",
       "startProject": "Start your project",
       "bookDemo": "Book a demo",
+      "seeWork": "See our work",
+      "scroll": "Scroll"
+    },
+    "trustedBy": "Trusted by teams at",
+    "services": {
+      "eyebrow": "What we build",
+      "title": "Every discipline, one team.",
+      "subtitle": "From concept to cloud — web, mobile, AI, DevOps, branding and more. Hover each card to explore.",
+      "viewAll": "View all services",
+      "learnMore": "Learn more"
+    },
+    "products": {
+      "eyebrow": "Software suite",
+      "title": "Six products. One platform.",
+      "subtitle": "CRM, ERP, HR, POS, AI and CMS — all built on The Knower OS and designed to work together.",
+      "viewAll": "All products",
+      "explore": "Explore"
+    },
+    "whyUs": {
+      "eyebrow": "Why The Knower",
+      "title": "Senior teams. Obsessive craft. Measurable outcomes.",
+      "pillars": {
+        "senior": {
+          "title": "Senior by default",
+          "body": "Every team you meet is who you'll work with. No juniors, no bait-and-switch."
+        },
+        "outcomes": {
+          "title": "Outcomes, not hours",
+          "body": "We're measured on the metrics that move your business, not timesheets."
+        },
+        "ai": {
+          "title": "AI-native delivery",
+          "body": "Our own AI copilot ships features faster with dramatically fewer defects."
+        },
+        "bilingual": {
+          "title": "Bilingual, global",
+          "body": "Native EN/AR delivery across 20+ countries, from Riyadh to San Francisco."
+        },
+        "cloud": {
+          "title": "Cloud-native",
+          "body": "Every solution ships cloud-ready, resilient, and fully observable from day one."
+        },
+        "product": {
+          "title": "Product mindset",
+          "body": "We think in outcomes, roadmaps, and iterations — not just task lists."
+        }
+      }
+    },
+    "techStack": {
+      "eyebrow": "Tech stack",
+      "title": "Built with the best.",
+      "subtitle": "We choose the right tool for each problem — not the fashionable one."
+    },
+    "cta": {
+      "title": "Ready to build the next great thing?",
+      "titleAccent": "next great thing?",
+      "subtitle": "Book a 30-minute call. We'll listen, then propose the shortest path from idea to launch.",
+      "startProject": "Start your project",
       "seeWork": "See our work"
+    },
+    "footer": {
+      "tagline": "The operating system for modern software houses. Ship products, run operations, delight clients.",
+      "emailPlaceholder": "Your email",
+      "subscribe": "Subscribe",
+      "copyright": "© {{year}} The Knower System. All rights reserved.",
+      "company": "Company",
+      "solutions": "Solutions",
+      "platform": "Platform",
+      "resources": "Resources",
+      "legal": "Legal",
+      "links": {
+        "about": "About",
+        "team": "Team",
+        "careers": "Careers",
+        "partners": "Partners",
+        "press": "Press",
+        "events": "Events",
+        "products": "Products",
+        "services": "Services",
+        "aiSolutions": "AI Solutions",
+        "technologies": "Technologies",
+        "portfolio": "Portfolio",
+        "hosting": "Hosting & Cloud",
+        "domains": "Domains",
+        "maintenance": "Maintenance",
+        "pricing": "Pricing",
+        "caseStudies": "Case studies",
+        "clients": "Clients",
+        "blog": "Blog",
+        "docs": "Docs",
+        "resources": "Resources",
+        "downloads": "Downloads",
+        "support": "Support",
+        "faq": "FAQ",
+        "privacy": "Privacy",
+        "terms": "Terms",
+        "cookies": "Cookies",
+        "status": "Status",
+        "contact": "Contact",
+        "solutions": "Solutions"
+      }
+    }
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "hero": {
+      "title": "Let's talk",
+      "subtitle": "We usually reply within a business hour."
+    },
+    "form": {
+      "heading": "Send us a message",
+      "name": "Full name",
+      "company": "Company",
+      "email": "Email address",
+      "workEmail": "Work email",
+      "phone": "Phone number",
+      "whatsapp": "WhatsApp number (optional)",
+      "whatsappHint": "We'll use this to contact you quickly on WhatsApp.",
+      "interestedPlan": "Interested in a plan? (optional)",
+      "planPlaceholder": "Select a plan — we'll prioritize your inquiry",
+      "noPlan": "No specific plan",
+      "planTagged": "Your inquiry will be tagged as interested in the {{plan}} plan.",
+      "selectedPlan": "Selected Plan",
+      "seePricing": "See pricing details →",
+      "message": "How can we help?",
+      "send": "Send message →",
+      "sending": "Sending…"
+    },
+    "success": {
+      "title": "Message sent successfully!",
+      "subtitle": "Our team will get back to you as soon as possible.",
+      "whatsappPrompt": "For faster replies, join our WhatsApp group:",
+      "joinGroup": "Join the Group",
+      "whatsappComingSoon": "WhatsApp Group — Coming Soon",
+      "orReachUs": "Or reach us at",
+      "bookDemo": "Book a demo session",
+      "sendAnother": "Send another message"
+    },
+    "whatsapp": {
+      "label": "WhatsApp Group",
+      "joinCommunity": "Join our community",
+      "faster": "For faster responses and inquiries",
+      "comingSoon": "WhatsApp Group — Coming Soon"
+    },
+    "email": {
+      "label": "Email"
+    },
+    "demo": {
+      "title": "Book a demo",
+      "subtitle": "30-minute session with a product expert",
+      "cardDesc": "30-minute live session with a product expert, tailored to your use case.",
+      "howItWorks": "How it works",
+      "step1": "Fill in your details below",
+      "step2": "Our team contacts you within 24h to pick a time slot",
+      "step3": "Join a 30-min live demo tailored to your use case",
+      "request": "Request a demo time →",
+      "received": "Request received!",
+      "receivedDesc": "Our team will email you within one business day to schedule your demo.",
+      "how1": "How it works: Submit your request → our team emails you → you pick a time slot → join the live demo.",
+      "how2": "We respond within 1 business day to confirm your slot."
+    }
+  },
+  "inquiries": {
+    "title": "Website Inquiries",
+    "subtitle": "All contact requests from the public website, organized by type.",
+    "searchPlaceholder": "Search by name or email…",
+    "interestedIn": "Interested in",
+    "empty": "No inquiries yet",
+    "emptyDesc": "When visitors submit the contact form, their inquiries will appear here.",
+    "filter": {
+      "all": "All Inquiries"
+    },
+    "type": {
+      "pricingPlan": "Pricing Inquiry",
+      "demoRequest": "Demo Request",
+      "business": "Business Inquiry",
+      "general": "General Contact"
+    },
+    "actions": {
+      "email": "Email",
+      "whatsapp": "WhatsApp",
+      "whatsappViaPhone": "WhatsApp (via phone)",
+      "call": "Call"
     }
   }
 }

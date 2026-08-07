@@ -43,4 +43,9 @@ class Lead extends Model
     {
         return $this->hasMany(\App\Modules\CRM\Models\LeadFollowup::class, 'lead_id');
     }
+
+    public function contact(): BelongsTo
+    {
+        return $this->belongsTo(\App\Modules\CRM\Models\Contact::class, 'contact_id');
+    }
 }

@@ -6,9 +6,26 @@ use Illuminate\Support\Facades\Auth;
 
 class LeadService
 {
-    public function getAll()
+    public function getAll(array $filters = [])
     {
-        return Lead::trashMode()->with(['assignee'])->latest()->paginate(25);
+        $query = Lead::trashMode()->with(['assignee', 'contact'])->latest();
+
+        if (!empty($filters['inquiry_type']) && $filters['inquiry_type'] !== 'all') {
+            $query->where('inquiry_type', $filters['inquiry_type']);
+        }
+        if (!empty($filters['source'])) {
+            $query->where('lead_source', $filters['source']);
+        }
+        if (!empty($filters['search'])) {
+            $s = $filters['search'];
+            $query->where(function ($q) use ($s) {
+                $q->where('title', 'like', "%{$s}%")
+                  ->orWhere('email', 'like', "%{$s}%")
+                  ->orWhere('name', 'like', "%{$s}%");
+            });
+        }
+
+        return $query->paginate(25);
     }
 
     public function create(array $data): Lead

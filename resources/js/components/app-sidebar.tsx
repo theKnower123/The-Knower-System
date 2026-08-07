@@ -75,9 +75,10 @@ const groups: Group[] = [
   {
     labelKey: "nav.crm",
     items: [
-      { to: "/crm/leads", labelKey: "nav.leads", icon: UserSquare2, perm: "lead.manage" },
-      { to: "/crm/clients", labelKey: "nav.clients", icon: Users, perm: "client.manage" },
-      { to: "/crm/meetings", labelKey: "nav.meetings", icon: Video, perm: "crm.view" },
+      { to: "/crm/leads",     labelKey: "nav.leads",     icon: UserSquare2, perm: "lead.manage" },
+      { to: "/crm/inquiries", labelKey: "nav.inquiries", icon: MessageSquare, perm: "lead.manage" },
+      { to: "/crm/clients",   labelKey: "nav.clients",   icon: Users, perm: "client.manage" },
+      { to: "/crm/meetings",  labelKey: "nav.meetings",  icon: Video, perm: "crm.view" },
     ],
   },
   {
@@ -141,6 +142,7 @@ const groups: Group[] = [
       { to: "/cms/faqs", labelKey: "FAQs", icon: FileText, perm: "cms.manage" },
       { to: "/cms/blog", labelKey: "Blog Posts", icon: Edit, perm: "cms.manage" },
       { to: "/cms/services", labelKey: "Services", icon: Settings, perm: "cms.manage" },
+      { to: "/cms/social-links", labelKey: "Social Links", icon: Share2, perm: "cms.manage" },
     ],
   },
   {

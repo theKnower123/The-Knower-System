@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { router, usePage } from "@inertiajs/react";
+import axios from "axios";
 import {
   LayoutTemplate,
   GripVertical,
@@ -87,7 +88,7 @@ export default function LandingBuilderPage({
   projects,
   errors,
 }: Props) {
-  const [activeTab, setActiveTab] = useState<"sections" | "portfolio" | "testimonials" | "seo" | "ab-testing" | "theme" | "preview">("preview");
+  const [activeTab, setActiveTab] = useState<"sections" | "portfolio" | "testimonials" | "seo" | "ab-testing" | "theme" | "preview" | "social">("preview");
 
   // Viewport Switcher for Preview (Desktop / Tablet / Mobile)
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
@@ -152,6 +153,44 @@ export default function LandingBuilderPage({
     const visibleCount = sections.filter(s => s.is_visible).length;
     setPerfScore(Math.max(60, 100 - (visibleCount * 2) + Math.floor(Math.random() * 5)));
   }, [sections]);
+
+  // Social Links State
+  const [socialLinks, setSocialLinks] = useState<{ platform: string; url: string; label: string; is_active: boolean }[]>([]);
+  const [socialSaving, setSocialSaving] = useState(false);
+  const [socialLoaded, setSocialLoaded] = useState(false);
+  const [socialSaved, setSocialSaved] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("tab") === "social" || window.location.pathname.includes("social-links")) {
+        setActiveTab("social");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'social' && !socialLoaded) {
+      axios.get('/api/v1/social-links').then(res => {
+        setSocialLinks(res.data.links || []);
+        setSocialLoaded(true);
+      }).catch(() => setSocialLoaded(true));
+    }
+  }, [activeTab]);
+
+  async function handleSaveSocialLinks(e: React.FormEvent) {
+    e.preventDefault();
+    setSocialSaving(true);
+    try {
+      await axios.put('/api/v1/social-links', { links: socialLinks });
+      setSocialSaved(true);
+      setTimeout(() => setSocialSaved(false), 3000);
+    } catch {
+      // ignore
+    } finally {
+      setSocialSaving(false);
+    }
+  }
 
   const sectionsList = [...sections].sort((a, b) => a.sort_order - b.sort_order);
 
@@ -365,6 +404,14 @@ export default function LandingBuilderPage({
           }`}
         >
           <Search className="w-4 h-4" /> SEO Matrix
+        </button>
+        <button
+          onClick={() => setActiveTab("social")}
+          className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors flex items-center gap-2 ${
+            activeTab === "social" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:bg-secondary"
+          }`}
+        >
+          <Share2 className="w-4 h-4" /> Social Media
         </button>
       </div>
 
@@ -977,7 +1024,108 @@ export default function LandingBuilderPage({
         </div>
       )}
 
-      {/* AI COPYWRITING ASSISTANT MODAL (Unchanged functionality) */}
+
+      {/* --- TAB: SOCIAL MEDIA MANAGER --- */}
+      {activeTab === "social" && (
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-card border border-border/40 rounded-xl p-6 shadow-sm space-y-6">
+            <div className="flex items-center gap-3 border-b border-border pb-4">
+              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <Share2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg">Manage Social Media Links</h3>
+                <p className="text-xs text-muted-foreground">
+                  Enter URLs for each platform. The landing page footer will automatically use these links. Leave a URL empty to hide that platform.
+                </p>
+              </div>
+            </div>
+
+            {socialSaved && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-sm font-medium animate-in fade-in">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                Social links saved successfully! The public site will reflect these changes immediately.
+              </div>
+            )}
+
+            {!socialLoaded ? (
+              <div className="flex items-center justify-center py-10 text-muted-foreground text-sm">Loading…</div>
+            ) : (
+              <form onSubmit={handleSaveSocialLinks} className="space-y-4">
+                {socialLinks.map((link, idx) => {
+                  const platformIcons: Record<string, string> = {
+                    facebook: "🇫",
+                    instagram: "📷",
+                    whatsapp: "💬",
+                    twitter: "𝕏",
+                    linkedin: "in",
+                    youtube: "▶",
+                  };
+                  const colors: Record<string, string> = {
+                    facebook: "#1877F2",
+                    instagram: "#E1306C",
+                    whatsapp: "#25D366",
+                    twitter: "#000000",
+                    linkedin: "#0A66C2",
+                    youtube: "#FF0000",
+                  };
+                  const color = colors[link.platform] || "#6366f1";
+
+                  return (
+                    <div key={link.platform} className="flex items-center gap-3 p-4 rounded-xl border border-border bg-secondary/20">
+                      <div
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg font-bold text-white text-sm"
+                        style={{ backgroundColor: color }}
+                      >
+                        {platformIcons[link.platform] || link.platform[0].toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <label className="text-xs font-bold capitalize text-foreground">{link.label || link.platform}</label>
+                        <Input
+                          className="mt-1 text-xs font-mono"
+                          placeholder={`https://${link.platform}.com/your-page`}
+                          value={link.url || ""}
+                          onChange={e => {
+                            const updated = [...socialLinks];
+                            updated[idx] = { ...updated[idx], url: e.target.value };
+                            setSocialLinks(updated);
+                          }}
+                        />
+                        {link.platform === "whatsapp" && (
+                          <p className="mt-1 text-[10px] text-muted-foreground">
+                            For WhatsApp group links, paste the full group invite URL (e.g. https://chat.whatsapp.com/XXXXX)
+                          </p>
+                        )}
+                      </div>
+                      <label className="flex items-center gap-2 cursor-pointer shrink-0">
+                        <span className="text-[11px] text-muted-foreground">Active</span>
+                        <input
+                          type="checkbox"
+                          checked={link.is_active}
+                          onChange={e => {
+                            const updated = [...socialLinks];
+                            updated[idx] = { ...updated[idx], is_active: e.target.checked };
+                            setSocialLinks(updated);
+                          }}
+                          className="rounded accent-primary"
+                        />
+                      </label>
+                    </div>
+                  );
+                })}
+
+                <div className="pt-2 flex justify-end">
+                  <Button type="submit" disabled={socialSaving} className="gap-2">
+                    {socialSaving ? "Saving…" : "Save Social Links"}
+                  </Button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
+
       {aiAssistantOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
           <div className="bg-card border border-border rounded-xl p-6 w-full max-w-lg space-y-4 shadow-2xl">

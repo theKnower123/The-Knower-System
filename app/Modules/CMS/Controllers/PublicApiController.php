@@ -4,6 +4,7 @@ namespace App\Modules\CMS\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\CMS\Models\MarketingPlan;
+use App\Modules\CMS\Models\SocialLink;
 use App\Modules\CMS\Models\Testimonial;
 use App\Modules\CMS\Models\Faq;
 use App\Modules\CMS\Models\BlogPost;
@@ -28,6 +29,13 @@ class PublicApiController extends Controller
     {
         return response()->json([
             'plans' => MarketingPlan::all(),
+        ]);
+    }
+
+    public function socialLinks()
+    {
+        return response()->json([
+            'links' => SocialLink::orderBy('sort_order')->where('is_active', true)->get(),
         ]);
     }
 
@@ -66,6 +74,22 @@ class PublicApiController extends Controller
         ]);
     }
 
+    public function serviceDetail($slug)
+    {
+        $service = Service::where('slug', $slug)
+            ->orWhere('id', $slug)
+            ->where('is_published', true)
+            ->first();
+
+        if (!$service) {
+            return response()->json(['message' => 'Service not found'], 404);
+        }
+
+        return response()->json([
+            'service' => $service
+        ]);
+    }
+
     public function careers()
     {
         if (class_exists(JobPosting::class)) {
@@ -83,30 +107,66 @@ class PublicApiController extends Controller
     public function submitContact(Request $request)
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'company' => ['nullable', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:50'],
-            'message' => ['required', 'string'],
+            'name'             => ['required', 'string', 'max:255'],
+            'company'          => ['nullable', 'string', 'max:255'],
+            'email'            => ['required', 'email', 'max:255'],
+            'phone'            => ['nullable', 'string', 'max:50'],
+            'whatsapp_number'  => ['nullable', 'string', 'max:50'],
+            'message'          => ['required', 'string'],
+            'plan'             => ['nullable', 'string', 'max:100'],
+            'inquiry_type'     => ['nullable', 'string', 'in:pricing_plan,demo_request,business,general'],
         ]);
 
         [$firstName, $lastName] = $this->splitName($data['name']);
 
-        $contact = Contact::create([
-            'workspace_id' => 1, // public form has no logged-in user; HasWorkspace can't auto-fill this
-            'first_name' => $firstName,
-            'last_name' => $lastName,
-            'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
-            'notes' => $data['message'],
-        ]);
+        // Determine inquiry type
+        $inquiryType = $data['inquiry_type'] ?? ($data['plan'] ? 'pricing_plan' : 'general');
+
+        // Prepend plan context to message if provided
+        $messageBody = $data['message'];
+        if (!empty($data['plan'])) {
+            $messageBody = "[Interested in plan: {$data['plan']}]\n\n" . $messageBody;
+        }
+        if (!empty($data['whatsapp_number'])) {
+            $messageBody = "[WhatsApp: {$data['whatsapp_number']}]\n" . $messageBody;
+        }
+
+        $contactData = [
+            'workspace_id' => 1,
+            'first_name'   => $firstName,
+            'last_name'    => $lastName,
+            'email'        => $data['email'],
+            'phone'        => $data['phone'] ?? null,
+            'notes'        => $messageBody,
+        ];
+        // whatsapp_number column added via migration
+        if (!empty($data['whatsapp_number'])) {
+            $contactData['whatsapp_number'] = $data['whatsapp_number'];
+        }
+
+        $contact = Contact::create($contactData);
+
+        // Build a clear lead title
+        $inquiryLabels = [
+            'pricing_plan'  => 'Pricing Inquiry',
+            'demo_request'  => 'Demo Request',
+            'business'      => 'Business Inquiry',
+            'general'       => 'Contact Form',
+        ];
+        $typeLabel = $inquiryLabels[$inquiryType] ?? 'Contact Form';
+
+        $leadTitle = "[{$typeLabel}] " . $data['name'];
+        if (!empty($data['plan'])) $leadTitle .= ' — Plan: ' . $data['plan'];
+        if (!empty($data['company'])) $leadTitle .= ' (' . $data['company'] . ')';
 
         Lead::create([
-            'workspace_id' => 1,
-            'title' => 'Website contact: '.$data['name'].(!empty($data['company']) ? ' ('.$data['company'].')' : ''),
-            'contact_id' => $contact->id,
+            'workspace_id'   => 1,
+            'title'          => $leadTitle,
+            'contact_id'     => $contact->id,
             'pipeline_stage' => 'new',
-            'lead_source' => 'website',
+            'lead_source'    => 'website',
+            'inquiry_type'   => $inquiryType,
+            'interested_plan' => $data['plan'] ?? null,
         ]);
 
         return response()->json(['success' => true, 'message' => "Thanks! We'll reply within a business hour."]);

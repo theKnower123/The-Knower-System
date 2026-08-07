@@ -1,44 +1,79 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PageHero, Section, PricingCard, CTABand, Card } from "@/components/public/blocks";
-import { plans as staticPlans, hostingPlans as staticHostingPlans, maintenancePlans as staticMaintenancePlans } from "@/mocks/marketing";
+import { PageHero, Section, PricingCard, CTABand } from "@/components/public/blocks";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, HelpCircle, Layers } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/_public/pricing")({
   head: () => ({
     meta: [
       { title: "Pricing — The Knower" },
-      { name: "description", content: "Transparent pricing for The Knower OS platform, hosting and maintenance. Yearly billing saves 20%." },
+      { name: "description", content: "Pricing plans for The Knower OS platform, hosting and maintenance managed dynamically." },
       { property: "og:title", content: "Pricing — The Knower" },
     ],
-    links: [{ rel: "canonical", href: "https://knower-all-in-one.lovable.app/pricing" }],
   }),
   component: PricingPage,
 });
 
-// DB row -> the shape PricingCard expects. This was previously reading
-// p.description / p.is_popular, which don't exist on marketing_plans --
-// the real columns are `blurb` and `highlight`. That mismatch is why
-// featured/description never actually showed real data before.
 function mapDbPlan(p: any) {
   return {
     name: p.name,
     price: { monthly: Number(p.price_monthly) || 0, yearly: Number(p.price_yearly) || 0 },
     blurb: p.blurb,
-    features: p.features || [],
+    features: Array.isArray(p.features) ? p.features : typeof p.features === 'string' ? JSON.parse(p.features) : [],
     highlight: !!p.highlight,
     cta: p.cta_text || undefined,
   };
 }
 
+function PricingSkeleton() {
+  return (
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 animate-pulse">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="h-80 rounded-2xl border border-border bg-card/40 p-8 flex flex-col justify-between">
+          <div className="space-y-4">
+            <div className="h-6 w-1/3 bg-muted rounded" />
+            <div className="h-4 w-2/3 bg-muted/60 rounded" />
+            <div className="h-10 w-1/2 bg-muted rounded mt-4" />
+          </div>
+          <div className="h-10 w-full bg-muted rounded" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function EmptyPlansState({ category }: { category: string }) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/80 bg-card/30 p-12 text-center">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary mb-4">
+        <Layers className="h-6 w-6" />
+      </div>
+      <h3 className="font-display text-lg font-semibold text-foreground">
+        {t("public.pricingPage.noPlansTitle", { defaultValue: "No plans configured" })} ({category})
+      </h3>
+      <p className="mt-2 max-w-md text-sm text-muted-foreground">
+        {t("public.pricingPage.noPlansDesc", { defaultValue: "Pricing plans are directly managed from the system dashboard. Once configured in the admin panel, they will appear here automatically." })}
+      </p>
+      <div className="mt-6 flex gap-3">
+        <Button asChild size="sm" variant="outline">
+          <Link to="/contact">{t("public.pricingPage.contactSales", { defaultValue: "Contact sales for a custom quote" })}</Link>
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function PricingPage() {
   const [cycle, setCycle] = useState<"monthly" | "yearly">("monthly");
+  const { t } = useTranslation();
 
-  const { data: allPlans } = useQuery({
+  const { data: allPlans, isLoading } = useQuery({
     queryKey: ["public", "pricing"],
     queryFn: async () => {
       const res = await axios.get("/api/v1/public/pricing");
@@ -46,104 +81,117 @@ function PricingPage() {
     },
   });
 
-  // Split the one API response by plan_type instead of hitting 3 different
-  // static mock arrays. A plan only shows up here once someone sets its
-  // "Plan Type" in CMS > Pricing Plans (see the admin form fix).
-  const softwarePlans = allPlans?.filter((p) => (p.plan_type ?? "software") === "software").map(mapDbPlan);
-  const hostingPlans = allPlans?.filter((p) => p.plan_type === "hosting").map(mapDbPlan);
-  const maintenancePlans = allPlans?.filter((p) => p.plan_type === "maintenance").map(mapDbPlan);
-
-  const plansToUse = softwarePlans?.length ? softwarePlans : staticPlans;
-  const hostingToUse = hostingPlans?.length ? hostingPlans : staticHostingPlans;
-  const maintenanceToUse = maintenancePlans?.length ? maintenancePlans : staticMaintenancePlans;
+  const softwarePlans = allPlans?.filter((p) => (p.plan_type ?? "software") === "software").map(mapDbPlan) || [];
+  const hostingPlans = allPlans?.filter((p) => p.plan_type === "hosting").map(mapDbPlan) || [];
+  const maintenancePlans = allPlans?.filter((p) => p.plan_type === "maintenance").map(mapDbPlan) || [];
 
   return (
     <div>
-      <PageHero eyebrow="Pricing" title="Simple pricing, serious value" subtitle="Start free, scale when you're ready. Save 20% with yearly billing." />
+      <PageHero
+        eyebrow={t("public.nav.pricing", { defaultValue: "Pricing" })}
+        title={t("public.pricingPage.heroTitle", { defaultValue: "Flexible pricing, scaled to your needs" })}
+        subtitle={t("public.pricingPage.heroSubtitle", { defaultValue: "All plans are dynamically managed from the dashboard and update instantly." })}
+      />
+
+      {/* Software Platform Plans */}
       <Section>
         <Tabs value={cycle} onValueChange={(v) => setCycle(v as typeof cycle)}>
           <div className="flex justify-center">
             <TabsList>
-              <TabsTrigger value="monthly">Monthly</TabsTrigger>
-              <TabsTrigger value="yearly">Yearly · save 20%</TabsTrigger>
+              <TabsTrigger value="monthly">{t("public.pricingPage.monthly", { defaultValue: "Monthly" })}</TabsTrigger>
+              <TabsTrigger value="yearly">{t("public.pricingPage.yearly", { defaultValue: "Yearly" })}</TabsTrigger>
             </TabsList>
           </div>
           <TabsContent value={cycle} className="mt-10">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {plansToUse.map((p: any) => <PricingCard key={p.name} plan={p} cycle={cycle} />)}
-            </div>
+            {isLoading ? (
+              <PricingSkeleton />
+            ) : softwarePlans.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {softwarePlans.map((p: any) => (
+                  <PricingCard key={p.name} plan={p} cycle={cycle} />
+                ))}
+              </div>
+            ) : (
+              <EmptyPlansState category={t("public.nav.products", { defaultValue: "Software OS" })} />
+            )}
           </TabsContent>
         </Tabs>
       </Section>
 
+      {/* Hosting Plans */}
       <Section className="bg-muted/30">
-        <h2 className="font-display text-2xl font-semibold">Hosting plans</h2>
-        <p className="mt-2 text-muted-foreground">Managed cloud hosting with 24/7 monitoring.</p>
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {hostingToUse.map((p: any) => <PricingCard key={p.name} plan={p} cycle={cycle} />)}
+        <h2 className="font-display text-2xl font-semibold">{t("public.nav.hostingCloud", { defaultValue: "Hosting plans" })}</h2>
+        <p className="mt-2 text-muted-foreground">{t("public.pricingPage.hostingSubtitle", { defaultValue: "Managed cloud hosting with 24/7 monitoring." })}</p>
+        <div className="mt-8">
+          {isLoading ? (
+            <PricingSkeleton />
+          ) : hostingPlans.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-3">
+              {hostingPlans.map((p: any) => (
+                <PricingCard key={p.name} plan={p} cycle={cycle} />
+              ))}
+            </div>
+          ) : (
+            <EmptyPlansState category={t("public.nav.hostingCloud", { defaultValue: "Hosting" })} />
+          )}
         </div>
       </Section>
 
+      {/* Maintenance Plans */}
       <Section>
-        <h2 className="font-display text-2xl font-semibold">Maintenance plans</h2>
-        <p className="mt-2 text-muted-foreground">Keep your software fast, secure and improving.</p>
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {maintenanceToUse.map((p: any) => <PricingCard key={p.name} plan={p} cycle={cycle} />)}
+        <h2 className="font-display text-2xl font-semibold">{t("public.nav.maintenance", { defaultValue: "Maintenance plans" })}</h2>
+        <p className="mt-2 text-muted-foreground">{t("public.pricingPage.maintenanceSubtitle", { defaultValue: "Keep your software fast, secure and improving." })}</p>
+        <div className="mt-8">
+          {isLoading ? (
+            <PricingSkeleton />
+          ) : maintenancePlans.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-3">
+              {maintenancePlans.map((p: any) => (
+                <PricingCard key={p.name} plan={p} cycle={cycle} />
+              ))}
+            </div>
+          ) : (
+            <EmptyPlansState category={t("public.nav.maintenance", { defaultValue: "Maintenance" })} />
+          )}
         </div>
       </Section>
 
-      <Section className="bg-muted/30">
-        <h2 className="font-display text-2xl font-semibold">Add-ons</h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            { name: "Domain registration", price: "from $12/yr", desc: ".com, .io, .co, .ai and more." },
-            { name: "SSL certificate", price: "Free", desc: "Included with all hosting plans." },
-            { name: "Premium support", price: "+$99/mo", desc: "1-hour response SLA, direct Slack channel." },
-            { name: "Extra storage", price: "$0.10/GB", desc: "S3-backed object storage." },
-            { name: "AI credits", price: "$29/1M tokens", desc: "For your AI copilot usage." },
-            { name: "Dedicated CSM", price: "+$999/mo", desc: "Named success manager." },
-          ].map((a) => (
-            <Card key={a.name}>
-              <div className="flex items-start justify-between gap-3">
-                <div className="font-display text-base font-semibold">{a.name}</div>
-                <span className="text-sm font-semibold text-primary">{a.price}</span>
-              </div>
-              <p className="mt-1 text-sm text-muted-foreground">{a.desc}</p>
-            </Card>
-          ))}
-        </div>
-      </Section>
-
-      <Section>
-        <h2 className="font-display text-2xl font-semibold">Compare plans</h2>
-        <div className="mt-6 overflow-x-auto rounded-2xl border border-border">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/40">
-              <tr>
-                <th className="p-4 text-start">Feature</th>
-                {plansToUse.map((p: any) => <th key={p.name} className="p-4 text-start font-semibold">{p.name}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {["Users", "Projects", "Storage", "AI copilot", "SSO", "24/7 support", "Custom SLA"].map((row, ri) => (
-                <tr key={row} className="border-t border-border">
-                  <td className="p-4 font-medium">{row}</td>
-                  {plansToUse.map((_: any, pi: number) => (
-                    <td key={pi} className="p-4 text-muted-foreground">
-                      {pi >= ri - 1 ? <Check className="h-4 w-4 text-primary" /> : "—"}
-                    </td>
+      {/* Feature Comparison Table (Renders when software plans exist) */}
+      {softwarePlans.length > 0 && (
+        <Section className="bg-muted/30">
+          <h2 className="font-display text-2xl font-semibold">{t("public.pricingPage.compareTitle", { defaultValue: "Compare plans" })}</h2>
+          <div className="mt-6 overflow-x-auto rounded-2xl border border-border">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/40">
+                <tr>
+                  <th className="p-4 text-start">{t("common.fields.title", { defaultValue: "Feature" })}</th>
+                  {softwarePlans.map((p: any) => (
+                    <th key={p.name} className="p-4 text-start font-semibold">{p.name}</th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="mt-8 text-center">
-          <Button asChild variant="outline"><Link to="/faq">Read the pricing FAQ</Link></Button>
-        </div>
-      </Section>
+              </thead>
+              <tbody>
+                {["Users", "Projects", "Storage", "AI copilot", "SSO", "24/7 support"].map((row, ri) => (
+                  <tr key={row} className="border-t border-border">
+                    <td className="p-4 font-medium">{row}</td>
+                    {softwarePlans.map((_: any, pi: number) => (
+                      <td key={pi} className="p-4 text-muted-foreground">
+                        {pi >= ri - 1 ? <Check className="h-4 w-4 text-primary" /> : "—"}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Section>
+      )}
 
-      <CTABand title="Need a custom quote?" primary={{ label: "Contact sales", to: "/contact" }} />
+      <CTABand
+        title={t("public.cta.title", { defaultValue: "Need a custom quote?" })}
+        subtitle={t("public.cta.subtitle", { defaultValue: "Talk to our engineering team for custom enterprise requirements." })}
+        primary={{ label: t("public.hero.startProject", { defaultValue: "Contact sales" }), to: "/contact" }}
+      />
     </div>
   );
 }

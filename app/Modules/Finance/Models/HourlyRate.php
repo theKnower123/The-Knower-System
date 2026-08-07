@@ -2,7 +2,7 @@
 
 namespace App\Modules\Finance\Models;
 
-use App\Models\User;
+use App\Modules\Auth\Models\User;
 use App\Modules\Projects\Models\Project;
 use Illuminate\Database\Eloquent\Model;
 

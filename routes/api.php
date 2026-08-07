@@ -76,8 +76,10 @@ Route::prefix('v1')->group(function () {
         Route::get('/faqs',        [\App\Modules\CMS\Controllers\PublicApiController::class, 'faqs']);
         Route::get('/blog',        [\App\Modules\CMS\Controllers\PublicApiController::class, 'blog']);
         Route::get('/team',        [\App\Modules\CMS\Controllers\PublicApiController::class, 'team']);
-        Route::get('/services',    [\App\Modules\CMS\Controllers\PublicApiController::class, 'services']);
+        Route::get('/services',        [\App\Modules\CMS\Controllers\PublicApiController::class, 'services']);
+        Route::get('/services/{slug}',  [\App\Modules\CMS\Controllers\PublicApiController::class, 'serviceDetail']);
         Route::get('/careers',     [\App\Modules\CMS\Controllers\PublicApiController::class, 'careers']);
+        Route::get('/social-links',[\App\Modules\CMS\Controllers\PublicApiController::class, 'socialLinks']);
         Route::post('/contact',       [\App\Modules\CMS\Controllers\PublicApiController::class, 'submitContact']);
     Route::post('/demo-request',  [\App\Modules\CMS\Controllers\PublicApiController::class, 'submitDemoRequest']);
         // Support Widget Ingestion
@@ -122,6 +124,8 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('blog-posts', \App\Modules\CMS\Controllers\BlogPostController::class);
         Route::apiResource('team-members', \App\Modules\CMS\Controllers\TeamMemberController::class);
         Route::apiResource('services-cms', \App\Modules\CMS\Controllers\ServiceController::class);
+        Route::get('social-links', [\App\Modules\CMS\Controllers\SocialLinksController::class, 'index']);
+        Route::put('social-links', [\App\Modules\CMS\Controllers\SocialLinksController::class, 'update']);
 
         // ── Marketing Ops ─────────────────────────────────────────────────────────
         Route::prefix('marketing-ops')->name('marketing-ops.')->group(function () {

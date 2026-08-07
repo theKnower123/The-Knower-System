@@ -61,24 +61,11 @@ export const services: Service[] = [
   { slug: "maintenance", name: "Maintenance", tagline: "Keep it running.", description: "Patching, monitoring and continuous improvement.", deliverables: ["SLA support", "Security patches", "Feature increments"], icon: "Wrench" },
 ];
 
-export const plans: Plan[] = [
-  { name: "Starter", price: { monthly: 49, yearly: 490 }, blurb: "For small teams getting started.", features: ["Up to 5 users", "10 projects", "5 GB storage", "Community support"] },
-  { name: "Business", price: { monthly: 149, yearly: 1490 }, blurb: "For growing software teams.", features: ["Up to 25 users", "Unlimited projects", "100 GB storage", "Email support", "AI copilot (basic)"], highlight: true },
-  { name: "Professional", price: { monthly: 349, yearly: 3490 }, blurb: "For established agencies.", features: ["Up to 100 users", "Unlimited projects", "1 TB storage", "24/7 chat support", "AI copilot (pro)", "SSO"] },
-  { name: "Enterprise", price: { monthly: 0, yearly: 0 }, blurb: "For global operations.", features: ["Unlimited users", "Dedicated infra", "Custom SLAs", "Dedicated CSM", "Private AI models", "On-prem option"], cta: "Contact sales" },
-];
+export const plans: Plan[] = [];
 
-export const hostingPlans: Plan[] = [
-  { name: "Cloud Starter", price: { monthly: 15, yearly: 150 }, blurb: "Shared hosting for small sites.", features: ["1 site", "10 GB SSD", "Free SSL", "Daily backups"] },
-  { name: "Cloud Business", price: { monthly: 45, yearly: 450 }, blurb: "VPS for growing apps.", features: ["Unmetered sites", "100 GB SSD", "Free SSL & CDN", "24/7 monitoring"], highlight: true },
-  { name: "Cloud Scale", price: { monthly: 199, yearly: 1990 }, blurb: "Dedicated infrastructure.", features: ["Dedicated CPU", "1 TB SSD", "Load balancer", "SLA 99.99%"] },
-];
+export const hostingPlans: Plan[] = [];
 
-export const maintenancePlans: Plan[] = [
-  { name: "Essential", price: { monthly: 199, yearly: 1990 }, blurb: "Keep the lights on.", features: ["Security patches", "Monthly backups", "Uptime monitoring", "Email support"] },
-  { name: "Growth", price: { monthly: 599, yearly: 5990 }, blurb: "Continuous improvement.", features: ["Weekly deployments", "Performance tuning", "Bug fixes", "Priority support"], highlight: true },
-  { name: "Mission Critical", price: { monthly: 1499, yearly: 14990 }, blurb: "24/7 SLA-backed support.", features: ["1-hour response", "Dedicated engineer", "Quarterly audits", "Load testing"] },
-];
+export const maintenancePlans: Plan[] = [];
 
 export const portfolio: PortfolioItem[] = [
   { slug: "medcare-portal", title: "MedCare Patient Portal", category: "Healthcare", client: "MedCare Group", year: 2025, cover: "hero-med", summary: "Unified patient portal serving 40 clinics across the GCC.", stack: ["React", "Laravel", "MySQL", "AWS"] },

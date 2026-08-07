@@ -1,0 +1,31 @@
+# اسم التطبيق بتاعك (لازم يكون حروف إنجليزية سمول ومفيش مسافات)
+app = "the-knower-os-app" 
+
+# أقرب سيرفر لمصر عشان سرعة الموقع
+primary_region = "ams" 
+
+[build]
+  # هيستخدم ملف الدوكر اللي إحنا ظبطناه
+  dockerfile = "Dockerfile"
+
+[env]
+  # الإعدادات الأساسية اللي مش سرية
+  APP_ENV = "production"
+  APP_DEBUG = "false"
+  LOG_CHANNEL = "stderr"
+  LOG_LEVEL = "info"
+  PORT = "8080" # البورت اللي السيرفر هيشتغل عليه جوه الدوكر
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[[vm]]
+  # حجم الرامات المبدئي (Fly بيدي 256MB مجاناً، لكن 512MB أفضل للارافل)
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

@@ -40,6 +40,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/crm/leads', function () { return Inertia::render('CrmLeads'); });
         Route::get('/crm/meetings', function () { return Inertia::render('CrmMeetings'); });
         Route::get('/crm/quotations', function () { return Inertia::render('CrmQuotations'); });
+        Route::get('/crm/inquiries', function () { return Inertia::render('Crm/Inquiries'); });
     });
 
     Route::middleware(['permission:crm.view|client_portal.view'])->group(function () {
@@ -132,6 +133,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/marketing/posts', [\App\Modules\Marketing\Controllers\PostController::class, 'index']);
         Route::get('/marketing/campaigns', [\App\Modules\Marketing\Controllers\CampaignController::class, 'index']);
         Route::get('/cms/landing-builder', [\App\Modules\CMS\Controllers\LandingBuilderController::class, 'index']);
+        Route::get('/cms/social-links', [\App\Modules\CMS\Controllers\LandingBuilderController::class, 'index']);
         Route::get('/crm/leads/followups', [\App\Modules\CRM\Controllers\LeadFollowupController::class, 'index']);
         Route::get('/marketing/activity-log', [\App\Modules\Marketing\Controllers\MarketingActivityLogController::class, 'index']);
     });

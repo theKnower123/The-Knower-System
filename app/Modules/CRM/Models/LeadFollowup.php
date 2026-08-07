@@ -2,7 +2,7 @@
 
 namespace App\Modules\CRM\Models;
 
-use App\Models\User;
+use App\Modules\Auth\Models\User;
 use App\Traits\HandlesTrash;
 use App\Traits\HasWorkspace;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

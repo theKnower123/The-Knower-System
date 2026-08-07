@@ -19,12 +19,13 @@ class LeadController extends Controller
         $this->leadService = $leadService;
     }
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         Gate::authorize('viewAny', Lead::class);
+        $filters = $request->only(['inquiry_type', 'source', 'search', 'trashed']);
         return response()->json([
             'success' => true,
-            'data' => LeadResource::collection($this->leadService->getAll())
+            'data'    => LeadResource::collection($this->leadService->getAll($filters))
         ]);
     }
 

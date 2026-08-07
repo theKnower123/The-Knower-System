@@ -2,7 +2,7 @@
 
 namespace App\Modules\AI\Models;
 
-use App\Models\User;
+use App\Modules\Auth\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;

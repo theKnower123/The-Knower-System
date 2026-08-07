@@ -4,6 +4,7 @@ import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { Plan } from "@/mocks/marketing";
+import { useTranslation } from "react-i18next";
 
 export function Container({ children, className }: { children: ReactNode; className?: string }) {
   return <div className={cn("mx-auto w-full max-w-7xl px-5 sm:px-8", className)}>{children}</div>;
@@ -83,38 +84,55 @@ export function FeatureCard({ icon, title, description, href }: {
   return href ? <Link to={href as never}>{body}</Link> : body;
 }
 
-export function PricingCard({ plan, cycle }: { plan: Plan; cycle: "monthly" | "yearly" }) {
-  const price = plan.price[cycle];
+export function PricingCard({ plan, cycle, onContact }: { plan: Plan; cycle: "monthly" | "yearly"; onContact?: () => void }) {
+  const { t } = useTranslation();
+  const price = plan.price ? plan.price[cycle] : 0;
   return (
     <div className={cn(
-      "relative flex flex-col rounded-2xl border p-8",
+      "relative flex flex-col rounded-2xl border p-6 sm:p-8",
       plan.highlight ? "border-primary bg-primary/5 shadow-xl shadow-primary/10" : "border-border bg-card",
     )}>
       {plan.highlight && (
-        <span className="absolute -top-3 start-6 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">Most popular</span>
+        <span className="absolute -top-3 start-6 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
+          {t("public.pricingPage.mostPopular", { defaultValue: "Most popular" })}
+        </span>
       )}
+      {/* Plan name */}
       <div className="font-display text-lg font-semibold">{plan.name}</div>
-      <p className="mt-1 text-sm text-muted-foreground">{plan.blurb}</p>
-      <div className="mt-6">
+
+      {/* Blurb — contained in a min-height box so cards stay aligned */}
+      <div className="mt-2 min-h-[3.5rem]">
+        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{plan.blurb}</p>
+      </div>
+
+      {/* Price */}
+      <div className="mt-5 border-t border-border/50 pt-5">
         {price === 0 ? (
-          <div className="font-display text-3xl font-bold">Custom</div>
+          <div className="font-display text-3xl font-bold">{t("public.pricingPage.custom", { defaultValue: "Custom" })}</div>
         ) : (
           <div className="flex items-baseline gap-1">
             <span className="font-display text-4xl font-bold">${price.toLocaleString()}</span>
-            <span className="text-sm text-muted-foreground">/{cycle === "monthly" ? "mo" : "yr"}</span>
+            <span className="text-sm text-muted-foreground">/{cycle === "monthly" ? t("public.pricingPage.mo", { defaultValue: "mo" }) : t("public.pricingPage.yr", { defaultValue: "yr" })}</span>
           </div>
         )}
       </div>
-      <ul className="mt-6 space-y-2.5 text-sm">
-        {plan.features.map((f) => (
-          <li key={f} className="flex items-start gap-2 text-muted-foreground">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> <span className="text-foreground/90">{f}</span>
+
+      {/* Features */}
+      <ul className="mt-5 flex-1 space-y-2.5 text-sm">
+        {(plan.features || []).map((f) => (
+          <li key={f} className="flex items-start gap-2">
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <span className="text-foreground/90">{f}</span>
           </li>
         ))}
       </ul>
-      <Button className="mt-8 w-full" variant={plan.highlight ? "default" : "outline"}>
-        {plan.cta ?? "Get started"}
-      </Button>
+
+      {/* CTA — links to contact with plan pre-selected */}
+      <Link to="/contact" search={{ plan: plan.name }} className="mt-8 block">
+        <Button className="w-full" variant={plan.highlight ? "default" : "outline"}>
+          {plan.cta ?? t("public.pricingPage.getStarted", { defaultValue: "Get started" })}
+        </Button>
+      </Link>
     </div>
   );
 }
@@ -167,6 +185,13 @@ export function Card({ children, className }: { children: ReactNode; className?:
   return <div className={cn("rounded-2xl border border-border bg-card p-6", className)}>{children}</div>;
 }
 
-export function Badge({ children }: { children: ReactNode }) {
+export function Badge({ children, variant }: { children: ReactNode; variant?: "default" | "outline" }) {
+  if (variant === "outline") {
+    return (
+      <span className="inline-flex items-center rounded-full border border-border px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+        {children}
+      </span>
+    );
+  }
   return <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary">{children}</span>;
 }

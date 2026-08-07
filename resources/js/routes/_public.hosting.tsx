@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHero, Section, CTABand, PricingCard, FeatureCard } from "@/components/public/blocks";
-import { hostingPlans as staticHostingPlans } from "@/mocks/marketing";
-import { Cloud, Server, Zap, Shield, HardDrive, Activity } from "lucide-react";
+import { Cloud, Server, Zap, Shield, HardDrive, Activity, Layers } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_public/hosting")({
   head: () => ({
@@ -15,21 +16,21 @@ export const Route = createFileRoute("/_public/hosting")({
   component: HostingPage,
 });
 
-// Same mapping used on /pricing -- real columns are blurb/highlight/cta_text,
-// not description/is_popular.
 function mapDbPlan(p: any) {
   return {
     name: p.name,
     price: { monthly: Number(p.price_monthly) || 0, yearly: Number(p.price_yearly) || 0 },
     blurb: p.blurb,
-    features: p.features || [],
+    features: Array.isArray(p.features) ? p.features : typeof p.features === 'string' ? JSON.parse(p.features) : [],
     highlight: !!p.highlight,
     cta: p.cta_text || undefined,
   };
 }
 
 function HostingPage() {
-  const { data: allPlans } = useQuery({
+  const { t } = useTranslation();
+
+  const { data: allPlans, isLoading } = useQuery({
     queryKey: ["public", "pricing"],
     queryFn: async () => {
       const res = await axios.get("/api/v1/public/pricing");
@@ -37,15 +38,15 @@ function HostingPage() {
     },
   });
 
-  // Only plans created in CMS > Pricing Plans with Plan Type = "hosting"
-  // show up here. Falls back to the old static demo plans if none exist
-  // yet, so the page never looks empty during setup.
-  const dbHostingPlans = allPlans?.filter((p) => p.plan_type === "hosting").map(mapDbPlan);
-  const hostingPlans = dbHostingPlans?.length ? dbHostingPlans : staticHostingPlans;
+  const hostingPlans = allPlans?.filter((p) => p.plan_type === "hosting").map(mapDbPlan) || [];
 
   return (
     <div>
-      <PageHero eyebrow="Hosting & Cloud" title="Managed hosting, worry-free" subtitle="Cloud, servers, CDN, email and backups — one team, one bill." />
+      <PageHero
+        eyebrow={t("public.nav.hostingCloud", { defaultValue: "Hosting & Cloud" })}
+        title={t("public.hostingPage.title", { defaultValue: "Managed hosting, worry-free" })}
+        subtitle={t("public.hostingPage.subtitle", { defaultValue: "Cloud, servers, CDN, email and backups — one team, one bill." })}
+      />
       <Section>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
@@ -58,13 +59,34 @@ function HostingPage() {
           ].map((f) => <FeatureCard key={f.title} {...f} />)}
         </div>
       </Section>
+
       <Section className="bg-muted/30">
-        <h2 className="font-display text-2xl font-semibold">Hosting plans</h2>
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {hostingPlans.map((p: any) => <PricingCard key={p.name} plan={p} cycle="monthly" />)}
+        <h2 className="font-display text-2xl font-semibold">{t("public.nav.hostingCloud", { defaultValue: "Hosting plans" })}</h2>
+        <div className="mt-8">
+          {isLoading ? (
+            <div className="grid gap-6 md:grid-cols-3 animate-pulse">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-72 rounded-2xl border border-border bg-card/40 p-6" />
+              ))}
+            </div>
+          ) : hostingPlans.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-3">
+              {hostingPlans.map((p: any) => <PricingCard key={p.name} plan={p} cycle="monthly" />)}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card/30 p-10 text-center">
+              <Layers className="h-6 w-6 text-primary mb-3" />
+              <p className="text-sm text-muted-foreground">
+                {t("public.pricingPage.noPlansDesc", { defaultValue: "Hosting plans are managed directly from the dashboard." })}
+              </p>
+              <Button asChild size="sm" variant="outline" className="mt-4">
+                <Link to="/contact">{t("public.hero.startProject", { defaultValue: "Request a custom hosting quote" })}</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </Section>
-      <CTABand title="Need a custom architecture?" primary={{ label: "Talk to a cloud engineer", to: "/contact" }} />
+      <CTABand title={t("public.hostingPage.cta", { defaultValue: "Need a custom architecture?" })} primary={{ label: t("public.hero.startProject", { defaultValue: "Talk to a cloud engineer" }), to: "/contact" }} />
     </div>
   );
 }
