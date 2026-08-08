@@ -12,10 +12,10 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
-RUN npm install && npm run build
+RUN npm install && npm run build 
 
 RUN chmod -R 777 storage bootstrap/cache
 
 RUN rm -f bootstrap/cache/*.php
 
-CMD php artisan config:clear && php -S 0.0.0.0:$PORT -t public
+CMD php artisan config:clear && php artisan migrate --seed --force && php -S 0.0.0.0:$PORT -t public

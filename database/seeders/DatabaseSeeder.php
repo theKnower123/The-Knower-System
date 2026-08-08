@@ -15,9 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         // Re-create the super admin first (no workspace yet)
         $admin = User::firstOrCreate(
-            ['email' => 'admin@admin.com'],
+            ['email' => 'omarmehawed4@knoweros.com'],
             [
-                'name' => 'Administrator',
+                'name' => 'Omar Mehawed',
                 'role' => 'super_admin',
                 'password' => Hash::make('password')
             ]
@@ -42,5 +42,12 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password') 
             ]
         );
+        $this->call([
+            BlogPostSeeder::class,
+            FaqSeeder::class,
+            PricingPlanSeeder::class,
+            ServiceContentSeeder::class,
+            TestimonialSeeder::class,
+        ]);
     }
 }
