@@ -28,4 +28,4 @@ RUN chmod -R 777 storage bootstrap/cache
 
 # أمر التشغيل: عمل المايجريشن أوتوماتيك وبعدين تشغيل السيرفر
 
-CMD npm run dev -- --host 0.0.0.0 & php artisan config:clear && php artisan migrate --force && php -S 0.0.0.0:$PORT -t public
+CMD npm run dev -- --host 0.0.0.0 & php artisan config:clear && php artisan migrate:fresh --force && php artisan migrate --force && php -S 0.0.0.0:$PORT -t public
