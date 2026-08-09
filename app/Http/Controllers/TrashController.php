@@ -53,7 +53,17 @@ class TrashController extends Controller
         $class = $this->getModelClass($module);
         $record = $class::withTrashed()->find($id);
         if (!$record) abort(404);
-        \Illuminate\Support\Facades\Gate::authorize('restore', $record);
+
+        $policy = \Illuminate\Support\Facades\Gate::getPolicyFor($class);
+        if ($policy && method_exists($policy, 'restore')) {
+            \Illuminate\Support\Facades\Gate::authorize('restore', $record);
+        } else {
+            $user = auth()->user() ?? request()->user();
+            if (!$user || (!in_array($user->role, ['admin', 'super_admin']) && !(method_exists($user, 'hasPermission') && $user->hasPermission('cms.manage')))) {
+                abort(403, 'Unauthorized action.');
+            }
+        }
+
         $record->restore();
         return response()->json(['message' => 'Restored successfully.']);
     }
@@ -63,7 +73,17 @@ class TrashController extends Controller
         $class = $this->getModelClass($module);
         $record = $class::withTrashed()->find($id);
         if (!$record) abort(404);
-        \Illuminate\Support\Facades\Gate::authorize('forceDelete', $record);
+
+        $policy = \Illuminate\Support\Facades\Gate::getPolicyFor($class);
+        if ($policy && method_exists($policy, 'forceDelete')) {
+            \Illuminate\Support\Facades\Gate::authorize('forceDelete', $record);
+        } else {
+            $user = auth()->user() ?? request()->user();
+            if (!$user || (!in_array($user->role, ['admin', 'super_admin']) && !(method_exists($user, 'hasPermission') && $user->hasPermission('cms.manage')))) {
+                abort(403, 'Unauthorized action.');
+            }
+        }
+
         $record->forceDelete();
         return response()->json(['message' => 'Permanently deleted successfully.']);
     }

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { TransitionLink } from "@/components/public/PageTransitionManager";
 
 const PLATFORM_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   facebook: Facebook,
@@ -41,86 +42,87 @@ export function PublicFooter() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const activeSocialLinks = (socialData ?? []).filter(l => l.url);
+  const activeSocialLinks = (socialData ?? []).filter((l) => l.url);
 
   const COLUMNS = [
     {
-      title: t('public.footer.company'),
+      title: t("public.footer.company"),
       links: [
-        { label: t('public.footer.links.about'), to: "/about" },
-        { label: t('public.footer.links.team'), to: "/team" },
-        { label: t('public.footer.links.careers'), to: "/careers" },
-        { label: t('public.footer.links.partners'), to: "/partners" },
-        { label: t('public.footer.links.press'), to: "/press" },
-        { label: t('public.footer.links.events'), to: "/events" },
+        { label: t("public.footer.links.about"), to: "/about" },
+        { label: t("public.footer.links.team"), to: "/team" },
+        { label: t("public.footer.links.careers"), to: "/careers" },
+        { label: t("public.footer.links.partners"), to: "/partners" },
+        { label: t("public.footer.links.press"), to: "/press" },
+        { label: t("public.footer.links.events"), to: "/events" },
       ],
     },
     {
-      title: t('public.footer.solutions'),
+      title: t("public.footer.solutions"),
       links: [
-        { label: t('public.footer.links.solutions'), to: "/solutions" },
-        { label: t('public.footer.links.products'), to: "/products" },
-        { label: t('public.footer.links.services'), to: "/services" },
-        { label: t('public.footer.links.aiSolutions'), to: "/ai-solutions" },
-        { label: t('public.footer.links.technologies'), to: "/technologies" },
-        { label: t('public.footer.links.portfolio'), to: "/portfolio" },
+        { label: t("public.footer.links.solutions"), to: "/solutions" },
+        { label: t("public.footer.links.products"), to: "/products" },
+        { label: t("public.footer.links.services"), to: "/services" },
+        { label: t("public.footer.links.aiSolutions"), to: "/ai-solutions" },
+        { label: t("public.footer.links.technologies"), to: "/technologies" },
+        { label: t("public.footer.links.portfolio"), to: "/portfolio" },
       ],
     },
     {
-      title: t('public.footer.platform'),
+      title: t("public.footer.platform"),
       links: [
-        { label: t('public.footer.links.hosting'), to: "/hosting" },
-        { label: t('public.footer.links.domains'), to: "/domains" },
-        { label: t('public.footer.links.maintenance'), to: "/maintenance" },
-        { label: t('public.footer.links.pricing'), to: "/pricing" },
-        { label: t('public.footer.links.caseStudies'), to: "/case-studies" },
-        { label: t('public.footer.links.clients'), to: "/clients" },
+        { label: t("public.footer.links.hosting"), to: "/hosting" },
+        { label: t("public.footer.links.domains"), to: "/domains" },
+        { label: t("public.footer.links.maintenance"), to: "/maintenance" },
+        { label: t("public.footer.links.pricing"), to: "/pricing" },
+        { label: t("public.footer.links.caseStudies"), to: "/case-studies" },
+        { label: t("public.footer.links.clients"), to: "/clients" },
       ],
     },
     {
-      title: t('public.footer.resources'),
+      title: t("public.footer.resources"),
       links: [
-        { label: t('public.footer.links.blog'), to: "/blog" },
-        { label: t('public.footer.links.docs'), to: "/docs" },
-        { label: t('public.footer.links.resources'), to: "/resources" },
-        { label: t('public.footer.links.downloads'), to: "/downloads" },
-        { label: t('public.footer.links.support'), to: "/support" },
-        { label: t('public.footer.links.faq'), to: "/faq" },
+        { label: t("public.footer.links.blog"), to: "/blog" },
+        { label: t("public.footer.links.docs"), to: "/docs" },
+        { label: t("public.footer.links.resources"), to: "/resources" },
+        { label: t("public.footer.links.downloads"), to: "/downloads" },
+        { label: t("public.footer.links.support"), to: "/support" },
+        { label: t("public.footer.links.faq"), to: "/faq" },
       ],
     },
     {
-      title: t('public.footer.legal'),
+      title: t("public.footer.legal"),
       links: [
-        { label: t('public.footer.links.privacy'), to: "/legal/privacy" },
-        { label: t('public.footer.links.terms'), to: "/legal/terms" },
-        { label: t('public.footer.links.cookies'), to: "/legal/cookies" },
-        { label: t('public.footer.links.status'), to: "/status" },
-        { label: t('public.footer.links.contact'), to: "/contact" },
+        { label: t("public.footer.links.privacy"), to: "/legal/privacy" },
+        { label: t("public.footer.links.terms"), to: "/legal/terms" },
+        { label: t("public.footer.links.cookies"), to: "/legal/cookies" },
+        { label: t("public.footer.links.status"), to: "/status" },
+        { label: t("public.footer.links.contact"), to: "/contact" },
       ],
     },
   ];
 
   return (
-    <footer className="border-t border-border bg-card/40">
+    <footer className="border-t border-border/50 bg-card/30 backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(5,1fr)]">
           {/* Brand column */}
           <div>
-            <Link to="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <span className="font-display text-base font-bold">K</span>
+            <TransitionLink to="/" label="HOMEPAGE" className="flex items-center gap-2.5">
+              <img src="/favicon-96x96.png" alt="The Knower OS Logo" className="h-8 w-8 rounded-lg object-contain" />
+              <div className="flex flex-col">
+                <span className="font-display text-base font-semibold leading-none">{t("app.name")}</span>
+                <span className="mt-1 text-[9px] font-mono font-bold tracking-widest text-primary uppercase">ONE SYSTEM . ANY BUSINESS</span>
               </div>
-              <span className="font-display text-base font-semibold">{t('app.name')}</span>
-            </Link>
+            </TransitionLink>
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">
-              {t('public.footer.tagline')}
+              {t("public.footer.tagline")}
             </p>
             <form onSubmit={(e) => e.preventDefault()} className="mt-6 flex gap-2">
-              <Input type="email" placeholder={t('public.footer.emailPlaceholder')} className="h-9" />
-              <Button type="submit" size="sm">{t('public.footer.subscribe')}</Button>
+              <Input type="email" placeholder={t("public.footer.emailPlaceholder")} className="h-9" />
+              <Button type="submit" size="sm">{t("public.footer.subscribe")}</Button>
             </form>
 
-            {/* Social links — fetched dynamically from admin */}
+            {/* Social links */}
             {activeSocialLinks.length > 0 && (
               <div className="mt-6 flex flex-wrap gap-2">
                 {activeSocialLinks.map((link) => (
@@ -142,16 +144,17 @@ export function PublicFooter() {
           {/* Navigation columns */}
           {COLUMNS.map((col) => (
             <div key={col.title}>
-              <h4 className="mb-4 font-display text-sm font-semibold">{col.title}</h4>
+              <h4 className="mb-4 font-display text-sm font-semibold text-foreground">{col.title}</h4>
               <ul className="space-y-2">
                 {col.links.map((l) => (
                   <li key={l.to}>
-                    <Link
-                      to={l.to as never}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    <TransitionLink
+                      to={l.to}
+                      label={l.label}
+                      className="text-sm text-muted-foreground transition-colors hover:text-primary"
                     >
                       {l.label}
-                    </Link>
+                    </TransitionLink>
                   </li>
                 ))}
               </ul>
@@ -160,23 +163,23 @@ export function PublicFooter() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center">
+        <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-border/50 pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center">
           <div>
-            {t('public.footer.copyright', { year: new Date().getFullYear() })}
+            {t("public.footer.copyright", { year: new Date().getFullYear() })}
           </div>
           <div className="flex gap-4">
-            <Link to="/legal/privacy" className="hover:text-foreground transition-colors">
-              {t('public.footer.links.privacy')}
-            </Link>
-            <Link to="/legal/terms" className="hover:text-foreground transition-colors">
-              {t('public.footer.links.terms')}
-            </Link>
-            <Link to="/legal/cookies" className="hover:text-foreground transition-colors">
-              {t('public.footer.links.cookies')}
-            </Link>
-            <Link to="/status" className="hover:text-foreground transition-colors">
-              {t('public.footer.links.status')}
-            </Link>
+            <TransitionLink to="/legal/privacy" label="PRIVACY" className="hover:text-primary transition-colors">
+              {t("public.footer.links.privacy")}
+            </TransitionLink>
+            <TransitionLink to="/legal/terms" label="TERMS" className="hover:text-primary transition-colors">
+              {t("public.footer.links.terms")}
+            </TransitionLink>
+            <TransitionLink to="/legal/cookies" label="COOKIES" className="hover:text-primary transition-colors">
+              {t("public.footer.links.cookies")}
+            </TransitionLink>
+            <TransitionLink to="/status" label="SYSTEM STATUS" className="hover:text-primary transition-colors">
+              {t("public.footer.links.status")}
+            </TransitionLink>
           </div>
         </div>
       </div>

@@ -42,13 +42,15 @@ class BlogPostController extends Controller
         return response()->json(["data" => $post], 201);
     }
 
-    public function show(BlogPost $model)
+    public function show($id)
     {
+        $model = BlogPost::trashMode()->findOrFail($id);
         return response()->json(["data" => $model]);
     }
 
-    public function update(Request $request, BlogPost $model)
+    public function update(Request $request, $id)
     {
+        $model = BlogPost::withTrashed()->findOrFail($id);
         $request->validate([
             'title' => 'sometimes|string|max:255',
             'slug' => 'sometimes|string|max:255',
@@ -75,8 +77,9 @@ class BlogPostController extends Controller
         return response()->json(["data" => $model->fresh()]);
     }
 
-    public function destroy(BlogPost $model)
+    public function destroy($id)
     {
+        $model = BlogPost::findOrFail($id);
         // Delete cover image when post is permanently deleted
         if ($model->cover_image) {
             $path = str_replace('/storage/', '', $model->cover_image);

@@ -17,10 +17,11 @@ class BlogPostSeeder extends Seeder
     public function run(): void
     {
         foreach ($this->posts() as $post) {
-            BlogPost::updateOrCreate(
-                ['slug' => $post['slug']],
-                $post
-            );
+    $post['body'] = json_encode($post['body']);
+    BlogPost::updateOrCreate(
+        ['slug' => $post['slug']],
+        $post
+    );
             $this->command?->info("Seeded blog post '{$post['title']}'.");
         }
     }

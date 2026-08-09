@@ -28,7 +28,7 @@ class PublicApiController extends Controller
     public function pricing()
     {
         return response()->json([
-            'plans' => MarketingPlan::all(),
+            'plans' => MarketingPlan::where('is_active', true)->get(),
         ]);
     }
 
@@ -57,6 +57,22 @@ class PublicApiController extends Controller
     {
         return response()->json([
             'posts' => BlogPost::where('is_published', true)->orderBy('published_at', 'desc')->get()
+        ]);
+    }
+
+    public function blogDetail($slug)
+    {
+        $post = BlogPost::where('slug', $slug)
+            ->orWhere('id', $slug)
+            ->where('is_published', true)
+            ->first();
+
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+
+        return response()->json([
+            'post' => $post
         ]);
     }
 

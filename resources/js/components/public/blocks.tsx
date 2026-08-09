@@ -89,11 +89,11 @@ export function PricingCard({ plan, cycle, onContact }: { plan: Plan; cycle: "mo
   const price = plan.price ? plan.price[cycle] : 0;
   return (
     <div className={cn(
-      "relative flex flex-col rounded-2xl border p-6 sm:p-8",
-      plan.highlight ? "border-primary bg-primary/5 shadow-xl shadow-primary/10" : "border-border bg-card",
+      "relative flex flex-col rounded-2xl border p-6 sm:p-8 pt-9 min-w-0 max-w-full break-words transition-all duration-300",
+      plan.highlight ? "border-primary bg-primary/5 shadow-xl shadow-primary/10 ring-1 ring-primary/30" : "border-border bg-card",
     )}>
       {plan.highlight && (
-        <span className="absolute -top-3 start-6 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
+        <span className="absolute -top-3.5 start-6 z-10 rounded-full bg-primary px-3.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground shadow-md ring-2 ring-background">
           {t("public.pricingPage.mostPopular", { defaultValue: "Most popular" })}
         </span>
       )}
@@ -185,13 +185,13 @@ export function Card({ children, className }: { children: ReactNode; className?:
   return <div className={cn("rounded-2xl border border-border bg-card p-6", className)}>{children}</div>;
 }
 
-export function Badge({ children, variant }: { children: ReactNode; variant?: "default" | "outline" }) {
+export function Badge({ children, variant, className }: { children: ReactNode; variant?: "default" | "outline"; className?: string }) {
   if (variant === "outline") {
     return (
-      <span className="inline-flex items-center rounded-full border border-border px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+      <span className={cn("inline-flex items-center rounded-full border border-border px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground", className)}>
         {children}
       </span>
     );
   }
-  return <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary">{children}</span>;
+  return <span className={cn("inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary", className)}>{children}</span>;
 }

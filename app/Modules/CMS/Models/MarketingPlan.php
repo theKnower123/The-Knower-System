@@ -23,6 +23,7 @@ class MarketingPlan extends Model
     protected $casts = [
         'features' => 'array',
         'highlight' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     public function getActivitylogOptions(): LogOptions

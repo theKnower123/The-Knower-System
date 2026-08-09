@@ -16,7 +16,23 @@ class MarketingPlanController extends Controller
         ]);
         return response()->json(["data" => MarketingPlan::create($request->all())]);
     }
-    public function show(MarketingPlan $model) { return response()->json(["data" => $model]); }
-    public function update(Request $request, MarketingPlan $model) { $model->update($request->all()); return response()->json(["data" => $model]); }
-    public function destroy(MarketingPlan $model) { $model->delete(); return response()->json(["message" => "Deleted"]); }
+    public function show($id)
+    {
+        $model = MarketingPlan::trashMode()->findOrFail($id);
+        return response()->json(["data" => $model]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $model = MarketingPlan::withTrashed()->findOrFail($id);
+        $model->update($request->all());
+        return response()->json(["data" => $model]);
+    }
+
+    public function destroy($id)
+    {
+        $model = MarketingPlan::findOrFail($id);
+        $model->delete();
+        return response()->json(["message" => "Deleted"]);
+    }
 }

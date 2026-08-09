@@ -75,6 +75,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/testimonials',[\App\Modules\CMS\Controllers\PublicApiController::class, 'testimonials']);
         Route::get('/faqs',        [\App\Modules\CMS\Controllers\PublicApiController::class, 'faqs']);
         Route::get('/blog',        [\App\Modules\CMS\Controllers\PublicApiController::class, 'blog']);
+        Route::get('/blog/{slug}',  [\App\Modules\CMS\Controllers\PublicApiController::class, 'blogDetail']);
         Route::get('/team',        [\App\Modules\CMS\Controllers\PublicApiController::class, 'team']);
         Route::get('/services',        [\App\Modules\CMS\Controllers\PublicApiController::class, 'services']);
         Route::get('/services/{slug}',  [\App\Modules\CMS\Controllers\PublicApiController::class, 'serviceDetail']);
