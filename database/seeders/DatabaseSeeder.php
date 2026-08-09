@@ -48,6 +48,7 @@ class DatabaseSeeder extends Seeder
             PricingPlanSeeder::class,
             ServiceContentSeeder::class,
             TestimonialSeeder::class,
+            PortfolioProjectSeeder::class,
         ]);
     }
 }
