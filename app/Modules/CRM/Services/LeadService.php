@@ -39,18 +39,51 @@ class LeadService
             $data['title'] = $data['name'];
         }
 
-        return Lead::create($data);
+        $lead = Lead::create($data);
+
+        \App\Services\UserActivityLogger::log(
+            Auth::id() ?? 1,
+            "Created Lead: {$lead->title}",
+            "crm",
+            "Lead #{$lead->id}",
+            "New sales lead received/added.",
+            "Leads",
+            "create"
+        );
+
+        return $lead;
     }
 
     public function update(Lead $lead, array $data): Lead
     {
         $data['updated_by'] = Auth::id();
         $lead->update($data);
+
+        \App\Services\UserActivityLogger::log(
+            Auth::id() ?? 1,
+            "Updated Lead: {$lead->title}",
+            "crm",
+            "Lead #{$lead->id}",
+            "Lead stage or details updated.",
+            "Leads",
+            "edit"
+        );
+
         return $lead;
     }
 
     public function delete(Lead $lead): bool
     {
+        \App\Services\UserActivityLogger::log(
+            Auth::id() ?? 1,
+            "Deleted Lead: {$lead->title}",
+            "crm",
+            "Lead #{$lead->id}",
+            "Lead moved to trash.",
+            "Leads",
+            "delete"
+        );
+
         return $lead->delete();
     }
 }

@@ -32,6 +32,16 @@ class ClientService
                 $this->createOrUpdatePortalAccount($client, $data);
             }
 
+            \App\Services\UserActivityLogger::log(
+                $client->user_id ?? (auth()->id() ?? $client->id),
+                "Created Client: {$client->name}",
+                "crm",
+                "Client #{$client->id}",
+                "New client account onboarded into system.",
+                "Clients",
+                "create"
+            );
+
             return $client->fresh();
         });
     }
@@ -58,7 +68,19 @@ class ClientService
                 $client->user()->update(['status' => 'inactive']);
             }
 
-            return $client->fresh();
+            $updated = $client->fresh();
+
+            \App\Services\UserActivityLogger::log(
+                $updated->user_id ?? (auth()->id() ?? $updated->id),
+                "Updated Client: {$updated->name}",
+                "crm",
+                "Client #{$updated->id}",
+                "Updated client information or portal configuration.",
+                "Clients",
+                "edit"
+            );
+
+            return $updated;
         });
     }
 
@@ -99,6 +121,16 @@ class ClientService
 
     public function delete(Client $client): ?bool
     {
+        \App\Services\UserActivityLogger::log(
+            $client->user_id ?? (auth()->id() ?? $client->id),
+            "Deleted Client: {$client->name}",
+            "crm",
+            "Client #{$client->id}",
+            "Client profile moved to trash.",
+            "Clients",
+            "delete"
+        );
+
         return $client->delete();
     }
 }
