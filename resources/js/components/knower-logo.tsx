@@ -21,23 +21,15 @@ export function KnowerLogo({ className = "", showText = true, size = "md" }: Kno
 
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
-      {/* Dynamic Glowing Logo Emblem */}
+      {/* Dynamic Brand Logo Emblem */}
       <div
-        className={`relative flex items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-600 to-cyan-400 text-white font-black shadow-md shadow-blue-500/20 ring-1 ring-white/20 shrink-0 ${iconSizes[size]}`}
+        className={`relative flex items-center justify-center rounded-xl shrink-0 overflow-hidden ${iconSizes[size]}`}
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="w-5 h-5 drop-shadow-sm text-white"
-        >
-          <path d="M12 2L2 7l10 5 10-5-10-5z" />
-          <path d="M2 17l10 5 10-5" />
-          <path d="M2 12l10 5 10-5" />
-        </svg>
+        <img
+          src="/favicon.svg"
+          alt="Knower OS Logo"
+          className="w-full h-full object-contain"
+        />
       </div>
 
       {showText && (
@@ -46,7 +38,7 @@ export function KnowerLogo({ className = "", showText = true, size = "md" }: Kno
             Knower <span className="text-primary font-black">OS</span>
           </span>
           <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-widest mt-0.5">
-            Enterprise System
+            ONE SYSTEM.ONE BUSSINESS
           </span>
         </div>
       )}
