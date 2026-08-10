@@ -21,9 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
         $middleware->api(prepend: [
-            \Illuminate\Session\Middleware\StartSession::class,
-        ]);
-        $middleware->trustProxies(at: '*');
+        \Illuminate\Session\Middleware\StartSession::class,
+    ]);
+
         $middleware->statefulApi();
         $middleware->alias([
             'permission' => \App\Http\Middleware\CheckPermission::class,
