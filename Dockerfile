@@ -18,4 +18,4 @@ RUN chmod -R 777 storage bootstrap/cache
 
 RUN rm -f bootstrap/cache/*.php
 
-CMD php artisan config:clear && php artisan migrate:fresh --seed --force && php -S 0.0.0.0:$PORT -t public
+CMD php artisan config:clear && php artisan migrate  --force && php -S 0.0.0.0:$PORT -t public
