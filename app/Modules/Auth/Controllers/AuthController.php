@@ -56,6 +56,45 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // Check if device was previously revoked & requires explicit user approval
+        $revokedDevice = \DB::table('user_devices')
+            ->where('user_id', $user->id)
+            ->where('ip_address', $request->ip())
+            ->where('user_agent', $request->userAgent())
+            ->where('status', 'revoked')
+            ->first();
+
+        if ($revokedDevice) {
+            $tokenStr = \Illuminate\Support\Str::random(32);
+            $reqId = \DB::table('device_approval_requests')->insertGetId([
+                'user_id'        => $user->id,
+                'user_device_id' => $revokedDevice->id,
+                'ip_address'     => $request->ip(),
+                'user_agent'     => $request->userAgent(),
+                'device_name'    => $revokedDevice->device_name,
+                'status'         => 'pending',
+                'approval_token' => $tokenStr,
+                'expires_at'     => now()->addHours(24),
+                'created_at'     => now(),
+                'updated_at'     => now(),
+            ]);
+
+            \App\Services\SystemNotificationService::notify(
+                $user->id,
+                '🚨 Unapproved Device Login Attempt',
+                "A login attempt was made from a removed device ({$revokedDevice->device_name} - IP: {$request->ip()}). Please approve access.",
+                'security',
+                '/profile?tab=devices',
+                ['approval_request_id' => $reqId]
+            );
+
+            return response()->json([
+                'success'                  => false,
+                'requires_device_approval' => true,
+                'message'                  => "This device was removed from your account. A login approval request has been sent to your active logged-in device. Please approve it to sign in.",
+            ], 403);
+        }
+
         // Log the user in for the web session (if session middleware is enabled)
         Auth::login($user);
         if ($request->hasSession()) {
@@ -119,11 +158,17 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role ?? 'client',
-                'client_id' => $user->client()->value('id'),
+                'id'         => $user->id,
+                'name'       => $user->name,
+                'email'      => $user->email,
+                'phone'      => $user->phone,
+                'address'    => $user->address,
+                'id_number'  => $user->id_number,
+                'avatar'     => $user->avatar,
+                'role'       => $user->role ?? 'client',
+                'client_id'  => $user->client()->value('id'),
+                'department' => $user->employee?->department ?? 'Unassigned',
+                'position'   => $user->employee?->position ?? 'Unassigned',
             ]
         ]);
     }

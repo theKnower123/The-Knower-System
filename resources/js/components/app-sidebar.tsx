@@ -57,6 +57,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/store/auth";
 import { roleHas, type Permission } from "@/lib/permissions";
+import { KnowerLogo } from "@/components/knower-logo";
 
 type Item = {
   to: string;
@@ -203,15 +204,7 @@ export function AppSidebar() {
     <Sidebar collapsible="offcanvas" side={isRtl ? "right" : "left"}>
       <SidebarHeader className="border-b border-sidebar-border">
         <Link href="/dashboard" className="flex items-center gap-2 px-2 py-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <span className="font-display text-sm font-bold">K</span>
-          </div>
-          {!collapsed && (
-            <div className="flex flex-col leading-none">
-              <span className="font-display text-sm font-semibold">Knower</span>
-              <span className="text-[10px] text-muted-foreground">OS</span>
-            </div>
-          )}
+          <KnowerLogo showText={!collapsed} size="md" />
         </Link>
       </SidebarHeader>
       <SidebarContent>

@@ -18,15 +18,46 @@ import { ROLE_LABELS } from "@/lib/permissions";
 
 import { ModeToggle } from "@/components/mode-toggle";
 
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 export function AppHeader() {
   const { t, i18n } = useTranslation();
   const user = useAuth((s) => s.user);
   const logout = useAuth((s) => s.logout);
   const locale = useLocaleStore((s) => s.locale);
   const setLocale = useLocaleStore((s) => s.setLocale);
-  const notifications = useCollection("notifications");
-  const notifArray = Array.isArray(notifications) ? notifications : [];
-  const unread = notifArray.filter((n) => !n.read).length;
+
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const unread = notifications.filter((n) => !n.read_at && !n.read).length;
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await axios.get("/api/v1/notifications");
+      if (res.data?.data?.data) {
+        setNotifications(res.data.data.data);
+      } else if (Array.isArray(res.data?.data)) {
+        setNotifications(res.data.data);
+      }
+    } catch (e) {
+      console.error("Failed to load notifications", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 15000); // Poll every 15s
+    return () => clearInterval(interval);
+  }, []);
+
+  const markAllRead = async () => {
+    try {
+      await axios.post("/api/v1/notifications/mark-all-read");
+      setNotifications((prev) => prev.map((n) => ({ ...n, read_at: new Date().toISOString() })));
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const switchLocale = () => {
     const next = locale === "en" ? "ar" : "en";
@@ -56,45 +87,57 @@ export function AppHeader() {
           >
             <Bell className="h-4 w-4" />
             {unread > 0 && (
-              <span className="absolute inset-e-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
+              <span className="absolute inset-e-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground animate-pulse">
                 {unread}
               </span>
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-80">
+        <DropdownMenuContent align="end" className="w-80 shadow-xl border-border">
           <div className="flex items-center justify-between px-4 py-2">
             <span className="font-semibold">{t("common.notifications", "Notifications")}</span>
             {unread > 0 && (
-              <span className="text-xs text-muted-foreground">{unread} unread</span>
+              <button onClick={markAllRead} className="text-xs text-primary hover:underline font-medium">
+                Mark all read
+              </button>
             )}
           </div>
           <DropdownMenuSeparator />
           <div className="max-h-[300px] overflow-y-auto">
-            {notifArray.length === 0 ? (
+            {notifications.length === 0 ? (
               <div className="p-4 text-center text-sm text-muted-foreground">
                 {t("common.empty", "Nothing here yet")}
               </div>
             ) : (
-              notifArray.slice(0, 5).map((n) => (
-                <DropdownMenuItem key={n.id} className="flex flex-col items-start gap-1 p-3">
-                  <div className="flex w-full justify-between items-center gap-2">
-                    <span className="font-medium text-sm">{n.title}</span>
-                    {!n.read && <span className="h-2 w-2 rounded-full bg-primary flex-shrink-0" />}
-                  </div>
-                  <span className="text-xs text-muted-foreground line-clamp-2 text-start">
-                    {n.message}
-                  </span>
-                  <span className="text-[10px] text-muted-foreground/60 mt-1">
-                    {new Date(n.createdAt).toLocaleDateString()}
-                  </span>
-                </DropdownMenuItem>
-              ))
+              notifications.slice(0, 6).map((n) => {
+                const data = typeof n.data === "string" ? JSON.parse(n.data) : (n.data || {});
+                const isRead = !!n.read_at;
+                return (
+                  <DropdownMenuItem
+                    key={n.id}
+                    className="flex flex-col items-start gap-1 p-3 cursor-pointer hover:bg-muted/50 transition"
+                    onClick={() => {
+                      if (data.action_url) router.visit(data.action_url);
+                    }}
+                  >
+                    <div className="flex w-full justify-between items-center gap-2">
+                      <span className="font-semibold text-xs text-foreground">{data.title || n.title || "System Alert"}</span>
+                      {!isRead && <span className="h-2 w-2 rounded-full bg-primary flex-shrink-0" />}
+                    </div>
+                    <span className="text-xs text-muted-foreground line-clamp-2 text-start">
+                      {data.message || n.message}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground/70 mt-1">
+                      {new Date(n.created_at || n.createdAt).toLocaleString()}
+                    </span>
+                  </DropdownMenuItem>
+                );
+              })
             )}
           </div>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="justify-center text-center w-full font-medium" onClick={() => router.visit("/notifications")}>
-            View all
+          <DropdownMenuItem className="justify-center text-center w-full font-medium text-xs text-primary" onClick={() => router.visit("/notifications")}>
+            View All Notifications
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

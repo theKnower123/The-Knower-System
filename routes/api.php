@@ -98,6 +98,13 @@ Route::prefix('v1')->group(function () {
         Route::post('auth/logout', [\App\Modules\Auth\Controllers\AuthController::class, 'logout']);
         Route::get('auth/me', [\App\Modules\Auth\Controllers\AuthController::class, 'me']);
 
+        // Profile & Active Devices Management
+        Route::post('profile', [\App\Modules\Auth\Controllers\ProfileController::class, 'updateProfile']);
+        Route::post('profile/password', [\App\Modules\Auth\Controllers\ProfileController::class, 'updatePassword']);
+        Route::get('profile/devices', [\App\Modules\Auth\Controllers\ProfileController::class, 'getDevices']);
+        Route::delete('profile/devices/{id}', [\App\Modules\Auth\Controllers\ProfileController::class, 'revokeDevice']);
+        Route::post('profile/devices/approve/{requestId}', [\App\Modules\Auth\Controllers\ProfileController::class, 'approveDeviceRequest']);
+
         // ── Core / Admin ──────────────────────────────────────────────────────────
         // Super Admin Centralized User Management
         Route::prefix('admin/users')->group(function () {
