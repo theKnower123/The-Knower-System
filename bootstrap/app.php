@@ -20,11 +20,13 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
             \App\Http\Middleware\SecurityHeaders::class,
+            \App\Http\Middleware\EnsureGoogleConnected::class,
         ]);
         $middleware->trustProxies(at: '*');
         $middleware->statefulApi();
         $middleware->alias([
             'permission' => \App\Http\Middleware\CheckPermission::class,
+            'must_connect_google' => \App\Http\Middleware\EnsureGoogleConnected::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

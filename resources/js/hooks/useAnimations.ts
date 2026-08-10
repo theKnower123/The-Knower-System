@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 // ─── useCountUp ────────────────────────────────────────────────────────────
 // Animates a number from 0 to the target value when element enters viewport.
-export function useCountUp(target: number, duration = 1800, prefix = "", suffix = "") {
+export function useCountUp(target: number, duration = 1600, prefix = "", suffix = "") {
   const ref = useRef<HTMLSpanElement>(null);
   const [displayed, setDisplayed] = useState("0");
 
@@ -25,7 +25,7 @@ export function useCountUp(target: number, duration = 1800, prefix = "", suffix 
         const isFloat = String(target).includes(".");
         const step = (now: number) => {
           const progress = Math.min((now - start) / duration, 1);
-          const eased = 1 - Math.pow(1 - progress, 4);
+          const eased = 1 - Math.pow(1 - progress, 3);
           const value = isFloat
             ? (eased * target).toFixed(1)
             : String(Math.round(eased * target));
@@ -34,7 +34,7 @@ export function useCountUp(target: number, duration = 1800, prefix = "", suffix 
         };
         requestAnimationFrame(step);
       },
-      { threshold: 0.4 }
+      { threshold: 0.2 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -45,7 +45,7 @@ export function useCountUp(target: number, duration = 1800, prefix = "", suffix 
 
 // ─── useMagneticEffect ────────────────────────────────────────────────────
 // Pulls an element slightly towards the cursor on hover.
-export function useMagneticEffect<T extends HTMLElement>(strength = 0.25) {
+export function useMagneticEffect<T extends HTMLElement>(strength = 0.2) {
   const ref = useRef<T>(null);
 
   useEffect(() => {
@@ -54,22 +54,37 @@ export function useMagneticEffect<T extends HTMLElement>(strength = 0.25) {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) return;
 
+    let isHovered = false;
+    let boundRect: DOMRect | null = null;
+
+    const onEnter = () => {
+      isHovered = true;
+      boundRect = el.getBoundingClientRect();
+    };
+
     const onMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
+      if (!isHovered || !boundRect) return;
+      const cx = boundRect.left + boundRect.width / 2;
+      const cy = boundRect.top + boundRect.height / 2;
       const dx = (e.clientX - cx) * strength;
       const dy = (e.clientY - cy) * strength;
-      el.style.transform = `translate(${dx}px, ${dy}px)`;
+      el.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
       el.style.transition = "transform 0.1s ease-out";
     };
+
     const onLeave = () => {
-      el.style.transform = "translate(0,0)";
-      el.style.transition = "transform 0.4s cubic-bezier(0.22,1,0.36,1)";
+      isHovered = false;
+      boundRect = null;
+      el.style.transform = "translate3d(0, 0, 0)";
+      el.style.transition = "transform 0.3s cubic-bezier(0.22,1,0.36,1)";
     };
-    el.addEventListener("mousemove", onMove);
-    el.addEventListener("mouseleave", onLeave);
+
+    el.addEventListener("mouseenter", onEnter, { passive: true });
+    el.addEventListener("mousemove", onMove, { passive: true });
+    el.addEventListener("mouseleave", onLeave, { passive: true });
+
     return () => {
+      el.removeEventListener("mouseenter", onEnter);
       el.removeEventListener("mousemove", onMove);
       el.removeEventListener("mouseleave", onLeave);
     };
@@ -79,8 +94,8 @@ export function useMagneticEffect<T extends HTMLElement>(strength = 0.25) {
 }
 
 // ─── useParallax ─────────────────────────────────────────────────────────
-// Translates an element at a fraction of the scroll offset.
-export function useParallax<T extends HTMLElement>(factor = 0.15) {
+// Layout-read-free, hardware-accelerated parallax translation on scroll.
+export function useParallax<T extends HTMLElement>(factor = 0.12) {
   const ref = useRef<T>(null);
 
   useEffect(() => {
@@ -89,22 +104,27 @@ export function useParallax<T extends HTMLElement>(factor = 0.15) {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) return;
 
-    let rafId: number;
+    let ticking = false;
+
+    const update = () => {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const offset = scrollY * factor;
+      el.style.transform = `translate3d(0, ${offset.toFixed(1)}px, 0)`;
+      ticking = false;
+    };
+
     const onScroll = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        const center = rect.top + rect.height / 2 - window.innerHeight / 2;
-        el.style.transform = `translateY(${center * factor}px)`;
-      });
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
+    update();
+
     return () => {
       window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(rafId);
     };
   }, [factor]);
 
@@ -115,7 +135,7 @@ export function useParallax<T extends HTMLElement>(factor = 0.15) {
 // Scrambles characters then resolves to the real text when element enters view.
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
 
-export function useTextScramble(text: string, duration = 900) {
+export function useTextScramble(text: string, duration = 800) {
   const [output, setOutput] = useState(text);
   const ref = useRef<HTMLElement>(null);
 
@@ -141,12 +161,12 @@ export function useTextScramble(text: string, duration = 900) {
             return CHARS[Math.floor(Math.random() * CHARS.length)];
           });
           setOutput(chars.join(""));
-          if (progress < 1.2) requestAnimationFrame(step);
+          if (progress < 1.1) requestAnimationFrame(step);
           else setOutput(text);
         };
         requestAnimationFrame(step);
       },
-      { threshold: 0.6 }
+      { threshold: 0.4 }
     );
     observer.observe(el);
     return () => observer.disconnect();

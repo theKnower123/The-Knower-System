@@ -23,36 +23,36 @@ interface ScrollRevealProps {
 
 const VARIANTS: Record<Variant, { from: CSSProperties; to: CSSProperties }> = {
   "fade-up": {
-    from: { opacity: 0, transform: "translateY(32px)" },
-    to: { opacity: 1, transform: "translateY(0)" },
+    from: { opacity: 0, transform: "translate3d(0, 24px, 0)" },
+    to: { opacity: 1, transform: "translate3d(0, 0, 0)" },
   },
   "fade-down": {
-    from: { opacity: 0, transform: "translateY(-32px)" },
-    to: { opacity: 1, transform: "translateY(0)" },
+    from: { opacity: 0, transform: "translate3d(0, -24px, 0)" },
+    to: { opacity: 1, transform: "translate3d(0, 0, 0)" },
   },
   "fade-left": {
-    from: { opacity: 0, transform: "translateX(32px)" },
-    to: { opacity: 1, transform: "translateX(0)" },
+    from: { opacity: 0, transform: "translate3d(24px, 0, 0)" },
+    to: { opacity: 1, transform: "translate3d(0, 0, 0)" },
   },
   "fade-right": {
-    from: { opacity: 0, transform: "translateX(-32px)" },
-    to: { opacity: 1, transform: "translateX(0)" },
+    from: { opacity: 0, transform: "translate3d(-24px, 0, 0)" },
+    to: { opacity: 1, transform: "translate3d(0, 0, 0)" },
   },
   fade: {
     from: { opacity: 0 },
     to: { opacity: 1 },
   },
   scale: {
-    from: { opacity: 0, transform: "scale(0.9)" },
-    to: { opacity: 1, transform: "scale(1)" },
+    from: { opacity: 0, transform: "scale3d(0.94, 0.94, 1)" },
+    to: { opacity: 1, transform: "scale3d(1, 1, 1)" },
   },
   "scale-x": {
-    from: { opacity: 0, transform: "scaleX(0.8)" },
+    from: { opacity: 0, transform: "scaleX(0.85)" },
     to: { opacity: 1, transform: "scaleX(1)" },
   },
   "blur-up": {
-    from: { opacity: 0, transform: "translateY(24px)", filter: "blur(8px)" },
-    to: { opacity: 1, transform: "translateY(0)", filter: "blur(0)" },
+    from: { opacity: 0, transform: "translate3d(0, 20px, 0)" },
+    to: { opacity: 1, transform: "translate3d(0, 0, 0)" },
   },
 };
 
@@ -61,8 +61,8 @@ export function ScrollReveal({
   className,
   variant = "fade-up",
   delay = 0,
-  duration = 600,
-  threshold = 0.1,
+  duration = 500,
+  threshold = 0.05,
   once = true,
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -78,10 +78,11 @@ export function ScrollReveal({
       return;
     }
 
-    // Set initial state
+    // Set initial hardware-accelerated style
     Object.assign(el.style, {
       ...VARIANTS[variant].from,
-      transition: `opacity ${duration}ms cubic-bezier(0.22,1,0.36,1) ${delay}ms, transform ${duration}ms cubic-bezier(0.22,1,0.36,1) ${delay}ms, filter ${duration}ms cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
+      transition: `opacity ${duration}ms cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform ${duration}ms cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
+      willChange: "opacity, transform",
     });
 
     const observer = new IntersectionObserver(
@@ -89,7 +90,15 @@ export function ScrollReveal({
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             Object.assign(el.style, VARIANTS[variant].to);
-            if (once) observer.unobserve(el);
+            if (once) {
+              observer.unobserve(el);
+              // Clean up will-change after transition finishes
+              setTimeout(() => {
+                if (el) {
+                  el.style.willChange = "auto";
+                }
+              }, duration + delay + 50);
+            }
           } else if (!once) {
             Object.assign(el.style, VARIANTS[variant].from);
           }
@@ -113,9 +122,9 @@ export function ScrollReveal({
 export function StaggerReveal({
   children,
   className,
-  stagger = 80,
+  stagger = 60,
   variant = "fade-up",
-  duration = 550,
+  duration = 450,
 }: {
   children: ReactNode;
   className?: string;
@@ -140,14 +149,20 @@ export function StaggerReveal({
     items.forEach((item, i) => {
       Object.assign(item.style, {
         ...VARIANTS[variant].from,
-        transition: `opacity ${duration}ms cubic-bezier(0.22,1,0.36,1) ${i * stagger}ms, transform ${duration}ms cubic-bezier(0.22,1,0.36,1) ${i * stagger}ms, filter ${duration}ms cubic-bezier(0.22,1,0.36,1) ${i * stagger}ms`,
+        transition: `opacity ${duration}ms cubic-bezier(0.16,1,0.3,1) ${i * stagger}ms, transform ${duration}ms cubic-bezier(0.16,1,0.3,1) ${i * stagger}ms`,
+        willChange: "opacity, transform",
       });
     });
 
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          items.forEach((item) => Object.assign(item.style, VARIANTS[variant].to));
+          items.forEach((item, i) => {
+            Object.assign(item.style, VARIANTS[variant].to);
+            setTimeout(() => {
+              if (item) item.style.willChange = "auto";
+            }, duration + i * stagger + 50);
+          });
           observer.disconnect();
         }
       },

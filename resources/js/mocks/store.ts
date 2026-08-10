@@ -90,11 +90,12 @@ const endpointMap: Record<string, string> = {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // staleTime = 0: data is always considered stale, so invalidateQueries
-      // will trigger an immediate background refetch whenever called.
-      staleTime: 0,
-      // Keep cached data in memory for 2 minutes while navigating between pages.
-      gcTime: 1000 * 60 * 2,
+      // 30 seconds staleTime prevents network refetch storms during fast page navigation
+      staleTime: 1000 * 30,
+      // Keep cached data in memory for 5 minutes
+      gcTime: 1000 * 60 * 5,
+      // Avoid refetch storms on every window focus
+      refetchOnWindowFocus: false,
     },
   },
 });

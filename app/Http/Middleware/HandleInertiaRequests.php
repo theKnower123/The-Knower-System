@@ -44,6 +44,9 @@ class HandleInertiaRequests extends Middleware
             
             $userData = $user->toArray();
             $userData['client_id'] = $user->client()->value('id');
+            $userData['google_id'] = $user->google_id;
+            $userData['has_google'] = !empty($user->google_id);
+            $userData['must_connect_google'] = empty($user->google_id);
         }
 
         return [

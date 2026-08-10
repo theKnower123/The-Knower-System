@@ -19,6 +19,12 @@ Route::any('register', function () {
 Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
 Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
 Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+Route::get('auth/google/must-connect', function () {
+    if (!Illuminate\Support\Facades\Auth::check()) {
+        return redirect('/login');
+    }
+    return Inertia\Inertia::render('Auth/MustConnectGoogle');
+})->name('auth.google.must_connect');
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])

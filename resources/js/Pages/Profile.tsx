@@ -11,13 +11,16 @@ import { Camera, Save, Trash2, Smartphone, Monitor, ShieldCheck, CheckCircle2, L
 import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
 import { KnowerLogo } from "@/components/knower-logo";
 import axios from "axios";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 
 export default function ProfilePage() {
   const { t } = useTranslation();
+  const { props } = usePage();
   const user = useAuth((s) => s.user);
   const setUser = useAuth((s) => s.setUser);
   const logout = useAuth((s) => s.logout);
+
+  const isGoogleConnected = Boolean(user?.google_id || (props.auth as any)?.user?.google_id);
 
   const [name, setName] = useState(user?.name || "");
   const [email] = useState(user?.email || "");
@@ -350,7 +353,7 @@ export default function ProfilePage() {
                       <p className="text-xs text-muted-foreground">Single Sign-On & Account Sync</p>
                     </div>
                   </div>
-                  {user?.google_id ? (
+                  {isGoogleConnected ? (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Connected
                     </span>

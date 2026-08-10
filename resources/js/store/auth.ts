@@ -60,6 +60,9 @@ export const useAuth = create<AuthState>()(
               email: user.email,
               role: validRole as Role,
               client_id: user.client_id,
+              avatar: user.avatar,
+              google_id: user.google_id || null,
+              must_connect_google: !user.google_id,
             },
             token,
           });

@@ -33,6 +33,7 @@ export function AppHeader() {
   const unread = notifications.filter((n) => !n.read_at && !n.read).length;
 
   const fetchNotifications = async () => {
+    if (typeof document !== "undefined" && document.hidden) return;
     try {
       const res = await axios.get("/api/v1/notifications");
       if (res.data?.data?.data) {
@@ -41,13 +42,13 @@ export function AppHeader() {
         setNotifications(res.data.data);
       }
     } catch (e) {
-      console.error("Failed to load notifications", e);
+      // Silently handle background polling errors
     }
   };
 
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 15000); // Poll every 15s
+    const interval = setInterval(fetchNotifications, 30000); // Poll every 30s
     return () => clearInterval(interval);
   }, []);
 

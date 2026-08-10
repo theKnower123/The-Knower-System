@@ -16,6 +16,8 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "next-themes";
 import { TransitionLink, usePageTransition } from "@/components/public/PageTransitionManager";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export const Route = createFileRoute("/_public/")({
   head: () => ({
@@ -428,56 +430,75 @@ function ClientPortalShowcase() {
   );
 }
 
-// ─── Interactive Pricing Showcase Carousel ─────────────────────────────────────
-const PRICING_CATEGORIES = [
-  {
-    id: "software",
-    title: "Software Development",
-    subtitle: "Custom SaaS, enterprise web apps, & mobile platforms",
-    badge: "Most Popular",
-    plans: [
-      { name: "Starter App", blurb: "Ideal for MVP launches and simple web applications.", price: { monthly: 1499, yearly: 1299 }, features: ["Single Platform (Web/Mobile)", "Core Features & Auth", "Basic Analytics", "Standard Support"] },
-      { name: "Pro Platform", highlight: true, blurb: "Complete custom software suite built for high scalability.", price: { monthly: 3999, yearly: 3499 }, features: ["Web & Mobile Suite", "Advanced Workflow Engine", "Custom AI Integrations", "Dedicated Account Manager"] },
-      { name: "Enterprise OS", blurb: "Full-scale custom operating system tailored for large firms.", price: { monthly: 8999, yearly: 7999 }, features: ["Unlimited Microservices", "Custom Security Rules", "Dedicated Dev Cluster", "24/7 SLA & Direct Engineer Access"] },
-    ],
-  },
-  {
-    id: "hosting",
-    title: "Managed Cloud & Hosting",
-    subtitle: "Blazing fast cloud infrastructure, high availability & auto-scaling",
-    badge: "Cloud Infra",
-    plans: [
-      { name: "Cloud Starter", blurb: "High-speed isolated server for growing web apps.", price: { monthly: 99, yearly: 79 }, features: ["99.9% Uptime Guarantee", "Weekly Automated Backups", "SSL & Cloudflare CDN", "Basic DDoS Mitigation"] },
-      { name: "Scalable Cluster", highlight: true, blurb: "Multi-node Kubernetes cluster with auto-scaling.", price: { monthly: 349, yearly: 299 }, features: ["Auto-scaling Nodes", "Daily Off-site Backups", "Global Edge Cache", "Advanced DDoS Protection"] },
-      { name: "Dedicated Grid", blurb: "Isolated private cloud node for enterprise workloads.", price: { monthly: 899, yearly: 749 }, features: ["Dedicated Hardware Core", "Zero-downtime Deployments", "Custom Security Policy", "24/7 Ops Support"] },
-    ],
-  },
-  {
-    id: "maintenance",
-    title: "System Maintenance & Care",
-    subtitle: "Continuous updates, security hardening & 24/7 system health",
-    badge: "Peace of Mind",
-    plans: [
-      { name: "Essential Care", blurb: "Keep your system secure and updated monthly.", price: { monthly: 249, yearly: 199 }, features: ["Security Patching", "Monthly Health Audit", "Bug Fix Guarantee (5 hrs)", "Standard Ticketing"] },
-      { name: "Active Growth", highlight: true, blurb: "Continuous performance tuning and active updates.", price: { monthly: 699, yearly: 599 }, features: ["Bi-weekly Releases", "Performance Optimization", "Feature Tweaks (15 hrs)", "Priority Support"] },
-      { name: "Continuous OS", blurb: "Dedicated engineering team on call for your platform.", price: { monthly: 1499, yearly: 1299 }, features: ["24/7 Real-time Monitoring", "Immediate Hotfixes", "Unlimited Maintenance Hours", "Direct Slack/Teams Channel"] },
-    ],
-  },
-];
+function mapDbPlan(p: any) {
+  let parsedFeatures: string[] = [];
+  try {
+    parsedFeatures = Array.isArray(p.features)
+      ? p.features
+      : typeof p.features === 'string'
+      ? JSON.parse(p.features)
+      : [];
+  } catch (e) {
+    parsedFeatures = [];
+  }
+
+  return {
+    id: p.id,
+    name: p.name,
+    price: { monthly: Number(p.price_monthly) || 0, yearly: Number(p.price_yearly) || 0 },
+    blurb: p.blurb,
+    features: parsedFeatures,
+    highlight: !!p.highlight,
+    cta: p.cta_text || undefined,
+  };
+}
 
 function InteractivePricingShowcase() {
   const [activeCatIndex, setActiveCatIndex] = useState(0);
   const [cycle, setCycle] = useState<"monthly" | "yearly">("monthly");
   const { transitionTo } = usePageTransition();
 
-  const currentCategory = PRICING_CATEGORIES[activeCatIndex];
+  // Dynamically pull pricing data directly from /api/v1/public/pricing (Source of Truth!)
+  const { data: rawPlans, isLoading } = useQuery({
+    queryKey: ["public", "pricing"],
+    queryFn: async () => {
+      const res = await axios.get("/api/v1/public/pricing");
+      return (res.data.plans || []) as any[];
+    },
+  });
+
+  const categories = [
+    {
+      id: "software",
+      title: "Software Development",
+      subtitle: "Custom SaaS, enterprise web apps, & mobile platforms",
+      badge: "Most Popular",
+      plans: rawPlans?.filter((p) => (p.plan_type ?? "software") === "software").map(mapDbPlan) || [],
+    },
+    {
+      id: "hosting",
+      title: "Managed Cloud & Hosting",
+      subtitle: "Blazing fast cloud infrastructure, high availability & auto-scaling",
+      badge: "Cloud Infra",
+      plans: rawPlans?.filter((p) => p.plan_type === "hosting").map(mapDbPlan) || [],
+    },
+    {
+      id: "maintenance",
+      title: "System Maintenance & Care",
+      subtitle: "Continuous updates, security hardening & 24/7 system health",
+      badge: "Peace of Mind",
+      plans: rawPlans?.filter((p) => p.plan_type === "maintenance").map(mapDbPlan) || [],
+    },
+  ];
+
+  const currentCategory = categories[activeCatIndex] || categories[0];
 
   return (
     <div className="relative mx-auto max-w-6xl">
       {/* Category selector pills & Billing Toggle */}
       <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
         <div className="flex flex-wrap gap-2 rounded-full border border-border/80 bg-card/80 p-1.5 shadow-inner backdrop-blur-xl">
-          {PRICING_CATEGORIES.map((cat, idx) => {
+          {categories.map((cat, idx) => {
             const isActive = activeCatIndex === idx;
             return (
               <button
@@ -750,7 +771,7 @@ function HomePage() {
 
       {/* Ambient Particle Field Background */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-        <ParticleCanvas count={75} color={isDark ? "130,100,255" : "80,60,200"} />
+        <ParticleCanvas count={28} color={isDark ? "130,100,255" : "80,60,200"} />
       </div>
 
       {/* ─── HERO SECTION ──────────────────────────────────────────────── */}

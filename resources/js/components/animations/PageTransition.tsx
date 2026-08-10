@@ -13,11 +13,12 @@ export function PageTransition({ children, className = '' }: PageTransitionProps
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     gsap.from(container.current, {
-      y: 20,
+      y: 12,
       opacity: 0,
-      duration: 0.6,
-      ease: 'power3.out',
+      duration: 0.25,
+      ease: 'power2.out',
       clearProps: 'all'
     });
   }, { scope: container });

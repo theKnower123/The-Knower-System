@@ -14,30 +14,43 @@ class GoogleAuthController extends Controller
     /**
      * Redirect to Google's OAuth server.
      */
-    public function redirect()
+    public function redirect(Request $request)
     {
-        return $this->redirectToGoogle();
+        return $this->redirectToGoogle($request);
     }
 
-    public function redirectToGoogle()
+    public function redirectToGoogle(Request $request = null)
     {
-        $clientId = config('services.google.client_id');
-
-        if (empty($clientId)) {
-            $redirectUri = url('/auth/google/callback');
-            $targetUrl = "https://accounts.google.com/o/oauth2/v2/auth?" . http_build_query([
-                'client_id' => 'dummy-google-client-id.apps.googleusercontent.com',
-                'redirect_uri' => $redirectUri,
-                'response_type' => 'code',
-                'scope' => 'openid profile email',
-                'access_type' => 'offline',
-                'prompt' => 'select_account',
-            ]);
-
-            return redirect()->away($targetUrl);
+        // If an authenticated user is connecting their account, save user ID in session
+        if (Auth::check()) {
+            session(['google_connect_user_id' => Auth::id()]);
         }
 
-        return Socialite::driver('google')->redirect();
+        try {
+            return Socialite::driver('google')->redirect();
+        } catch (\Throwable $e) {
+            Log::error('Google OAuth Redirect Error: ' . $e->getMessage());
+
+            $clientId = config('services.google.client_id');
+            $redirectUri = config('services.google.redirect') ?: url('/auth/google/callback');
+
+            if (!empty($clientId)) {
+                $params = [
+                    'client_id'     => $clientId,
+                    'redirect_uri'  => $redirectUri,
+                    'response_type' => 'code',
+                    'scope'         => 'openid profile email',
+                    'access_type'   => 'offline',
+                    'prompt'        => 'select_account',
+                ];
+                return redirect()->away('https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query($params));
+            }
+
+            if (Auth::check()) {
+                return redirect('/profile?error=' . urlencode('Google OAuth credentials not configured in system (.env).'));
+            }
+            return redirect('/login?error=' . urlencode('Could not initiate Google OAuth: ' . $e->getMessage()));
+        }
     }
 
     /**
@@ -51,44 +64,65 @@ class GoogleAuthController extends Controller
     public function handleGoogleCallback(Request $request)
     {
         try {
-            $clientId = config('services.google.client_id');
-            $clientSecret = config('services.google.client_secret');
-
-            if (!empty($clientId) && !empty($clientSecret)) {
-                $googleUser = Socialite::driver('google')->user();
-                $email = $googleUser->getEmail();
-                $googleId = $googleUser->getId();
-                $avatar = $googleUser->getAvatar();
-            } else {
-                $email = $request->input('email', Auth::user()?->email ?? 'admin@knower.os');
-                $googleId = $request->input('google_id', 'google_id_demo');
-                $avatar = null;
+            if ($request->has('error')) {
+                $err = $request->input('error_description', $request->input('error'));
+                if (Auth::check()) {
+                    return redirect('/profile?error=' . urlencode('Google sign-in cancelled or failed: ' . $err));
+                }
+                return redirect('/login?error=' . urlencode('Google sign-in cancelled or failed: ' . $err));
             }
 
-            // Case A: User is currently logged in (linking account from Profile)
-            if (Auth::check()) {
-                /** @var User $currentUser */
-                $currentUser = Auth::user();
+            // Retrieve Google User
+            try {
+                $googleUser = Socialite::driver('google')->user();
+            } catch (\Throwable $socErr) {
+                /** @var \Laravel\Socialite\Two\AbstractProvider $googleDriver */
+                $googleDriver = Socialite::driver('google');
+                $googleUser = $googleDriver->stateless()->user();
+            }
+
+            $email    = $googleUser->getEmail();
+            $googleId = $googleUser->getId();
+            $avatar   = $googleUser->getAvatar();
+
+            $connectUserId = session('google_connect_user_id') ?? Auth::id();
+            $currentUser = $connectUserId ? User::withTrashed()->find($connectUserId) : null;
+
+            // Case A: User is currently linking account while logged in
+            if ($currentUser) {
+                // Check for collision with another user
+                $conflict = User::where('google_id', $googleId)
+                    ->where('id', '!=', $currentUser->id)
+                    ->first();
+
+                if ($conflict) {
+                    return redirect('/profile?error=' . urlencode("This Google account is already linked to {$conflict->email}."));
+                }
+
                 $currentUser->google_id = $googleId;
                 $currentUser->must_connect_google = false;
-                if ($avatar && !$currentUser->avatar) {
+                if ($avatar && empty($currentUser->avatar)) {
                     $currentUser->avatar = $avatar;
                 }
                 $currentUser->save();
 
-                return redirect('/profile?google_connected=1');
+                if (!Auth::check()) {
+                    Auth::login($currentUser);
+                }
+
+                session()->forget('google_connect_user_id');
+
+                return redirect('/dashboard?google_connected=1');
             }
 
-            // Case B: User logging in via Google
+            // Case B: User logging in via Google from Login Page
             $user = User::withTrashed()
-                ->where(function ($q) use ($googleId, $email) {
-                    $q->where('google_id', $googleId)
-                      ->orWhere('email', $email);
-                })
+                ->where('google_id', $googleId)
+                ->orWhere('email', $email)
                 ->first();
 
             if (!$user) {
-                return redirect('/login?error=' . urlencode('No registered account found for this Google email. Accounts are created internally.'));
+                return redirect('/login?error=' . urlencode("No registered account found for {$email}. Accounts must be provisioned internally by an administrator."));
             }
 
             if ($user->trashed()) {
@@ -97,7 +131,7 @@ class GoogleAuthController extends Controller
 
             $user->google_id = $googleId;
             $user->must_connect_google = false;
-            if ($avatar && !$user->avatar) {
+            if ($avatar && empty($user->avatar)) {
                 $user->avatar = $avatar;
             }
             $user->save();
@@ -107,12 +141,12 @@ class GoogleAuthController extends Controller
 
             return redirect()->intended('/dashboard');
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Google Auth Error: ' . $e->getMessage());
             if (Auth::check()) {
                 return redirect('/profile?error=' . urlencode('Google authentication failed: ' . $e->getMessage()));
             }
-            return redirect('/login?error=' . urlencode('Google authentication failed.'));
+            return redirect('/login?error=' . urlencode('Google authentication failed: ' . $e->getMessage()));
         }
     }
 }
