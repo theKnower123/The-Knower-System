@@ -15,6 +15,17 @@ use Laravel\Sanctum\HasApiTokens;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string|null $phone
+ * @property string $role
+ * @property string|null $avatar
+ * @property string|null $password
+ * @property bool $is_frozen
+ * @property string $user_type_label
+ */
 class User extends Authenticatable
 {
     use SoftDeletes;

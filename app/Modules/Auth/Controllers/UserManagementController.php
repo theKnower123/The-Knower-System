@@ -451,22 +451,22 @@ class UserManagementController extends Controller
         try {
             /** @var User $user */
             $user = User::create([
-                'name'        => $request->name,
-                'email'       => $request->email,
-                'password'    => Hash::make($request->password),
-                'role'        => $request->role,
-                'phone'       => $request->phone,
-                'avatar'      => $request->avatar,
-                'permissions' => $request->permissions ?? null,
+                'name'        => $request->input('name'),
+                'email'       => $request->input('email'),
+                'password'    => Hash::make($request->input('password')),
+                'role'        => $request->input('role'),
+                'phone'       => $request->input('phone'),
+                'avatar'      => $request->input('avatar'),
+                'permissions' => $request->input('permissions'),
             ]);
 
             // Create linked Client if role is client
             if ($user->role === 'client') {
                 Client::create([
-                    'name'     => $request->company_name ?: $user->name,
+                    'name'     => $request->input('company_name') ?: $user->name,
                     'email'    => $user->email,
                     'phone'    => $user->phone,
-                    'position' => $request->position ?? 'Client Representative',
+                    'position' => $request->input('position', 'Client Representative'),
                     'user_id'  => $user->id,
                     'status'   => 'active',
                 ]);
@@ -474,11 +474,11 @@ class UserManagementController extends Controller
                 // Create linked Employee record for staff roles
                 Employee::create([
                     'user_id'    => $user->id,
-                    'department' => $request->department ?? 'General',
-                    'position'   => $request->position ?? ucwords(str_replace('_', ' ', $user->role)),
-                    'salary'     => $request->salary ?? 0,
-                    'hire_date'  => $request->hire_date ?? now(),
-                    'id_number'  => $request->id_number,
+                    'department' => $request->input('department', 'General'),
+                    'position'   => $request->input('position', ucwords(str_replace('_', ' ', $user->role))),
+                    'salary'     => $request->input('salary', 0),
+                    'hire_date'  => $request->input('hire_date', now()),
+                    'id_number'  => $request->input('id_number'),
                     'status'     => 'active',
                 ]);
             }
@@ -540,11 +540,11 @@ class UserManagementController extends Controller
             $user->phone = $request->input('phone', $user->phone);
 
             if ($request->has('avatar')) {
-                $user->avatar = $request->avatar;
+                $user->avatar = $request->input('avatar');
             }
 
             if ($request->filled('password')) {
-                $user->password = Hash::make($request->password);
+                $user->password = Hash::make($request->input('password'));
             }
 
             $user->save();
@@ -554,17 +554,17 @@ class UserManagementController extends Controller
                 $client = Client::withTrashed()->where('user_id', $user->id)->first();
                 if ($client) {
                     $client->update([
-                        'name'     => $request->company_name ?: $user->name,
+                        'name'     => $request->input('company_name') ?: $user->name,
                         'email'    => $user->email,
                         'phone'    => $user->phone,
                         'position' => $request->input('position', $client->position),
                     ]);
                 } else {
                     Client::create([
-                        'name'     => $request->company_name ?: $user->name,
+                        'name'     => $request->input('company_name') ?: $user->name,
                         'email'    => $user->email,
                         'phone'    => $user->phone,
-                        'position' => $request->position ?? 'Client Representative',
+                        'position' => $request->input('position', 'Client Representative'),
                         'user_id'  => $user->id,
                         'status'   => 'active',
                     ]);
@@ -583,11 +583,11 @@ class UserManagementController extends Controller
                 } else {
                     Employee::create([
                         'user_id'    => $user->id,
-                        'department' => $request->department ?? 'General',
-                        'position'   => $request->position ?? ucwords(str_replace('_', ' ', $user->role)),
-                        'salary'     => $request->salary ?? 0,
-                        'hire_date'  => $request->hire_date ?? now(),
-                        'id_number'  => $request->id_number,
+                        'department' => $request->input('department', 'General'),
+                        'position'   => $request->input('position', ucwords(str_replace('_', ' ', $user->role))),
+                        'salary'     => $request->input('salary', 0),
+                        'hire_date'  => $request->input('hire_date', now()),
+                        'id_number'  => $request->input('id_number'),
                         'status'     => 'active',
                     ]);
                 }
@@ -728,8 +728,8 @@ class UserManagementController extends Controller
             ], 422);
         }
 
-        $action = $request->action;
-        $ids = array_diff($request->ids, [$request->user()->id]); // Exclude current user
+        $action = $request->input('action');
+        $ids = array_diff($request->input('ids', []), [$request->user()->id]); // Exclude current user
 
         if (empty($ids)) {
             return response()->json([
@@ -846,7 +846,7 @@ class UserManagementController extends Controller
         $this->authorizeSuperAdmin($request);
 
         $validator = Validator::make($request->all(), [
-            'file'      => 'nullable|file|mimes:csv,txt,xlsx,xls',
+            'file'      => 'nullable|file|mimes:csv,txt,xlsx,xls|max:20480',
             'rows'      => 'nullable|array',
             'user_type' => 'nullable|string',
         ]);
