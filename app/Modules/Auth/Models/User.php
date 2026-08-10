@@ -20,6 +20,15 @@ class User extends Authenticatable
     use SoftDeletes;
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected static function booted()
+    {
+        static::deleted(function ($user) {
+            if ($user->isForceDeleting()) return;
+            // Revoke active API tokens
+            $user->tokens()->delete();
+        });
+    }
+
     protected static function newFactory()
     {
         return \Database\Factories\UserFactory::new();

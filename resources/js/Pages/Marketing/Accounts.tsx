@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { ConfirmDialog, type ConfirmDialogState } from "@/components/confirm-dialog";
 
 interface SocialAccount {
   id: number;
@@ -94,10 +95,25 @@ export default function SocialAccountsPage({ accounts }: Props) {
     );
   };
 
+  const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>({
+    isOpen: false,
+    title: "",
+    description: "",
+    onConfirm: () => {},
+  });
+
   const handleDisconnect = (id: number) => {
-    if (confirm("Are you sure you want to disconnect this account? Historical post records will be preserved.")) {
-      router.post(`/marketing/accounts/${id}/disconnect`);
-    }
+    setConfirmDialog({
+      isOpen: true,
+      title: "Disconnect Social Account",
+      description: "Are you sure you want to disconnect this social account? Historical post records will be preserved.",
+      confirmText: "Disconnect Account",
+      variant: "destructive",
+      icon: "warning",
+      onConfirm: () => {
+        router.post(`/marketing/accounts/${id}/disconnect`);
+      },
+    });
   };
 
   const getPlatformIcon = (plt: string) => {
@@ -386,6 +402,11 @@ export default function SocialAccountsPage({ accounts }: Props) {
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        dialog={confirmDialog}
+        onClose={() => setConfirmDialog((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 }

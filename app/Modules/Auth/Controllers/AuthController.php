@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Modules\Auth\Models\User;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -18,64 +19,88 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        try {
-            $user = User::where('email', $request->email)->first();
+        // Check if user account is soft deleted / frozen
+        $trashedUser = User::withTrashed()->where('email', $request->email)->first();
 
-            if (!$user || !Hash::check($request->password, $user->password)) {
-                \Log::warning('Failed login attempt for: ' . $request->email);
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Invalid credentials. Please check your email and password.',
-                ], 401);
-            }
-
-            // Log the user in for the web session (for Inertia)
-            try {
-                Auth::login($user);
-                if ($request->hasSession()) {
-                    $request->session()->regenerate();
-                }
-            } catch (\Throwable $se) {
-                \Log::warning('Session login warning: ' . $se->getMessage());
-            }
-
-            // Give full role-based permissions or token
-            $token = $user->createToken('auth_token')->plainTextToken;
-
-            $clientId = null;
-            try {
-                $clientId = $user->client()->value('id');
-            } catch (\Throwable $ce) {
-                // Ignore client lookup error if client table not set up
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Login successful.',
-                'data' => [
-                    'token' => $token,
-                    'user' => [
-                        'id' => $user->id,
-                        'name' => $user->name,
-                        'email' => $user->email,
-                        'role' => $user->role ?? 'client',
-                        'client_id' => $clientId,
-                    ]
-                ]
-            ]);
-        } catch (\Throwable $e) {
-            \Log::error('Login error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+        if ($trashedUser && $trashedUser->trashed()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Server Error (500): ' . $e->getMessage(),
-            ], 500);
+                'message' => 'Your account has been frozen by the administrator.',
+            ], 403);
         }
+
+        if (!$trashedUser) {
+            Log::error('Login failed for ' . $request->email);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials.',
+            ], 401);
+        }
+
+        $user = $trashedUser;
+
+        if (!Hash::check($request->password, $user->password)) {
+            \App\Services\UserActivityLogger::log(
+                $user->id,
+                'Failed Login Attempt',
+                'security',
+                "User Account #{$user->id}",
+                "Failed authentication attempt with invalid password.",
+                $user->id,
+                $user->name
+            );
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials.',
+            ], 401);
+        }
+
+        // Log the user in for the web session (if session middleware is enabled)
+        Auth::login($user);
+        if ($request->hasSession()) {
+            $request->session()->regenerate();
+        }
+
+        // Record last_login_at
+        $user->forceFill(['last_login_at' => now()])->save();
+
+        \App\Services\UserActivityLogger::log(
+            $user->id,
+            'Successful Login',
+            'auth',
+            "User Account #{$user->id}",
+            "User authenticated successfully via standard credentials.",
+            $user->id,
+            $user->name
+        );
+
+        // Give full role-based permissions or token
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful.',
+            'data' => [
+                'token' => $token,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role ?? 'client',
+                    'client_id' => $user->client ? $user->client->id : null,
+                ]
+            ]
+        ]);
     }
 
     public function logout(Request $request)
     {
         if ($request->user()) {
-            $request->user()->currentAccessToken()->delete();
+            $token = $request->user()->currentAccessToken();
+            if ($token && method_exists($token, 'delete')) {
+                $token->delete();
+            }
         }
 
         Auth::guard('web')->logout();

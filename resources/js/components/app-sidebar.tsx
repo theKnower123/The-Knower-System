@@ -73,6 +73,13 @@ const groups: Group[] = [
     items: [{ to: "/dashboard", labelKey: "nav.dashboard", icon: LayoutDashboard, perm: "dashboard.view" }],
   },
   {
+    labelKey: "User Management",
+    items: [
+      { to: "/admin/users", labelKey: "User Management", icon: Users, perm: "user.manage" },
+      { to: "/admin/activity-logs", labelKey: "Audit & Activity Logs", icon: Activity, perm: "user.manage" },
+    ],
+  },
+  {
     labelKey: "nav.crm",
     items: [
       { to: "/crm/leads",     labelKey: "nav.leads",     icon: UserSquare2, perm: "lead.manage" },
@@ -209,6 +216,16 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         {groups.map((g) => {
+          // User Management is strictly for Super Admin
+          if (g.labelKey === 'User Management' && role !== 'super_admin') {
+            return null;
+          }
+
+          // Hide Client Portal completely for Super Admin and all non-client internal staff
+          if (g.labelKey === 'nav.clientPortal' && role !== 'client') {
+            return null;
+          }
+
           // If the user is a client, explicitly hide all groups except Dashboard and Client Portal
           if (role === 'client' && g.labelKey !== 'nav.dashboard' && g.labelKey !== 'nav.clientPortal') {
             return null;

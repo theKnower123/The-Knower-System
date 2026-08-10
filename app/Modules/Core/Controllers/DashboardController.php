@@ -48,7 +48,7 @@ class DashboardController extends Controller
     /**
      * Admin/CEO/Manager/Super Admin dashboard — full system overview.
      */
-    protected function adminDashboard($user)
+    protected function adminDashboard(User $user)
     {
         $now = now();
 
@@ -69,9 +69,9 @@ class DashboardController extends Controller
             'monthly_revenue'        => Invoice::where('status', 'paid')
                                               ->whereMonth('updated_at', $now->month)
                                               ->whereYear('updated_at', $now->year)
-                                              ->sum('total_amount'),
+                                              ->sum('amount'),
             'unpaid_invoices'        => Invoice::where('status', 'sent')->count(),
-            'unpaid_invoices_amount' => Invoice::where('status', 'sent')->sum('total_amount'),
+            'unpaid_invoices_amount' => Invoice::where('status', 'sent')->sum('amount'),
             'open_tickets'           => Ticket::whereIn('status', ['open', 'in_progress'])->count(),
             'online_employees'       => User::where('last_login_at', '>=', $now->subMinutes(15))
                                            ->count(),
@@ -100,7 +100,7 @@ class DashboardController extends Controller
                 'revenue' => Invoice::where('status', 'paid')
                     ->whereYear('updated_at', $date->year)
                     ->whereMonth('updated_at', $date->month)
-                    ->sum('total_amount'),
+                    ->sum('amount'),
             ];
         });
 
@@ -124,7 +124,7 @@ class DashboardController extends Controller
     /**
      * Client Portal dashboard — only the client's own data.
      */
-    protected function clientDashboard($user)
+    protected function clientDashboard(User $user)
     {
         $client = Client::where('user_id', $user->id)->first();
 
@@ -193,7 +193,7 @@ class DashboardController extends Controller
     /**
      * Developer/Designer/QA dashboard — their assigned tasks.
      */
-    protected function developerDashboard($user)
+    protected function developerDashboard(User $user)
     {
         $now = now();
 
@@ -228,7 +228,7 @@ class DashboardController extends Controller
     /**
      * HR dashboard — employee and attendance overview.
      */
-    protected function hrDashboard($user)
+    protected function hrDashboard(User $user)
     {
         $now = now();
 

@@ -1,9 +1,0 @@
-Add this ONE line inside routes/web.php, inside the same authenticated
-route group that wraps your /dashboard, /crm, /projects, /admin/errors
-routes (right before that group's closing "});"):
-
-    require __DIR__.'/modules-new.php';
-
-That's it -- modules-new.php already has all the Marketing, CMS Landing
-Builder, Support KB, AI Suggestions, Hosting Deployments, and Finance
-Timesheets routes defined and ready.

@@ -55,6 +55,24 @@ class Employee extends Model
 }
 
 
+    protected static function booted()
+    {
+        static::deleted(function ($employee) {
+            if ($employee->isForceDeleting()) return;
+            if ($employee->user_id) {
+                $user = User::find($employee->user_id);
+                $user?->delete();
+            }
+        });
+
+        static::restored(function ($employee) {
+            if ($employee->user_id) {
+                $user = User::withTrashed()->find($employee->user_id);
+                $user?->restore();
+            }
+        });
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->logAll()->logOnlyDirty();

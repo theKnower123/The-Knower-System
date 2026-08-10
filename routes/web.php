@@ -24,6 +24,14 @@ Route::get('/forgot-password', function () {
 })->name('password.request');
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    // Super Admin Only: Centralized User Management
+    Route::get('/admin/users', function () {
+        if (request()->user()?->role !== 'super_admin') {
+            abort(403, 'User Management is accessible exclusively to Super Admin.');
+        }
+        return Inertia::render('Admin/UserManagement');
+    });
+
     // Basic authenticated routes
     Route::get('/profile', function () { return Inertia::render('Profile'); });
     Route::get('/portal', function () { return Inertia::render('Portal'); });
@@ -150,10 +158,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/admin/errors/analytics', [\App\Modules\Core\Controllers\ErrorManagementController::class, 'analytics'])->name('errors.analytics');
         Route::get('/admin/errors/developer', [\App\Modules\Core\Controllers\ErrorManagementController::class, 'developerCenter'])->name('errors.developer');
         Route::get('/admin/errors/{id}', [\App\Modules\Core\Controllers\ErrorManagementController::class, 'show'])->name('errors.show');
+        Route::get('/admin/activity-logs', function () { return Inertia::render('Admin/ActivityLog'); });
     });
 });
 Route::fallback(function (\Illuminate\Http\Request $request) {
-    $erpPrefixes = ['/dashboard', '/crm', '/projects', '/tasks', '/bugs', '/calendar', '/time-logs', '/finance', '/hosting', '/support', '/hr', '/reports', '/cms', '/marketing', '/ai', '/settings', '/profile', '/portal', '/notifications'];
+    $erpPrefixes = ['/dashboard', '/crm', '/projects', '/tasks', '/bugs', '/calendar', '/time-logs', '/finance', '/hosting', '/support', '/hr', '/reports', '/cms', '/marketing', '/ai', '/settings', '/profile', '/portal', '/notifications', '/admin'];
     
     foreach ($erpPrefixes as $prefix) {
         if (str_starts_with($request->getPathInfo(), $prefix)) {

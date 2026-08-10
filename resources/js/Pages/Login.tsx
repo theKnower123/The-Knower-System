@@ -43,6 +43,12 @@ export default function LoginPage() {
     } catch (e) {
       console.error("Error parsing last account:", e);
     }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorParam = urlParams.get("error");
+    if (errorParam) {
+      toast.error(errorParam);
+    }
   }, []);
 
   const selectLastAccount = (acc: LastAccount) => {
@@ -78,8 +84,8 @@ export default function LoginPage() {
       toast.success("Login successful!");
       router.visit("/dashboard");
     } catch (error: any) {
-      const serverMessage = error?.response?.data?.message || "Login failed. Check your credentials.";
-      toast.error(serverMessage);
+      const errMsg = error?.response?.data?.message || "Login failed. Check your credentials.";
+      toast.error(errMsg);
     } finally {
       setLoading(false);
     }

@@ -50,18 +50,25 @@ class GoogleAuthController extends Controller
                 $googleId = $googleUser->getId();
                 $avatar = $googleUser->getAvatar();
             } else {
-                $email = $request->get('email', 'admin@knower.os');
-                $googleId = $request->get('google_id', 'google_id_demo');
+                $email = $request->input('email', 'admin@knower.os');
+                $googleId = $request->input('google_id', 'google_id_demo');
                 $avatar = null;
             }
 
             // Find user in system - accounts are created internally, no registration
-            $user = User::where('google_id', $googleId)
-                ->orWhere('email', $email)
+            $user = User::withTrashed()
+                ->where(function ($q) use ($googleId, $email) {
+                    $q->where('google_id', $googleId)
+                      ->orWhere('email', $email);
+                })
                 ->first();
 
             if (!$user) {
-                return redirect('/login')->with('error', 'No registered account found for this Google email. Accounts are created internally.');
+                return redirect('/login?error=' . urlencode('No registered account found for this Google email. Accounts are created internally.'));
+            }
+
+            if ($user->trashed()) {
+                return redirect('/login?error=' . urlencode('Your account has been frozen by the administrator.'));
             }
 
             $user->google_id = $googleId;

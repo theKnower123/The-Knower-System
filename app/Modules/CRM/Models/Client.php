@@ -44,6 +44,32 @@ class Client extends Model
         return !is_null($this->user_id);
     }
 
+    protected static function booted()
+    {
+        static::deleted(function ($client) {
+            if ($client->isForceDeleting()) return;
+            $user = null;
+            if ($client->user_id) {
+                $user = User::find($client->user_id);
+            }
+            if (!$user && $client->email) {
+                $user = User::where('email', $client->email)->first();
+            }
+            $user?->delete();
+        });
+
+        static::restored(function ($client) {
+            $user = null;
+            if ($client->user_id) {
+                $user = User::withTrashed()->find($client->user_id);
+            }
+            if (!$user && $client->email) {
+                $user = User::withTrashed()->where('email', $client->email)->first();
+            }
+            $user?->restore();
+        });
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()->logAll()->logOnlyDirty();

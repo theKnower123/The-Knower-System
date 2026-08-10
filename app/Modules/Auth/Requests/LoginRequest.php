@@ -41,6 +41,14 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        $trashedUser = \App\Modules\Auth\Models\User::withTrashed()->where('email', $this->email)->first();
+        if ($trashedUser && $trashedUser->trashed()) {
+            RateLimiter::hit($this->throttleKey());
+            throw ValidationException::withMessages([
+                'email' => 'Your account has been frozen by the administrator.',
+            ]);
+        }
+
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 

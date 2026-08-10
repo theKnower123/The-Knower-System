@@ -99,6 +99,26 @@ Route::prefix('v1')->group(function () {
         Route::get('auth/me', [\App\Modules\Auth\Controllers\AuthController::class, 'me']);
 
         // ── Core / Admin ──────────────────────────────────────────────────────────
+        // Super Admin Centralized User Management
+        Route::prefix('admin/users')->group(function () {
+            Route::get('/', [\App\Modules\Auth\Controllers\UserManagementController::class, 'index']);
+            Route::get('/excel-template', [\App\Modules\Auth\Controllers\UserManagementController::class, 'downloadExcelTemplate']);
+            Route::post('/parse-excel', [\App\Modules\Auth\Controllers\UserManagementController::class, 'parseExcel']);
+            Route::post('/import-excel', [\App\Modules\Auth\Controllers\UserManagementController::class, 'importExcel']);
+            Route::post('/confirm-import', [\App\Modules\Auth\Controllers\UserManagementController::class, 'confirmImport']);
+            Route::post('/download-import-report', [\App\Modules\Auth\Controllers\UserManagementController::class, 'downloadImportReport']);
+            Route::post('/bulk-action', [\App\Modules\Auth\Controllers\UserManagementController::class, 'bulkAction']);
+            Route::get('/{id}/activity-logs', [\App\Modules\Auth\Controllers\UserManagementController::class, 'activityLogs']);
+            Route::get('/{id}', [\App\Modules\Auth\Controllers\UserManagementController::class, 'show']);
+            Route::post('/', [\App\Modules\Auth\Controllers\UserManagementController::class, 'store']);
+            Route::put('/{id}', [\App\Modules\Auth\Controllers\UserManagementController::class, 'update']);
+            Route::delete('/{id}', [\App\Modules\Auth\Controllers\UserManagementController::class, 'destroy']);
+            Route::delete('/{id}/force', [\App\Modules\Auth\Controllers\UserManagementController::class, 'forceDelete']);
+            Route::post('/{id}/restore', [\App\Modules\Auth\Controllers\UserManagementController::class, 'restore']);
+        });
+
+        Route::get('admin/global-activity-logs', [\App\Modules\Auth\Controllers\UserManagementController::class, 'globalActivityLogs']);
+
         Route::get('permissions', [RoleController::class, 'permissions']);
         Route::apiResource('roles', RoleController::class);
         
