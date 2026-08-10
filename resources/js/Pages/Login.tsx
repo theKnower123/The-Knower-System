@@ -46,9 +46,10 @@ export default function LoginPage() {
   }, []);
 
   const selectLastAccount = (acc: LastAccount) => {
-    setEmail(acc.email);
+    const targetEmail = acc.email || "omarmehawed@knoweros.com";
+    setEmail(targetEmail);
     setIsLastAccountSelected(true);
-    toast.success(`Selected ${acc.name || acc.email}`);
+    toast.success(`Selected ${acc.name || targetEmail}`);
     setTimeout(() => {
       passwordInputRef.current?.focus();
     }, 120);
@@ -300,7 +301,7 @@ export default function LoginPage() {
                         {lastAccount.name || "Welcome Back"}
                       </div>
                       <div className="text-[11px] font-medium text-primary truncate">
-                        Type password to continue
+                        {lastAccount.email ? `${lastAccount.email} • ` : ""}Type password to continue
                       </div>
                     </div>
                   </div>

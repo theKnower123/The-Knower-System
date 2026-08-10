@@ -23,7 +23,7 @@ class ReportController extends Controller
             $revenue  = Invoice::where('status', 'paid')
                 ->whereYear('updated_at', $year)
                 ->whereMonth('updated_at', $month)
-                ->sum('total_amount');
+                ->sum('amount');
 
             $expenses = Expense::whereYear('created_at', $year)
                 ->whereMonth('created_at', $month)
@@ -42,7 +42,7 @@ class ReportController extends Controller
             'message' => 'Revenue report generated.',
             'data' => [
                 'year'          => $year,
-                'total_revenue' => Invoice::where('status', 'paid')->whereYear('updated_at', $year)->sum('total_amount'),
+                'total_revenue' => Invoice::where('status', 'paid')->whereYear('updated_at', $year)->sum('amount'),
                 'total_expenses'=> Expense::whereYear('created_at', $year)->sum('amount'),
                 'monthly'       => $monthly,
             ]
@@ -117,9 +117,9 @@ class ReportController extends Controller
     public function finance()
     {
         $summary = [
-            'total_invoiced'   => Invoice::sum('total_amount'),
-            'total_paid'       => Invoice::where('status', 'paid')->sum('total_amount'),
-            'total_unpaid'     => Invoice::where('status', 'sent')->sum('total_amount'),
+            'total_invoiced'   => Invoice::sum('amount'),
+            'total_paid'       => Invoice::where('status', 'paid')->sum('amount'),
+            'total_unpaid'     => Invoice::where('status', 'sent')->sum('amount'),
             'total_expenses'   => Expense::sum('amount'),
             'total_payments'   => Payment::sum('amount'),
             'unpaid_invoices'  => Invoice::where('status', 'sent')->count(),
