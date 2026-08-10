@@ -41,6 +41,7 @@ import {
   LayoutTemplate,
   CalendarCheck,
   Activity,
+  Bell,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
@@ -183,6 +184,10 @@ const groups: Group[] = [
       { to: "/crm/contracts", labelKey: "nav.contracts", icon: Handshake, perm: "client_portal.view" },
       { to: "/support/tickets", labelKey: "Support Tickets", icon: Ticket, perm: "client_portal.view" },
     ],
+  },
+  {
+    labelKey: "Notifications",
+    items: [{ to: "/notifications", labelKey: "Notifications", icon: Bell }],
   },
   {
     labelKey: "nav.settings",

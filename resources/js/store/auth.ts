@@ -14,8 +14,11 @@ export interface SessionUser {
   phone?: string;
   address?: string;
   idNumber?: string;
+  id_number?: string;
   department?: string;
   position?: string;
+  must_connect_google?: boolean;
+  google_id?: string | null;
 }
 
 interface AuthState {

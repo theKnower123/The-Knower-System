@@ -56,6 +56,8 @@ class User extends Authenticatable
         'role',
         'permissions',
         'status',
+        'created_by',
+        'must_connect_google',
         'last_login_at',
     ];
 
@@ -78,10 +80,16 @@ class User extends Authenticatable
             'last_login_at'     => 'datetime',
             'password'          => 'hashed',
             'permissions'       => 'array',
+            'must_connect_google' => 'boolean',
         ];
     }
 
     // ─── Relationships ─────────────────────────────────────────────────────
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 
     public function employee()
     {

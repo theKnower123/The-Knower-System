@@ -61,6 +61,17 @@ export default function ProfilePage() {
 
   useEffect(() => {
     fetchDevices();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("google_connected") === "1") {
+      toast.success("Google account successfully connected!");
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    const err = urlParams.get("error");
+    if (err) {
+      toast.error(err);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, []);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -133,7 +144,7 @@ export default function ProfilePage() {
         toast.success(res.data.message);
         if (res.data.is_logged_out) {
           await logout();
-          window.location.href = "/login?message=" + urlencode("You have logged out of your current device.");
+          window.location.href = "/login?message=" + encodeURIComponent("You have logged out of your current device.");
         } else {
           fetchDevices();
         }
@@ -324,7 +335,7 @@ export default function ProfilePage() {
             <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
               <h3 className="mb-4 font-display text-lg font-bold">Connected Accounts</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Link your social or developer accounts for single sign-on.
+                Link your social or developer accounts for single sign-on and fast authentication.
               </p>
               <div className="space-y-4 max-w-2xl">
                 <div className="flex items-center justify-between border-b border-border pb-4">
@@ -339,17 +350,23 @@ export default function ProfilePage() {
                       <p className="text-xs text-muted-foreground">Single Sign-On & Account Sync</p>
                     </div>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="font-semibold"
-                    onClick={() => {
-                      toast.success("Redirecting to Google OAuth...");
-                      window.location.href = "/auth/google";
-                    }}
-                  >
-                    Connect Google
-                  </Button>
+                  {user?.google_id ? (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Connected
+                    </span>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="font-semibold"
+                      onClick={() => {
+                        toast.success("Redirecting to Google OAuth...");
+                        window.location.href = "/auth/google/redirect";
+                      }}
+                    >
+                      Connect Google
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

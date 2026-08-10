@@ -4,6 +4,7 @@ use App\Modules\Auth\Controllers\AuthenticatedSessionController;
 use App\Modules\Auth\Controllers\ConfirmablePasswordController;
 use App\Modules\Auth\Controllers\EmailVerificationNotificationController;
 use App\Modules\Auth\Controllers\EmailVerificationPromptController;
+use App\Modules\Auth\Controllers\GoogleAuthController;
 use App\Modules\Auth\Controllers\NewPasswordController;
 use App\Modules\Auth\Controllers\PasswordController;
 use App\Modules\Auth\Controllers\PasswordResetLinkController;
@@ -14,17 +15,16 @@ Route::any('register', function () {
     abort(404);
 });
 
+// Google OAuth routes accessible by both guests (for login) and authenticated users (for linking)
+Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
+Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
+Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
-
-    Route::get('auth/google', [\App\Modules\Auth\Controllers\GoogleAuthController::class, 'redirectToGoogle'])
-        ->name('auth.google');
-
-    Route::get('auth/google/callback', [\App\Modules\Auth\Controllers\GoogleAuthController::class, 'handleGoogleCallback'])
-        ->name('auth.google.callback');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');

@@ -14,6 +14,11 @@ class GoogleAuthController extends Controller
     /**
      * Redirect to Google's OAuth server.
      */
+    public function redirect()
+    {
+        return $this->redirectToGoogle();
+    }
+
     public function redirectToGoogle()
     {
         $clientId = config('services.google.client_id');
@@ -38,6 +43,11 @@ class GoogleAuthController extends Controller
     /**
      * Handle the callback from Google.
      */
+    public function callback(Request $request)
+    {
+        return $this->handleGoogleCallback($request);
+    }
+
     public function handleGoogleCallback(Request $request)
     {
         try {
@@ -50,12 +60,26 @@ class GoogleAuthController extends Controller
                 $googleId = $googleUser->getId();
                 $avatar = $googleUser->getAvatar();
             } else {
-                $email = $request->input('email', 'admin@knower.os');
+                $email = $request->input('email', Auth::user()?->email ?? 'admin@knower.os');
                 $googleId = $request->input('google_id', 'google_id_demo');
                 $avatar = null;
             }
 
-            // Find user in system - accounts are created internally, no registration
+            // Case A: User is currently logged in (linking account from Profile)
+            if (Auth::check()) {
+                /** @var User $currentUser */
+                $currentUser = Auth::user();
+                $currentUser->google_id = $googleId;
+                $currentUser->must_connect_google = false;
+                if ($avatar && !$currentUser->avatar) {
+                    $currentUser->avatar = $avatar;
+                }
+                $currentUser->save();
+
+                return redirect('/profile?google_connected=1');
+            }
+
+            // Case B: User logging in via Google
             $user = User::withTrashed()
                 ->where(function ($q) use ($googleId, $email) {
                     $q->where('google_id', $googleId)
@@ -72,6 +96,7 @@ class GoogleAuthController extends Controller
             }
 
             $user->google_id = $googleId;
+            $user->must_connect_google = false;
             if ($avatar && !$user->avatar) {
                 $user->avatar = $avatar;
             }
@@ -84,7 +109,10 @@ class GoogleAuthController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Google Auth Error: ' . $e->getMessage());
-            return redirect('/login')->with('error', 'Google authentication failed.');
+            if (Auth::check()) {
+                return redirect('/profile?error=' . urlencode('Google authentication failed: ' . $e->getMessage()));
+            }
+            return redirect('/login?error=' . urlencode('Google authentication failed.'));
         }
     }
 }

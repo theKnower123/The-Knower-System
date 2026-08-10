@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
+use App\Support\SystemUniquenessChecker;
+
 class UserManagementController extends Controller
 {
     /**
@@ -39,7 +41,7 @@ class UserManagementController extends Controller
         $status = $request->input('status', 'all'); // 'all', 'active', 'trashed'
         $perPage = (int) $request->input('per_page', 20);
 
-        $query = User::withTrashed()->with(['client', 'employee']);
+        $query = User::withTrashed()->with(['client', 'employee', 'creator']);
 
         // Filter by Status
         if ($status === 'active') {
@@ -423,6 +425,25 @@ class UserManagementController extends Controller
     {
         $this->authorizeSuperAdmin($request);
 
+        $email = $request->input('email');
+        $phone = $request->input('phone');
+
+        if ($emailErr = SystemUniquenessChecker::checkEmail($email)) {
+            return response()->json([
+                'success' => false,
+                'message' => $emailErr,
+                'errors'  => ['email' => [$emailErr]],
+            ], 422);
+        }
+
+        if ($phoneErr = SystemUniquenessChecker::checkPhone($phone)) {
+            return response()->json([
+                'success' => false,
+                'message' => $phoneErr,
+                'errors'  => ['phone' => [$phoneErr]],
+            ], 422);
+        }
+
         $validator = Validator::make($request->all(), [
             'name'       => 'required|string|max:255',
             'email'      => 'required|email|unique:users,email',
@@ -451,13 +472,15 @@ class UserManagementController extends Controller
         try {
             /** @var User $user */
             $user = User::create([
-                'name'        => $request->input('name'),
-                'email'       => $request->input('email'),
-                'password'    => Hash::make($request->input('password')),
-                'role'        => $request->input('role'),
-                'phone'       => $request->input('phone'),
-                'avatar'      => $request->input('avatar'),
-                'permissions' => $request->input('permissions'),
+                'name'                => $request->input('name'),
+                'email'               => $request->input('email'),
+                'password'            => Hash::make($request->input('password')),
+                'role'                => $request->input('role'),
+                'phone'               => $request->input('phone'),
+                'avatar'              => $request->input('avatar'),
+                'permissions'         => $request->input('permissions'),
+                'created_by'          => $request->user()?->id,
+                'must_connect_google' => true,
             ]);
 
             // Create linked Client if role is client
@@ -488,7 +511,7 @@ class UserManagementController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'User created successfully.',
-                'data'    => $user->load(['client', 'employee']),
+                'data'    => $user->load(['client', 'employee', 'creator']),
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -508,6 +531,26 @@ class UserManagementController extends Controller
 
         /** @var User $user */
         $user = User::withTrashed()->findOrFail($id);
+
+        if ($request->has('email') && $request->input('email') !== $user->email) {
+            if ($emailErr = SystemUniquenessChecker::checkEmail($request->input('email'), $user->id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $emailErr,
+                    'errors'  => ['email' => [$emailErr]],
+                ], 422);
+            }
+        }
+
+        if ($request->has('phone') && $request->input('phone') !== $user->phone) {
+            if ($phoneErr = SystemUniquenessChecker::checkPhone($request->input('phone'), $user->id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $phoneErr,
+                    'errors'  => ['phone' => [$phoneErr]],
+                ], 422);
+            }
+        }
 
         $validator = Validator::make($request->all(), [
             'name'     => 'sometimes|required|string|max:255',

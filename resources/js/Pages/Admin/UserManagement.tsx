@@ -70,6 +70,13 @@ interface UserRecord {
   deleted_at?: string;
   created_at?: string;
   last_login_at?: string;
+  creator?: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+    avatar_url?: string;
+  };
   client?: {
     id: number;
     name: string;
@@ -684,7 +691,7 @@ export default function UserManagementPage() {
                 </th>
                 <th className="p-4">User Info</th>
                 <th className="p-4">User Type / Role</th>
-                <th className="p-4">Type-Specific Context</th>
+                <th className="p-4">Created By</th>
                 <th className="p-4">Account Status</th>
                 <th className="p-4 text-right">Actions</th>
               </tr>
@@ -764,21 +771,25 @@ export default function UserManagementPage() {
                         </span>
                       </td>
 
-                      {/* Type-Specific Context */}
-                      <td className="p-4 text-xs text-muted-foreground">
-                        {u.role === "client" && u.client ? (
-                          <div>
-                            <span className="font-semibold text-foreground">{u.client.name}</span>
-                            <span className="block text-[11px]">{u.client.position || "Client"}</span>
+                      {/* Created By Column */}
+                      <td className="p-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xs border border-primary/20">
+                            {u.creator?.avatar_url ? (
+                              <img src={u.creator.avatar_url} alt={u.creator.name} className="h-full w-full rounded-full object-cover" />
+                            ) : (
+                              (u.creator?.name || "System").slice(0, 2).toUpperCase()
+                            )}
                           </div>
-                        ) : u.employee ? (
-                          <div>
-                            <span className="font-semibold text-foreground">{u.employee.department}</span>
-                            <span className="block text-[11px]">{u.employee.position}</span>
+                          <div className="leading-tight">
+                            <span className="font-semibold text-xs text-foreground block">
+                              {u.creator?.name || "System / Self"}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground capitalize">
+                              {u.creator?.role ? u.creator.role.replace("_", " ") : "System Admin"}
+                            </span>
                           </div>
-                        ) : (
-                          <span className="italic">System Administrative</span>
-                        )}
+                        </div>
                       </td>
 
                       {/* Account Status Badge */}
