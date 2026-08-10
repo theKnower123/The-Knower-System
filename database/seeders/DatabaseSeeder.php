@@ -14,17 +14,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Re-create the super admin first (no workspace yet)
-        $admin = User::updateOrCreate(
+        $admin = User::firstOrCreate(
             ['email' => 'omarmehawed4@knoweros.com'],
-            [
-                'name' => 'Omar Mehawed',
-                'role' => 'super_admin',
-                'password' => Hash::make('password')
-            ]
-        );
-
-        User::updateOrCreate(
-            ['email' => 'omarmehawed@knoweros.com'],
             [
                 'name' => 'Omar Mehawed',
                 'role' => 'super_admin',

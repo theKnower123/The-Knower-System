@@ -22,27 +22,28 @@ class Invoice extends Model
     use HasWorkspace, LogsActivity;
 
     protected $fillable = [
-        'client_id', 'project_id', 'invoice_number', 'amount', 'paid_amount', 'currency', 'status', 'due_date', 'notes',
+        'client_id', 'project_id', 'invoice_number', 'amount', 'total_amount', 'paid_amount', 'currency', 'status', 'due_date', 'notes',
     ];
 
     protected $casts = [
         'due_date' => 'date',
         'amount' => 'decimal:2',
-        'paid_amount' => 'decimal:2',
+        'total_amount' => 'decimal:2',
     ];
 
-    protected $appends = [
-        'total_amount',
-    ];
-
-    public function getTotalAmountAttribute()
+    protected static function booted()
     {
-        return $this->attributes['amount'] ?? 0;
-    }
-
-    public function setTotalAmountAttribute($value)
-    {
-        $this->attributes['amount'] = $value;
+        static::saving(function ($invoice) {
+            if ($invoice->isDirty('amount')) {
+                $invoice->total_amount = $invoice->amount;
+            } elseif ($invoice->isDirty('total_amount')) {
+                $invoice->amount = $invoice->total_amount;
+            } elseif (isset($invoice->amount) && !isset($invoice->total_amount)) {
+                $invoice->total_amount = $invoice->amount;
+            } elseif (isset($invoice->total_amount) && !isset($invoice->amount)) {
+                $invoice->amount = $invoice->total_amount;
+            }
+        });
     }
 
     public function client()

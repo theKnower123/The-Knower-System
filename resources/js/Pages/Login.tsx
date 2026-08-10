@@ -46,10 +46,9 @@ export default function LoginPage() {
   }, []);
 
   const selectLastAccount = (acc: LastAccount) => {
-    const targetEmail = acc.email || "omarmehawed@knoweros.com";
-    setEmail(targetEmail);
+    setEmail(acc.email);
     setIsLastAccountSelected(true);
-    toast.success(`Selected ${acc.name || targetEmail}`);
+    toast.success(`Selected ${acc.name || acc.email}`);
     setTimeout(() => {
       passwordInputRef.current?.focus();
     }, 120);
@@ -78,8 +77,9 @@ export default function LoginPage() {
 
       toast.success("Login successful!");
       router.visit("/dashboard");
-    } catch (error) {
-      toast.error("Login failed. Check your credentials.");
+    } catch (error: any) {
+      const serverMessage = error?.response?.data?.message || "Login failed. Check your credentials.";
+      toast.error(serverMessage);
     } finally {
       setLoading(false);
     }
@@ -301,7 +301,7 @@ export default function LoginPage() {
                         {lastAccount.name || "Welcome Back"}
                       </div>
                       <div className="text-[11px] font-medium text-primary truncate">
-                        {lastAccount.email ? `${lastAccount.email} • ` : ""}Type password to continue
+                        Type password to continue
                       </div>
                     </div>
                   </div>

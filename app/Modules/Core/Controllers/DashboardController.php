@@ -69,9 +69,9 @@ class DashboardController extends Controller
             'monthly_revenue'        => Invoice::where('status', 'paid')
                                               ->whereMonth('updated_at', $now->month)
                                               ->whereYear('updated_at', $now->year)
-                                              ->sum('amount'),
+                                              ->sum('total_amount'),
             'unpaid_invoices'        => Invoice::where('status', 'sent')->count(),
-            'unpaid_invoices_amount' => Invoice::where('status', 'sent')->sum('amount'),
+            'unpaid_invoices_amount' => Invoice::where('status', 'sent')->sum('total_amount'),
             'open_tickets'           => Ticket::whereIn('status', ['open', 'in_progress'])->count(),
             'online_employees'       => User::where('last_login_at', '>=', $now->subMinutes(15))
                                            ->count(),
@@ -100,7 +100,7 @@ class DashboardController extends Controller
                 'revenue' => Invoice::where('status', 'paid')
                     ->whereYear('updated_at', $date->year)
                     ->whereMonth('updated_at', $date->month)
-                    ->sum('amount'),
+                    ->sum('total_amount'),
             ];
         });
 
