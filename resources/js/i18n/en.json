@@ -315,11 +315,26 @@
       "startProject": "Start your project",
       "seeWork": "See our work"
     },
+    "partnership": {
+      "eyebrow": "In Partnership With",
+      "title": "Proud Community Partner of Techne Summit 2026",
+      "subtitle": "Cairo & Alexandria — Joining forces with the Mediterranean's leading technology and entrepreneurship summit to empower the next generation of builders.",
+      "tagline": "Proud Community Partner of Techne Summit 2026 — Cairo & Alexandria",
+      "bookNow": "Book Now",
+      "badge": "Official Partnership",
+      "location": "Cairo & Alexandria",
+      "year": "2026 Edition"
+    },
     "footer": {
       "tagline": "The operating system for modern software houses. Ship products, run operations, delight clients.",
       "emailPlaceholder": "Your email",
       "subscribe": "Subscribe",
       "copyright": "© {{year}} The Knower System. All rights reserved.",
+      "partnership": {
+        "eyebrow": "In Partnership With",
+        "tagline": "Proud Community Partner of Techne Summit 2026 — Cairo & Alexandria",
+        "bookNow": "Book Now"
+      },
       "company": "Company",
       "solutions": "Solutions",
       "platform": "Platform",

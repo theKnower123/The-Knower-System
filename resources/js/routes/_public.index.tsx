@@ -5,7 +5,8 @@ import {
   ShieldCheck, LineChart, Sparkles, Code, Search, Megaphone,
   Wrench, Monitor, Zap, Award, CheckCircle2, Cpu, Users,
   FolderGit2, CreditCard, ChevronRight, Layers, Play, Eye, Rocket,
-  Sliders, Star, Terminal, Lock, LayoutDashboard, FolderKanban, Receipt, LifeBuoy, FileText, Clock, AlertTriangle
+  Sliders, Star, Terminal, Lock, LayoutDashboard, FolderKanban, Receipt, LifeBuoy, FileText, Clock, AlertTriangle,
+  ExternalLink
 } from "lucide-react";
 import { Container } from "@/components/public/blocks";
 import { ScrollReveal, StaggerReveal } from "@/components/public/ScrollReveal";
@@ -991,6 +992,76 @@ function HomePage() {
               );
             })}
           </StaggerReveal>
+        </Container>
+      </section>
+
+      {/* ─── PARTNERSHIP SHOWCASE (Techne Summit 2026) ────────────────────────────────────── */}
+      <section className="py-16 sm:py-24 relative z-10 border-t border-border/40 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent overflow-hidden">
+        <Container>
+          <ScrollReveal variant="scale" duration={800}>
+            <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card/85 to-accent/10 p-8 sm:p-12 md:p-14 shadow-2xl backdrop-blur-2xl">
+              {/* Ambient Background Glows */}
+              <div className="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-primary/20 blur-3xl" />
+              <div className="pointer-events-none absolute -right-20 -bottom-20 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
+
+              <div className="relative z-10 flex flex-col items-center justify-between gap-8 lg:flex-row lg:items-center">
+                {/* Left Info Column */}
+                <div className="flex flex-col items-center text-center lg:items-start lg:text-start max-w-2xl space-y-4">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-primary">
+                    <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                    <span>{t("public.partnership.eyebrow")}</span>
+                  </div>
+
+                  <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight leading-snug">
+                    {t("public.partnership.title")}
+                  </h3>
+
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                    {t("public.partnership.subtitle")}
+                  </p>
+
+                  <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-2.5">
+                    <span className="inline-flex items-center gap-1.5 rounded-xl border border-border/80 bg-background/60 px-3.5 py-1 text-xs font-semibold text-foreground backdrop-blur-md">
+                      <Sparkles className="h-3.5 w-3.5 text-primary" />
+                      {t("public.partnership.badge")}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-xl border border-border/80 bg-background/60 px-3.5 py-1 text-xs font-medium text-muted-foreground backdrop-blur-md">
+                      📍 {t("public.partnership.location")}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-xl border border-border/80 bg-background/60 px-3.5 py-1 text-xs font-medium text-muted-foreground backdrop-blur-md">
+                      🗓️ {t("public.partnership.year")}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Right Logo Badge & CTA Column */}
+                <div className="flex flex-col items-center gap-6 shrink-0 w-full sm:w-auto">
+                  <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    className="flex items-center justify-center rounded-2xl border border-border/80 bg-white/95 p-4 sm:p-6 shadow-xl transition-all"
+                  >
+                    <img
+                      src="/partners/techne-partnership.png"
+                      alt="The Knower OS & Techne Summit Partnership"
+                      className="h-12 sm:h-14 md:h-16 w-auto object-contain max-w-[240px] sm:max-w-[280px]"
+                      loading="lazy"
+                    />
+                  </motion.div>
+
+                  <a
+                    href="https://technesummit.com/2026#ticketsSection"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto rounded-full font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/30 hover:shadow-primary/50 transition-all hover:scale-105 px-9 py-3.5 text-sm"
+                  >
+                    <span>{t("public.partnership.bookNow")}</span>
+                    <ExternalLink className="h-4 w-4 rtl:rotate-180" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </ScrollReveal>
         </Container>
       </section>
 
