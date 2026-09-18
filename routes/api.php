@@ -85,6 +85,10 @@ Route::prefix('v1')->group(function () {
     Route::post('/demo-request',  [\App\Modules\CMS\Controllers\PublicApiController::class, 'submitDemoRequest']);
         // Support Widget Ingestion
         Route::post('/support/ingest', [\App\Modules\Support\Controllers\IngestionController::class, 'ingest']);
+        // Graduation Projects (public)
+        Route::get('/graduation-projects/showcase', [\App\Modules\GraduationProjects\Controllers\PublicGraduationProjectController::class, 'showcase']);
+        Route::get('/graduation-projects/testimonials', [\App\Modules\GraduationProjects\Controllers\PublicGraduationProjectController::class, 'testimonials']);
+        Route::post('/graduation-projects/register', [\App\Modules\GraduationProjects\Controllers\PublicGraduationProjectController::class, 'register']);
     });
     // ── Auth ──────────────────────────────────────────────────────────────────
     Route::post('auth/login', [\App\Modules\Auth\Controllers\AuthController::class, 'login']);
@@ -225,6 +229,18 @@ Route::prefix('v1')->group(function () {
         Route::get   ('file/{id}',           [\App\Http\Controllers\FileProxyController::class, 'show']);
         Route::get   ('file/{type}/{id}',    [\App\Http\Controllers\FileProxyController::class, 'showByType']);
         Route::delete('files/{id}',          [FileController::class, 'destroy']);
+
+        // ── Graduation Projects ───────────────────────────────────────────────────
+        Route::get('graduation-projects', [\App\Modules\GraduationProjects\Controllers\GraduationProjectController::class, 'index']);
+        Route::get('graduation-projects/{graduation_project}', [\App\Modules\GraduationProjects\Controllers\GraduationProjectController::class, 'show']);
+        Route::post('graduation-projects/{graduation_project}/quote', [\App\Modules\GraduationProjects\Controllers\GraduationProjectController::class, 'quote']);
+        Route::post('graduation-projects/{graduation_project}/reject', [\App\Modules\GraduationProjects\Controllers\GraduationProjectController::class, 'reject']);
+        Route::post('graduation-projects/{graduation_project}/approve', [\App\Modules\GraduationProjects\Controllers\GraduationProjectController::class, 'approve']);
+        Route::post('graduation-projects/{graduation_project}/deliver', [\App\Modules\GraduationProjects\Controllers\GraduationProjectController::class, 'deliver']);
+        Route::post('graduation-projects/{graduation_project}/outcome', [\App\Modules\GraduationProjects\Controllers\GraduationProjectController::class, 'outcome']);
+        Route::post('graduation-projects/{graduation_project}/testimonials', [\App\Modules\GraduationProjects\Controllers\GraduationProjectController::class, 'storeTestimonial']);
+        Route::post('graduation-projects/{graduation_project}/members', [\App\Modules\GraduationProjects\Controllers\GraduationProjectController::class, 'addMember']);
+        Route::patch('graduation-projects/{graduation_project}/milestones/{milestone}', [\App\Modules\GraduationProjects\Controllers\GraduationProjectController::class, 'updateMilestone']);
 
         // ── Finance ───────────────────────────────────────────────────────────────
         Route::apiResource('invoices',  InvoiceController::class);

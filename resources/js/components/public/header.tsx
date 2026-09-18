@@ -27,6 +27,7 @@ const NAV_KEYS: Array<{ key: string; to: string }> = [
 ];
 
 const MORE_KEYS: Array<{ key: string; to: string }> = [
+  { key: "graduationProjects", to: "/graduation-projects" },
   { key: "hosting", to: "/hosting" },
   { key: "domains", to: "/domains" },
   { key: "maintenance", to: "/maintenance" },

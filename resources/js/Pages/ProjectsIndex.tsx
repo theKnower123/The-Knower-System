@@ -29,6 +29,7 @@ export default function ProjectsPage() {
   const clients = useCollection("clients");
   const users = useCollection("employees"); 
   const [editingRow, setEditingRow] = useState<Project | null>(null);
+  const [projectScope, setProjectScope] = useState<"all" | "client" | "graduation">("all");
 
   // Roles that see only their assigned projects (read-only)
   const isReadOnly = user ? ["developer", "designer", "qa"].includes(user.role) : false;
@@ -54,18 +55,23 @@ export default function ProjectsPage() {
   );
 
   const visibleRows = useMemo(() => {
-    if (!user) return rows;
+    let list = rows;
+    if (!user) return list;
     if (user.role === "client") {
-      return rows.filter((r) => String(r.clientId || (r as any).client_id) === String((user as any).client_id || user.id));
-    }
-    if (isReadOnly) {
-      return rows.filter((r: any) => {
+      list = list.filter((r) => String(r.clientId || (r as any).client_id) === String((user as any).client_id || user.id));
+    } else if (isReadOnly) {
+      list = list.filter((r: any) => {
         const assignedIds = r.users ? (Array.isArray(r.users) ? r.users.map((u: any) => typeof u === 'object' ? String(u.id) : String(u)) : []) : [];
         return assignedIds.includes(String(user.id)) || String(r.createdBy || r.created_by) === String(user.id);
       });
     }
-    return rows;
-  }, [rows, user, isReadOnly]);
+    if (projectScope === "graduation") {
+      list = list.filter((r: any) => Boolean(r.isGraduationProject ?? r.is_graduation_project));
+    } else if (projectScope === "client") {
+      list = list.filter((r: any) => !Boolean(r.isGraduationProject ?? r.is_graduation_project));
+    }
+    return list;
+  }, [rows, user, isReadOnly, projectScope]);
 
   // Mini Dashboard Calculation
   const stats = useMemo(() => {
@@ -200,13 +206,37 @@ export default function ProjectsPage() {
   ];
 
   const dashboardHeader = (
-    <StaggerList className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5" staggerDelay={0.05}>
-      <StatCard label="Total Projects" value={stats.total} icon={FolderKanban} />
-      <StatCard label="Active" value={stats.active} icon={FolderKanban} accent="primary" />
-      <StatCard label="Completed" value={stats.completed} icon={CheckCircle2} accent="success" />
-      <StatCard label="On Hold" value={stats.onHold} icon={PauseCircle} accent="warning" />
-      <StatCard label="Overdue" value={stats.overdue} icon={AlertTriangle} accent="destructive" />
-    </StaggerList>
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2">
+        {(
+          [
+            ["all", t("graduation.admin.allProjects")],
+            ["client", t("graduation.admin.clientProjects")],
+            ["graduation", t("graduation.admin.badgeGraduation")],
+          ] as const
+        ).map(([key, label]) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setProjectScope(key)}
+            className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+              projectScope === key
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-card text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <StaggerList className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5" staggerDelay={0.05}>
+        <StatCard label="Total Projects" value={stats.total} icon={FolderKanban} />
+        <StatCard label="Active" value={stats.active} icon={FolderKanban} accent="primary" />
+        <StatCard label="Completed" value={stats.completed} icon={CheckCircle2} accent="success" />
+        <StatCard label="On Hold" value={stats.onHold} icon={PauseCircle} accent="warning" />
+        <StatCard label="Overdue" value={stats.overdue} icon={AlertTriangle} accent="destructive" />
+      </StaggerList>
+    </div>
   );
 
   return (
@@ -229,11 +259,18 @@ export default function ProjectsPage() {
           key: "name",
           header: t("common.name"),
           cell: (r) => (
-            <Link href={`/projects/${r.id}`}
-              className="font-medium hover:text-primary"
-            >
-              {r.name}
-            </Link>
+            <div className="flex flex-col gap-1">
+              <Link href={`/projects/${r.id}`}
+                className="font-medium hover:text-primary"
+              >
+                {r.name}
+              </Link>
+              {Boolean((r as any).isGraduationProject ?? (r as any).is_graduation_project) && (
+                <span className="w-fit rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">
+                  {t("graduation.admin.badgeGraduation")}
+                </span>
+              )}
+            </div>
           ),
         },
         ...(isClient ? [] : [{

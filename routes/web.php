@@ -61,6 +61,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/projects/{id}', function () { return Inertia::render('Projects$Id'); });
     });
 
+    // Graduation Projects (admin ERP)
+    Route::middleware(['permission:graduation_projects.view'])->group(function () {
+        Route::get('/admin/graduation-projects', function () { return Inertia::render('GraduationProjects/Index'); });
+        Route::get('/admin/graduation-projects/{id}', function ($id) {
+            return Inertia::render('GraduationProjects/Show', ['id' => $id]);
+        });
+    });
+
     // Tasks & Bugs
     Route::middleware(['permission:task.view|project.view'])->group(function () {
         Route::get('/tasks', function () { return Inertia::render('Tasks'); });
@@ -162,7 +170,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 });
 Route::fallback(function (\Illuminate\Http\Request $request) {
-    $erpPrefixes = ['/dashboard', '/crm', '/projects', '/tasks', '/bugs', '/calendar', '/time-logs', '/finance', '/hosting', '/support', '/hr', '/reports', '/cms', '/marketing', '/ai', '/settings', '/profile', '/portal', '/notifications', '/admin'];
+    $erpPrefixes = ['/dashboard', '/crm', '/projects', '/admin', '/tasks', '/bugs', '/calendar', '/time-logs', '/finance', '/hosting', '/support', '/hr', '/reports', '/cms', '/marketing', '/ai', '/settings', '/profile', '/portal', '/notifications'];
     
     foreach ($erpPrefixes as $prefix) {
         if (str_starts_with($request->getPathInfo(), $prefix)) {

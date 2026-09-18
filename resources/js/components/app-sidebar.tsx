@@ -42,6 +42,7 @@ import {
   CalendarCheck,
   Activity,
   Bell,
+  GraduationCap,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
@@ -94,6 +95,7 @@ const groups: Group[] = [
     labelKey: "nav.projects",
     items: [
       { to: "/projects", labelKey: "nav.projects", icon: FolderKanban, perm: "project.view" },
+      { to: "/admin/graduation-projects", labelKey: "nav.graduationProjects", icon: GraduationCap, perm: "graduation_projects.view" },
       { to: "/tasks", labelKey: "nav.tasks", icon: ListTodo, perm: "task.view" },
       { to: "/cms/team", labelKey: "Team Members", icon: Users, perm: "project.view" },
       { to: "/bugs", labelKey: "Maintenance & Bugs", icon: Bug, perm: "bug.manage" },

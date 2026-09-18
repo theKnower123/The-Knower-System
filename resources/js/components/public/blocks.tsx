@@ -177,8 +177,8 @@ export function CTABand({ title, subtitle, primary, secondary }: {
   );
 }
 
-export function Section({ children, className }: { children: ReactNode; className?: string }) {
-  return <section className={cn("py-16 sm:py-20", className)}><Container>{children}</Container></section>;
+export function Section({ children, className, id }: { children: ReactNode; className?: string; id?: string }) {
+  return <section id={id} className={cn("py-16 sm:py-20", className)}><Container>{children}</Container></section>;
 }
 
 export function Card({ children, className }: { children: ReactNode; className?: string }) {

@@ -18,11 +18,12 @@ class Milestone extends Model
     use HasWorkspace, LogsActivity;
 
     protected $fillable = [
-        'project_id', 'title', 'deadline', 'progress', 'status',
+        'project_id', 'title', 'deadline', 'progress', 'status', 'completed_at', 'workspace_id',
     ];
 
     protected $casts = [
         'deadline' => 'date',
+        'completed_at' => 'datetime',
     ];
 
     public function project()

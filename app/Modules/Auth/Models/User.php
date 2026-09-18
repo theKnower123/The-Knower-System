@@ -167,7 +167,8 @@ class User extends Authenticatable
         return match ($this->role) {
             'administrator', 'admin' => [
                 "dashboard.view", "crm.view", "lead.manage", "client.manage", "quotation.manage", "contract.manage",
-                "project.view", "project.manage", "task.view", "task.manage", "task.update_status", "bug.manage", "file.upload",
+                "project.view", "project.manage", "graduation_projects.view", "graduation_projects.manage",
+                "task.view", "task.manage", "task.update_status", "bug.manage", "file.upload",
                 "finance.view", "invoice.manage", "payment.manage", "expense.manage",
                 "hosting.view", "hosting.manage", "domain.manage", "server.manage", "ssl.manage",
                 "hr.view", "hr.manage", "attendance.manage", "leave.manage", "payroll.manage",
@@ -177,8 +178,9 @@ class User extends Authenticatable
                 "marketing.view", "marketing.manage"
             ],
             'ceo' => [
-                "dashboard.view", "crm.view", "client.manage", "project.view", 
-                "finance.view", "report.view", "hr.view", "hr.manage", "hosting.view", 
+                "dashboard.view", "crm.view", "client.manage", "project.view",
+                "graduation_projects.view", "graduation_projects.manage",
+                "finance.view", "report.view", "hr.view", "hr.manage", "hosting.view",
                 "support.view", "ai.use",
                 "marketing.view", "marketing.manage"
             ],
@@ -204,8 +206,9 @@ class User extends Authenticatable
                 "dashboard.view", "marketing.view", "content.draft", "design.upload", "file.upload",
             ],
             'project_manager' => [
-                "dashboard.view", "crm.view", "project.view", "project.manage", 
-                "task.view", "task.manage", "bug.manage", "file.upload", 
+                "dashboard.view", "crm.view", "project.view", "project.manage",
+                "graduation_projects.view", "graduation_projects.manage",
+                "task.view", "task.manage", "bug.manage", "file.upload",
                 "report.view", "ai.use"
             ],
             'team_leader' => [

@@ -29,6 +29,7 @@ class StoreProjectRequest extends FormRequest
             'github_link' => 'nullable|string|max:255',
             'assets_link' => 'nullable|string|max:255',
             'is_public' => 'nullable|boolean',
+            'is_graduation_project' => 'nullable|boolean',
             'images' => 'nullable|array|max:5',
             'users' => 'nullable|array',
             'users.*' => 'exists:users,id',

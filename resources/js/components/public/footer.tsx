@@ -62,6 +62,7 @@ export function PublicFooter() {
         { label: t("public.footer.links.solutions"), to: "/solutions" },
         { label: t("public.footer.links.products"), to: "/products" },
         { label: t("public.footer.links.services"), to: "/services" },
+        { label: t("public.footer.links.graduationProjects", { defaultValue: "Graduation Projects" }), to: "/graduation-projects" },
         { label: t("public.footer.links.aiSolutions"), to: "/ai-solutions" },
         { label: t("public.footer.links.technologies"), to: "/technologies" },
         { label: t("public.footer.links.portfolio"), to: "/portfolio" },

@@ -44,6 +44,7 @@ class ProjectResource extends JsonResource
             'images' => $this->images ?? [],
             'isPublic' => (bool) ($this->is_public ?? $this->show_in_portfolio ?? true),
             'showInPortfolio' => (bool) ($this->show_in_portfolio ?? $this->is_public ?? true),
+            'isGraduationProject' => (bool) ($this->is_graduation_project ?? false),
             'createdBy' => (string) $this->created_by,
             'users' => $this->relationLoaded('users') ? $this->users->pluck('id')->map(fn ($id) => (string) $id) : [],
             'createdAt' => $this->created_at->toISOString(),

@@ -27,7 +27,8 @@ class Project extends Model
     protected $fillable = [
         'client_id', 'name', 'description', 'type', 'status',
         'priority', 'start_date', 'deadline', 'budget', 'progress', 'created_by',
-        'tech_stack', 'language', 'github_link', 'assets_link', 'is_public', 'images'
+        'tech_stack', 'language', 'github_link', 'assets_link', 'is_public', 'images',
+        'is_graduation_project', 'workspace_id',
     ];
 
     protected $casts = [
@@ -35,6 +36,7 @@ class Project extends Model
         'deadline'   => 'date',
         'budget'     => 'decimal:2',
         'is_public'  => 'boolean',
+        'is_graduation_project' => 'boolean',
         'public_stack' => 'array',
         'images'     => 'array',
     ];

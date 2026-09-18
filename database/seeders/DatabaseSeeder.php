@@ -49,6 +49,7 @@ class DatabaseSeeder extends Seeder
             ServiceContentSeeder::class,
             TestimonialSeeder::class,
             PortfolioProjectSeeder::class,
+            GraduationProjectSeeder::class,
         ]);
     }
 }

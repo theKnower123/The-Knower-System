@@ -39,6 +39,8 @@ import { Route as PublicCaseStudiesIndexRouteImport } from './routes/_public.cas
 import { Route as PublicCaseStudiesSlugRouteImport } from './routes/_public.case-studies.$slug'
 import { Route as PublicDocsIndexRouteImport } from './routes/_public.docs.index'
 import { Route as PublicDocsSlugRouteImport } from './routes/_public.docs.$slug'
+import { Route as PublicGraduationProjectsIndexRouteImport } from './routes/_public.graduation-projects.index'
+import { Route as PublicGraduationProjectsRegisterRouteImport } from './routes/_public.graduation-projects.register'
 import { Route as PublicLegalDocRouteImport } from './routes/_public.legal.$doc'
 import { Route as PublicPortfolioIndexRouteImport } from './routes/_public.portfolio.index'
 import { Route as PublicPortfolioSlugRouteImport } from './routes/_public.portfolio.$slug'
@@ -198,6 +200,18 @@ const PublicDocsSlugRoute = PublicDocsSlugRouteImport.update({
   path: '/docs/$slug',
   getParentRoute: () => PublicRoute,
 } as any)
+const PublicGraduationProjectsIndexRoute =
+  PublicGraduationProjectsIndexRouteImport.update({
+    id: '/graduation-projects/',
+    path: '/graduation-projects/',
+    getParentRoute: () => PublicRoute,
+  } as any)
+const PublicGraduationProjectsRegisterRoute =
+  PublicGraduationProjectsRegisterRouteImport.update({
+    id: '/graduation-projects/register',
+    path: '/graduation-projects/register',
+    getParentRoute: () => PublicRoute,
+  } as any)
 const PublicLegalDocRoute = PublicLegalDocRouteImport.update({
   id: '/legal/$doc',
   path: '/legal/$doc',
@@ -270,6 +284,7 @@ export interface FileRoutesByFullPath {
   '/careers/$slug': typeof PublicCareersSlugRoute
   '/case-studies/$slug': typeof PublicCaseStudiesSlugRoute
   '/docs/$slug': typeof PublicDocsSlugRoute
+  '/graduation-projects/register': typeof PublicGraduationProjectsRegisterRoute
   '/legal/$doc': typeof PublicLegalDocRoute
   '/portfolio/$slug': typeof PublicPortfolioSlugRoute
   '/products/$slug': typeof PublicProductsSlugRoute
@@ -279,6 +294,7 @@ export interface FileRoutesByFullPath {
   '/careers/': typeof PublicCareersIndexRoute
   '/case-studies/': typeof PublicCaseStudiesIndexRoute
   '/docs/': typeof PublicDocsIndexRoute
+  '/graduation-projects/': typeof PublicGraduationProjectsIndexRoute
   '/portfolio/': typeof PublicPortfolioIndexRoute
   '/products/': typeof PublicProductsIndexRoute
   '/services/': typeof PublicServicesIndexRoute
@@ -310,6 +326,7 @@ export interface FileRoutesByTo {
   '/careers/$slug': typeof PublicCareersSlugRoute
   '/case-studies/$slug': typeof PublicCaseStudiesSlugRoute
   '/docs/$slug': typeof PublicDocsSlugRoute
+  '/graduation-projects/register': typeof PublicGraduationProjectsRegisterRoute
   '/legal/$doc': typeof PublicLegalDocRoute
   '/portfolio/$slug': typeof PublicPortfolioSlugRoute
   '/products/$slug': typeof PublicProductsSlugRoute
@@ -319,6 +336,7 @@ export interface FileRoutesByTo {
   '/careers': typeof PublicCareersIndexRoute
   '/case-studies': typeof PublicCaseStudiesIndexRoute
   '/docs': typeof PublicDocsIndexRoute
+  '/graduation-projects': typeof PublicGraduationProjectsIndexRoute
   '/portfolio': typeof PublicPortfolioIndexRoute
   '/products': typeof PublicProductsIndexRoute
   '/services': typeof PublicServicesIndexRoute
@@ -352,6 +370,7 @@ export interface FileRoutesById {
   '/_public/careers/$slug': typeof PublicCareersSlugRoute
   '/_public/case-studies/$slug': typeof PublicCaseStudiesSlugRoute
   '/_public/docs/$slug': typeof PublicDocsSlugRoute
+  '/_public/graduation-projects/register': typeof PublicGraduationProjectsRegisterRoute
   '/_public/legal/$doc': typeof PublicLegalDocRoute
   '/_public/portfolio/$slug': typeof PublicPortfolioSlugRoute
   '/_public/products/$slug': typeof PublicProductsSlugRoute
@@ -361,6 +380,7 @@ export interface FileRoutesById {
   '/_public/careers/': typeof PublicCareersIndexRoute
   '/_public/case-studies/': typeof PublicCaseStudiesIndexRoute
   '/_public/docs/': typeof PublicDocsIndexRoute
+  '/_public/graduation-projects/': typeof PublicGraduationProjectsIndexRoute
   '/_public/portfolio/': typeof PublicPortfolioIndexRoute
   '/_public/products/': typeof PublicProductsIndexRoute
   '/_public/services/': typeof PublicServicesIndexRoute
@@ -394,6 +414,7 @@ export interface FileRouteTypes {
     | '/careers/$slug'
     | '/case-studies/$slug'
     | '/docs/$slug'
+    | '/graduation-projects/register'
     | '/legal/$doc'
     | '/portfolio/$slug'
     | '/products/$slug'
@@ -403,6 +424,7 @@ export interface FileRouteTypes {
     | '/careers/'
     | '/case-studies/'
     | '/docs/'
+    | '/graduation-projects/'
     | '/portfolio/'
     | '/products/'
     | '/services/'
@@ -434,6 +456,7 @@ export interface FileRouteTypes {
     | '/careers/$slug'
     | '/case-studies/$slug'
     | '/docs/$slug'
+    | '/graduation-projects/register'
     | '/legal/$doc'
     | '/portfolio/$slug'
     | '/products/$slug'
@@ -443,6 +466,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/case-studies'
     | '/docs'
+    | '/graduation-projects'
     | '/portfolio'
     | '/products'
     | '/services'
@@ -475,6 +499,7 @@ export interface FileRouteTypes {
     | '/_public/careers/$slug'
     | '/_public/case-studies/$slug'
     | '/_public/docs/$slug'
+    | '/_public/graduation-projects/register'
     | '/_public/legal/$doc'
     | '/_public/portfolio/$slug'
     | '/_public/products/$slug'
@@ -484,6 +509,7 @@ export interface FileRouteTypes {
     | '/_public/careers/'
     | '/_public/case-studies/'
     | '/_public/docs/'
+    | '/_public/graduation-projects/'
     | '/_public/portfolio/'
     | '/_public/products/'
     | '/_public/services/'
@@ -706,6 +732,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicDocsSlugRouteImport
       parentRoute: typeof PublicRoute
     }
+    '/_public/graduation-projects/': {
+      id: '/_public/graduation-projects/'
+      path: '/graduation-projects'
+      fullPath: '/graduation-projects/'
+      preLoaderRoute: typeof PublicGraduationProjectsIndexRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/graduation-projects/register': {
+      id: '/_public/graduation-projects/register'
+      path: '/graduation-projects/register'
+      fullPath: '/graduation-projects/register'
+      preLoaderRoute: typeof PublicGraduationProjectsRegisterRouteImport
+      parentRoute: typeof PublicRoute
+    }
     '/_public/legal/$doc': {
       id: '/_public/legal/$doc'
       path: '/legal/$doc'
@@ -798,6 +838,7 @@ interface PublicRouteChildren {
   PublicCareersSlugRoute: typeof PublicCareersSlugRoute
   PublicCaseStudiesSlugRoute: typeof PublicCaseStudiesSlugRoute
   PublicDocsSlugRoute: typeof PublicDocsSlugRoute
+  PublicGraduationProjectsRegisterRoute: typeof PublicGraduationProjectsRegisterRoute
   PublicLegalDocRoute: typeof PublicLegalDocRoute
   PublicPortfolioSlugRoute: typeof PublicPortfolioSlugRoute
   PublicProductsSlugRoute: typeof PublicProductsSlugRoute
@@ -807,6 +848,7 @@ interface PublicRouteChildren {
   PublicCareersIndexRoute: typeof PublicCareersIndexRoute
   PublicCaseStudiesIndexRoute: typeof PublicCaseStudiesIndexRoute
   PublicDocsIndexRoute: typeof PublicDocsIndexRoute
+  PublicGraduationProjectsIndexRoute: typeof PublicGraduationProjectsIndexRoute
   PublicPortfolioIndexRoute: typeof PublicPortfolioIndexRoute
   PublicProductsIndexRoute: typeof PublicProductsIndexRoute
   PublicServicesIndexRoute: typeof PublicServicesIndexRoute
@@ -839,6 +881,7 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicCareersSlugRoute: PublicCareersSlugRoute,
   PublicCaseStudiesSlugRoute: PublicCaseStudiesSlugRoute,
   PublicDocsSlugRoute: PublicDocsSlugRoute,
+  PublicGraduationProjectsRegisterRoute: PublicGraduationProjectsRegisterRoute,
   PublicLegalDocRoute: PublicLegalDocRoute,
   PublicPortfolioSlugRoute: PublicPortfolioSlugRoute,
   PublicProductsSlugRoute: PublicProductsSlugRoute,
@@ -848,6 +891,7 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicCareersIndexRoute: PublicCareersIndexRoute,
   PublicCaseStudiesIndexRoute: PublicCaseStudiesIndexRoute,
   PublicDocsIndexRoute: PublicDocsIndexRoute,
+  PublicGraduationProjectsIndexRoute: PublicGraduationProjectsIndexRoute,
   PublicPortfolioIndexRoute: PublicPortfolioIndexRoute,
   PublicProductsIndexRoute: PublicProductsIndexRoute,
   PublicServicesIndexRoute: PublicServicesIndexRoute,
