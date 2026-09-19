@@ -74,7 +74,7 @@ export default function ProfilePage() {
   const [disconnectingTelegram, setDisconnectingTelegram] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [showManualLink, setShowManualLink] = useState(false);
-
+  const [checkingTelegramStatus, setCheckingTelegramStatus] = useState(false);
 
   const [name, setName] = useState(user?.name || "");
   const [email] = useState(user?.email || "");
@@ -91,6 +91,69 @@ export default function ProfilePage() {
   const [loadingDevices, setLoadingDevices] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const telegramStatusPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const telegramStatusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const stopTelegramStatusPoll = () => {
+    if (telegramStatusPollRef.current) {
+      clearInterval(telegramStatusPollRef.current);
+      telegramStatusPollRef.current = null;
+    }
+    if (telegramStatusTimeoutRef.current) {
+      clearTimeout(telegramStatusTimeoutRef.current);
+      telegramStatusTimeoutRef.current = null;
+    }
+    setCheckingTelegramStatus(false);
+  };
+
+  const startTelegramStatusPoll = () => {
+    stopTelegramStatusPoll();
+    setCheckingTelegramStatus(true);
+    toast.info("Waiting for Telegram connection...");
+
+    telegramStatusPollRef.current = setInterval(() => {
+      router.reload({
+        only: ["auth"],
+        onSuccess: (page) => {
+          const authUserData = (page.props as any)?.auth?.user;
+          if (authUserData?.telegram_chat_id || authUserData?.has_telegram) {
+            stopTelegramStatusPoll();
+            setConnectTelegramModalOpen(false);
+            toast.success("Telegram account successfully connected!");
+            if (user) {
+              setUser({
+                ...user,
+                telegram_chat_id: authUserData.telegram_chat_id,
+                telegram_username: authUserData.telegram_username,
+                has_telegram: true,
+              });
+            }
+          }
+        },
+      });
+    }, 3000);
+
+    telegramStatusTimeoutRef.current = setTimeout(() => {
+      stopTelegramStatusPoll();
+    }, 60000);
+  };
+
+  useEffect(() => {
+    return () => stopTelegramStatusPoll();
+  }, []);
+
+  useEffect(() => {
+    if (!connectTelegramModalOpen) {
+      stopTelegramStatusPoll();
+    }
+  }, [connectTelegramModalOpen]);
+
+  useEffect(() => {
+    if (isTelegramConnected && connectTelegramModalOpen) {
+      stopTelegramStatusPoll();
+      setConnectTelegramModalOpen(false);
+    }
+  }, [isTelegramConnected, connectTelegramModalOpen]);
 
   useEffect(() => {
     if (user) {
@@ -722,6 +785,7 @@ export default function ProfilePage() {
                         className="w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold gap-2 shadow-sm"
                         onClick={() => {
                           window.open(telegramLinkUrl, "_blank");
+                          startTelegramStatusPoll();
                         }}
                       >
                         <Send className="h-4 w-4" /> Open in Telegram & Press Start
@@ -742,12 +806,13 @@ export default function ProfilePage() {
                           variant="ghost"
                           size="sm"
                           className="text-xs flex-1 h-8 gap-1 text-muted-foreground hover:text-foreground"
+                          disabled={checkingTelegramStatus}
                           onClick={() => {
-                            router.reload();
-                            toast.info("Checking connection status...");
+                            startTelegramStatusPoll();
                           }}
                         >
-                          <RefreshCw className="w-3.5 h-3.5" /> Check Status
+                          <RefreshCw className={`w-3.5 h-3.5 ${checkingTelegramStatus ? "animate-spin" : ""}`} />
+                          {checkingTelegramStatus ? "Waiting..." : "Check Status"}
                         </Button>
                       </div>
                     </div>
@@ -777,7 +842,7 @@ export default function ProfilePage() {
                           required
                         />
                         <p className="text-[10px] text-muted-foreground mt-1">
-                          Tip: Message <strong>@{activeBotUsername}</strong> in Telegram to view your Chat ID.
+                          Tip: Send any message to <strong>@{activeBotUsername}</strong> — it replies with your Chat ID instantly.
                         </p>
                       </div>
 

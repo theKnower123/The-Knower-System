@@ -186,14 +186,37 @@ class TelegramConnectController extends Controller
     public function linkByChatId(Request $request): JsonResponse
     {
         $request->validate([
-            'chat_id' => 'required|string',
-            'telegram_username' => 'nullable|string',
+            'chat_id' => ['required', 'string', 'regex:/^-?\d+$/'],
+            'telegram_username' => 'nullable|string|max:64',
+        ], [
+            'chat_id.regex' => 'Chat ID must be a numeric Telegram ID (digits only).',
         ]);
 
         /** @var User $user */
         $user = Auth::user();
         $chatId = trim($request->input('chat_id'));
         $username = trim((string) $request->input('telegram_username'));
+        $username = ltrim($username, '@');
+
+        // Check if current user is already linked to a different chat
+        if (!empty($user->telegram_chat_id) && $user->telegram_chat_id !== $chatId) {
+            TelegramService::logSecurityEvent(
+                'link_blocked',
+                $user->email,
+                $user->role,
+                'blocked',
+                [
+                    'reason' => 'User already has a different Telegram account linked',
+                    'current_chat_id' => $user->telegram_chat_id,
+                    'new_chat_id' => $chatId,
+                ]
+            );
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Your account is already linked to a different Telegram chat. Please disconnect it first.',
+            ], 422);
+        }
 
         // Check if chat_id already linked to another user
         $existingOwner = User::where('telegram_chat_id', $chatId)
@@ -220,11 +243,11 @@ class TelegramConnectController extends Controller
 
         $user->forceFill([
             'telegram_chat_id' => $chatId,
-            'telegram_username' => $username ?: null,
+            'telegram_username' => $username !== '' ? $username : null,
             'telegram_linked_at' => now(),
         ])->save();
 
-        TelegramService::sendTemplateNotification(
+        $sent = TelegramService::sendTemplateNotification(
             $user,
             'account_linked',
             [
@@ -242,12 +265,22 @@ class TelegramConnectController extends Controller
                 'chat_id' => $chatId,
                 'username' => $username,
                 'method' => 'manual_chat_id',
+                'confirmation_sent' => $sent,
             ]
         );
+
+        if (!$sent) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Telegram account linked, but the confirmation message could not be sent. Check BOT_TOKEN and that you have started the bot.',
+                'confirmation_sent' => false,
+            ]);
+        }
 
         return response()->json([
             'success' => true,
             'message' => 'Telegram account linked successfully!',
+            'confirmation_sent' => true,
         ]);
     }
 

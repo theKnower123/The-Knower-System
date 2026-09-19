@@ -80,7 +80,7 @@ class TelegramService
             ];
         }
 
-        $webhookUrl = $url ?: (rtrim(config('app.url'), '/') . '/api/telegram/webhook');
+        $webhookUrl = $url ?: (rtrim(config('app.url'), '/') . '/api/v1/telegram/webhook');
 
         try {
             $response = Http::timeout(8)->post("https://api.telegram.org/bot{$token}/setWebhook", [
@@ -98,6 +98,36 @@ class TelegramService
                 'ok' => false,
                 'webhook_url' => $webhookUrl,
                 'message' => 'Exception while setting webhook: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Delete any active webhook so long-polling (getUpdates) can receive messages.
+     */
+    public static function deleteWebhook(): array
+    {
+        $token = self::getToken();
+        if (empty($token)) {
+            return [
+                'ok' => false,
+                'message' => 'BOT_TOKEN is missing.',
+            ];
+        }
+
+        try {
+            $response = Http::timeout(8)->post("https://api.telegram.org/bot{$token}/deleteWebhook", [
+                'drop_pending_updates' => false,
+            ]);
+
+            return [
+                'ok' => (bool) $response->json('ok'),
+                'message' => $response->json('description') ?? ($response->json('ok') ? 'Webhook deleted.' : 'Failed to delete webhook.'),
+            ];
+        } catch (\Throwable $e) {
+            return [
+                'ok' => false,
+                'message' => 'Exception while deleting webhook: ' . $e->getMessage(),
             ];
         }
     }

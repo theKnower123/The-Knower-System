@@ -36,10 +36,19 @@ class TelegramPollCommand extends Command
         }
 
         $botUsername = ltrim((string) TelegramService::getBotUsername(), '@');
-        $this->info("🤖 Started Telegram Bot Polling for @{$botUsername}...");
+        $this->info("Started Telegram Bot Polling for @{$botUsername}...");
+
+        // Webhook and getUpdates cannot run together — clear webhook first.
+        $deleted = TelegramService::deleteWebhook();
+        if ($deleted['ok'] ?? false) {
+            $this->info('Cleared any active webhook so polling can receive updates.');
+        } else {
+            $this->warn('Could not clear webhook: ' . ($deleted['message'] ?? 'unknown error'));
+        }
+
         $this->info("Press Ctrl+C to stop.\n");
 
-        $offset = (int) \Illuminate\Support\Facades\Cache::get('tg_poll_offset', 835967515);
+        $offset = (int) \Illuminate\Support\Facades\Cache::get('tg_poll_offset', 0);
         $timeout = (int) $this->option('timeout');
         $once = (bool) $this->option('once');
 
@@ -60,13 +69,22 @@ class TelegramPollCommand extends Command
 
                         $sender = $update['message']['from']['username'] ?? $update['message']['from']['first_name'] ?? 'User';
                         $text = $update['message']['text'] ?? '[non-text]';
-                        $this->line("<comment>[" . now()->format('H:i:s') . "]</comment> Incoming update #{$updateId} from <info>{$sender}</info>: {$text}");
+                        $this->line('<comment>[' . now()->format('H:i:s') . ']</comment> Incoming update #' . $updateId . ' from <info>' . $sender . '</info>: ' . $text);
 
                         $controller->processUpdate($update);
                     }
+                } elseif ($response->status() === 409) {
+                    $this->warn('Conflict with webhook — attempting to delete webhook again...');
+                    TelegramService::deleteWebhook();
+                    sleep(2);
+                } else {
+                    $desc = $response->json('description') ?? $response->body();
+                    if (!empty($desc)) {
+                        Log::warning('Telegram poll getUpdates failed', ['status' => $response->status(), 'description' => $desc]);
+                    }
                 }
             } catch (\Throwable $e) {
-                $this->error("Polling error: " . $e->getMessage());
+                $this->error('Polling error: ' . $e->getMessage());
                 sleep(2);
             }
 
