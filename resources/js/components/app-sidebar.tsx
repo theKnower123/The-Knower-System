@@ -80,6 +80,7 @@ const groups: Group[] = [
     items: [
       { to: "/admin/users", labelKey: "User Management", icon: Users, perm: "user.manage" },
       { to: "/admin/activity-logs", labelKey: "Audit & Activity Logs", icon: Activity, perm: "user.manage" },
+      { to: "/admin/telegram-server", labelKey: "Telegram Server", icon: Bot, perm: "telegram.view" },
     ],
   },
   {

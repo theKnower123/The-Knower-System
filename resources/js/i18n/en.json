@@ -648,5 +648,139 @@
       "filterAllTracks": "All tracks",
       "filterAllServices": "All services"
     }
+  },
+  "telegram": {
+    "pageTitle": "Telegram Server Control",
+    "sidebarGroup": "Telegram Server",
+    "sidebarItem": "Telegram Server",
+    "header": {
+      "title": "Telegram Server Control",
+      "subtitle": "Monitor Bot API status, manage linked accounts, and inspect real-time delivery logs."
+    },
+    "actions": {
+      "ping": "Ping Bot API",
+      "syncWebhook": "Sync Webhook",
+      "retry": "Retry",
+      "disconnect": "Disconnect"
+    },
+    "status": {
+      "operational": "Operational & Connected",
+      "disconnected": "Disconnected",
+      "latency": "Latency",
+      "description": "Live ping verification against Telegram Bot API servers using the secure server-side token.",
+      "sent": "Sent",
+      "failed": "Failed",
+      "pending": "Pending",
+      "success": "Success",
+      "blocked": "Blocked",
+      "rejected": "Rejected",
+      "warning": "Warning"
+    },
+    "info": {
+      "botUsername": "Bot Username",
+      "botDisplayName": "Bot Display Name",
+      "botId": "Telegram Bot ID",
+      "tokenScope": "Token Scope",
+      "serverSideSecret": "Server-Side Secret"
+    },
+    "stats": {
+      "totalLinked": "Total Linked Users",
+      "clients": "Clients",
+      "team": "Team (Dev & Delivery)",
+      "management": "Management & Ops"
+    },
+    "tabs": {
+      "deliveryLogs": "Delivery Logs",
+      "linkedAccounts": "Linked Accounts",
+      "templates": "Templates",
+      "testTool": "Test Tool",
+      "security": "Security"
+    },
+    "filters": {
+      "allStatus": "All Status",
+      "allTypes": "All Types",
+      "allRoles": "All Roles",
+      "allEvents": "All Events"
+    },
+    "logs": {
+      "searchPlaceholder": "Search logs...",
+      "emptyTitle": "No notification logs found.",
+      "emptySubtitle": "All messages, notifications, and alert attempts dispatched via the bot will appear here.",
+      "retrySuccess": "Message successfully resent!",
+      "retryFailed": "Retry failed.",
+      "fetchError": "Failed to load delivery logs."
+    },
+    "accounts": {
+      "searchPlaceholder": "Search user or @username...",
+      "emptyTitle": "No linked accounts yet.",
+      "emptySubtitle": "Users who link their Telegram account through the bot will appear here.",
+      "fetchError": "Failed to load linked accounts.",
+      "disconnectSuccess": "Telegram account disconnected.",
+      "disconnectError": "Failed to disconnect account."
+    },
+    "templates": {
+      "userGroup": "User Notifications",
+      "adminGroup": "Admin & Management Messages",
+      "searchPlaceholder": "Search templates...",
+      "lastEdited": "Last edited",
+      "availableVariables": "Click a variable to insert it at cursor position:",
+      "restoreDefault": "Restore Default",
+      "saveSuccess": "Template saved successfully!",
+      "saveError": "Failed to save template.",
+      "restoreSuccess": "Template restored to original default!",
+      "restoreError": "Failed to restore template.",
+      "fetchError": "Failed to load templates.",
+      "noTemplates": "No templates found."
+    },
+    "test": {
+      "linkedBannerTitle": "Your personal account is linked and ready to receive test notifications.",
+      "unlinkedBannerTitle": "Link your Telegram account first to use the test tool.",
+      "unlinkedBannerDesc": "Open the bot on Telegram and send /start to connect your personal account.",
+      "linkNow": "Link Now",
+      "messageLabel": "Test Message Text:",
+      "resetTemplate": "Reset Template",
+      "sendAlert": "Send Test Alert",
+      "sent": "Test alert dispatched!",
+      "error": "Failed to send test alert."
+    },
+    "security": {
+      "title": "Security & Password Recovery Audit Log",
+      "subtitle": "security events — password recovery attempts, blocks, and unlinked rejections.",
+      "searchPlaceholder": "Search by email or role...",
+      "emptyTitle": "No security events recorded yet",
+      "emptySubtitle": "Password recovery attempts, link rejections, and access blocks will be audited here.",
+      "fetchError": "Failed to load security audit log.",
+      "eventType": "Event Type",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "date": "Date & Time"
+    },
+    "table": {
+      "status": "Status",
+      "type": "Type",
+      "recipient": "Recipient",
+      "preview": "Message Preview",
+      "date": "Date & Time",
+      "action": "Action",
+      "user": "User",
+      "role": "Role",
+      "profile": "Telegram Profile",
+      "chatId": "Chat ID",
+      "linkedDate": "Linked Date"
+    },
+    "dialog": {
+      "disconnectTitle": "Disconnect this account?",
+      "disconnectDesc": "Disconnecting this account will stop them from receiving Telegram notifications until they re-link."
+    },
+    "ping": {
+      "success": "Bot API reachable",
+      "failed": "Bot API is disconnected."
+    },
+    "webhook": {
+      "success": "Webhook synced successfully!",
+      "failed": "Failed to sync webhook."
+    }
   }
 }
+

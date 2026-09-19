@@ -55,6 +55,26 @@ class SystemNotificationService
                     'created_at'      => now(),
                     'updated_at'      => now(),
                 ]);
+
+                // Dispatch to Telegram if user is found
+                try {
+                    $recipientUser = User::find($uid);
+                    if ($recipientUser) {
+                        $templateKey = $extraData['template_key'] ?? 'system_alert';
+                        \App\Modules\Telegram\Services\TelegramService::sendTemplateNotification(
+                            $recipientUser,
+                            $templateKey,
+                            array_merge([
+                                'title' => $title,
+                                'message' => $message,
+                                'user_name' => $recipientUser->name,
+                                'timestamp' => now()->toDateTimeString(),
+                            ], $extraData)
+                        );
+                    }
+                } catch (\Throwable $te) {
+                    \Illuminate\Support\Facades\Log::warning('Telegram notification dispatch error: ' . $te->getMessage());
+                }
             }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('SystemNotificationService Error: ' . $e->getMessage());

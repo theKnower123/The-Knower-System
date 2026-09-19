@@ -297,4 +297,10 @@ Route::prefix('v1')->group(function () {
         Route::delete('trash/{module}/{id}/force', [\App\Http\Controllers\TrashController::class, 'forceDelete']);
     });
 
+    // ─── Telegram Bot Webhook ────────────────────────────────────────────────
+    Route::post('telegram/webhook', [\App\Modules\Telegram\Controllers\TelegramWebhookController::class, 'handle'])
+        ->middleware('throttle:60,1')
+        ->name('api.telegram.webhook');
+
 });
+

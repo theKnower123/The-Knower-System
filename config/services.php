@@ -44,4 +44,10 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL', 'http://localhost:8000') . '/auth/google/callback'),
     ],
 
+    'telegram' => [
+        'bot_token' => env('BOT_TOKEN'),
+        'bot_username' => env('BOT_USERNAME'),
+    ],
+
 ];
+

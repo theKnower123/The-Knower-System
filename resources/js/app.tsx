@@ -30,7 +30,8 @@ createInertiaApp({
     resolve: (name) => {
         const pages = import.meta.glob('./Pages/**/*.tsx', { eager: true }) as Record<string, any>;
         const page = pages[`./Pages/${name}.tsx`];
-        if (name !== 'Login' && page && page.default) {
+        const guestPages = ['Login', 'ForgotPassword', 'ResetPassword', 'Auth/MustConnectGoogle', 'Telegram/Connect'];
+        if (!guestPages.includes(name) && page && page.default) {
             page.default.layout = page.default.layout || ((page: any) => <AppLayout>{page}</AppLayout>);
         }
         return page;

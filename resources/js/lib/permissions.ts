@@ -95,6 +95,8 @@ export const PERMISSIONS = [
   "content.approve",
   "landing.manage",
   "pipeline.manage",
+  "telegram.view",
+  "telegram.manage",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -154,6 +156,8 @@ export const PERMISSION_DESCRIPTIONS: Record<Permission, string> = {
   "content.approve": "Approve marketing content for publishing.",
   "landing.manage": "Manage landing page sections and content.",
   "pipeline.manage": "Manage marketing/sales pipeline stages.",
+  "telegram.view": "View the Telegram Server control dashboard and logs.",
+  "telegram.manage": "Manage Telegram Bot settings, sync webhooks, and edit templates.",
 };
 
 const ALL: Permission[] = [...PERMISSIONS];

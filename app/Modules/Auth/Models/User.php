@@ -60,6 +60,9 @@ class User extends Authenticatable
         'created_by',
         'must_connect_google',
         'last_login_at',
+        'telegram_chat_id',
+        'telegram_username',
+        'telegram_linked_at',
     ];
 
     protected $appends = ['avatar_url'];
@@ -79,10 +82,12 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'last_login_at'     => 'datetime',
+            'telegram_linked_at' => 'datetime',
             'password'          => 'hashed',
             'permissions'       => 'array',
             'must_connect_google' => 'boolean',
         ];
+
     }
 
     // ─── Relationships ─────────────────────────────────────────────────────
@@ -175,7 +180,8 @@ class User extends Authenticatable
                 "support.view", "support.inbox", "support.tickets", "support.canned", "support.kb_read", "support.manage", "ticket.manage", "ticket.reply",
                 "report.view", "settings.manage", "user.manage", "cms.manage",
                 "code.review", "design.upload", "qa.test", "ai.use",
-                "marketing.view", "marketing.manage"
+                "marketing.view", "marketing.manage",
+                "telegram.view", "telegram.manage"
             ],
             'ceo' => [
                 "dashboard.view", "crm.view", "client.manage", "project.view",

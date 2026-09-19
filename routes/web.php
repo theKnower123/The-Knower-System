@@ -20,7 +20,7 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::get('/forgot-password', function () {
-    return Inertia::render('ForgotPassword');
+    return redirect('/login?view=forgot-password');
 })->name('password.request');
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -34,6 +34,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Basic authenticated routes
     Route::get('/profile', function () { return Inertia::render('Profile'); });
+    Route::post('/profile/telegram/token', [\App\Modules\Telegram\Controllers\TelegramConnectController::class, 'generateLinkToken'])->name('profile.telegram.token');
+    Route::post('/profile/telegram/link-by-chat-id', [\App\Modules\Telegram\Controllers\TelegramConnectController::class, 'linkByChatId'])->name('profile.telegram.linkByChatId');
+    Route::post('/profile/telegram/disconnect', [\App\Modules\Telegram\Controllers\TelegramConnectController::class, 'disconnect'])->name('profile.telegram.disconnect');
+    Route::post('/profile/telegram/test', [\App\Modules\Telegram\Controllers\TelegramConnectController::class, 'test'])->name('profile.telegram.test');
     Route::get('/portal', function () { return Inertia::render('Portal'); });
     Route::get('/notifications', function () { return Inertia::render('Notifications'); });
     Route::get('/calendar', function () { return Inertia::render('Calendar'); });
@@ -168,9 +172,30 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/admin/errors/{id}', [\App\Modules\Core\Controllers\ErrorManagementController::class, 'show'])->name('errors.show');
         Route::get('/admin/activity-logs', function () { return Inertia::render('Admin/ActivityLog'); });
     });
+
+    // Telegram Server Module
+    Route::middleware(['permission:telegram.view'])->group(function () {
+        Route::get('/admin/telegram-server', [\App\Modules\Telegram\Controllers\TelegramController::class, 'index'])->name('admin.telegram.index');
+        Route::get('/admin/telegram-server/ping', [\App\Modules\Telegram\Controllers\TelegramController::class, 'ping'])->name('admin.telegram.ping');
+        Route::post('/admin/telegram-server/sync-webhook', [\App\Modules\Telegram\Controllers\TelegramController::class, 'syncWebhook'])->name('admin.telegram.syncWebhook');
+        Route::get('/admin/telegram-server/logs', [\App\Modules\Telegram\Controllers\TelegramController::class, 'logs'])->name('admin.telegram.logs');
+        Route::post('/admin/telegram-server/logs/{id}/retry', [\App\Modules\Telegram\Controllers\TelegramController::class, 'retryLog'])->name('admin.telegram.retryLog');
+        Route::get('/admin/telegram-server/linked-accounts', [\App\Modules\Telegram\Controllers\TelegramController::class, 'linkedAccounts'])->name('admin.telegram.linkedAccounts');
+        Route::post('/admin/telegram-server/users/{id}/disconnect', [\App\Modules\Telegram\Controllers\TelegramController::class, 'disconnectAccount'])->name('admin.telegram.disconnectAccount');
+        Route::get('/admin/telegram-server/templates', [\App\Modules\Telegram\Controllers\TelegramController::class, 'templates'])->name('admin.telegram.templates');
+        Route::put('/admin/telegram-server/templates/{id}', [\App\Modules\Telegram\Controllers\TelegramController::class, 'updateTemplate'])->name('admin.telegram.updateTemplate');
+        Route::post('/admin/telegram-server/templates/{id}/restore', [\App\Modules\Telegram\Controllers\TelegramController::class, 'restoreTemplateDefault'])->name('admin.telegram.restoreTemplateDefault');
+        Route::post('/admin/telegram-server/test-alert', [\App\Modules\Telegram\Controllers\TelegramController::class, 'sendTestAlert'])->name('admin.telegram.sendTestAlert');
+        Route::get('/admin/telegram-server/security-events', [\App\Modules\Telegram\Controllers\TelegramController::class, 'securityEvents'])->name('admin.telegram.securityEvents');
+    });
 });
+
+// Telegram Account Linking
+Route::get('/telegram/connect', [\App\Modules\Telegram\Controllers\TelegramConnectController::class, 'show'])->name('telegram.connect');
+Route::post('/telegram/connect/confirm', [\App\Modules\Telegram\Controllers\TelegramConnectController::class, 'confirm'])->middleware('auth')->name('telegram.connect.confirm');
+
 Route::fallback(function (\Illuminate\Http\Request $request) {
-    $erpPrefixes = ['/dashboard', '/crm', '/projects', '/admin', '/tasks', '/bugs', '/calendar', '/time-logs', '/finance', '/hosting', '/support', '/hr', '/reports', '/cms', '/marketing', '/ai', '/settings', '/profile', '/portal', '/notifications'];
+    $erpPrefixes = ['/dashboard', '/crm', '/projects', '/admin', '/tasks', '/bugs', '/calendar', '/time-logs', '/finance', '/hosting', '/support', '/hr', '/reports', '/cms', '/marketing', '/ai', '/settings', '/profile', '/portal', '/notifications', '/telegram'];
     
     foreach ($erpPrefixes as $prefix) {
         if (str_starts_with($request->getPathInfo(), $prefix)) {
@@ -180,3 +205,4 @@ Route::fallback(function (\Illuminate\Http\Request $request) {
     
     return view('public');
 });
+

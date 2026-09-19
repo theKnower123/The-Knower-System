@@ -19,6 +19,10 @@ export interface SessionUser {
   position?: string;
   must_connect_google?: boolean;
   google_id?: string | null;
+  has_telegram?: boolean;
+  telegram_chat_id?: string | null;
+  telegram_username?: string | null;
+  telegram_bot_username?: string | null;
 }
 
 interface AuthState {

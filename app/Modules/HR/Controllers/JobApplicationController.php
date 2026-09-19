@@ -51,6 +51,19 @@ class JobApplicationController extends Controller
         $resume = $request->file('resume');
         $application = $this->service->create($data, $resume);
         $application->load('jobPosting');
+
+        try {
+            $applicantName = trim(($data['first_name'] ?? '') . ' ' . ($data['last_name'] ?? ''));
+            \App\Modules\Telegram\Services\TelegramService::notifyAdmins('job_application_received', [
+                'applicant_name' => $applicantName ?: 'متقدم جديد',
+                'email' => $data['email'] ?? 'غير متوفر',
+                'phone' => $data['phone'] ?? 'غير متوفر',
+                'job_title' => $application->jobPosting?->title ?? 'طلب توظيف عام',
+                'application_url' => url('/hr/job-applications'),
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Error sending job application notification: ' . $e->getMessage());
+        }
         
         return response()->json([
             'success' => true,

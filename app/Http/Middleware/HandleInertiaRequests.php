@@ -47,6 +47,10 @@ class HandleInertiaRequests extends Middleware
             $userData['google_id'] = $user->google_id;
             $userData['has_google'] = !empty($user->google_id);
             $userData['must_connect_google'] = empty($user->google_id);
+            $userData['has_telegram'] = !empty($user->telegram_chat_id);
+            $userData['telegram_chat_id'] = $user->telegram_chat_id;
+            $userData['telegram_username'] = $user->telegram_username;
+            $userData['telegram_bot_username'] = config('services.telegram.bot_username') ?: env('BOT_USERNAME');
         }
 
         return [

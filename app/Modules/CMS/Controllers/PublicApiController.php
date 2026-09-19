@@ -175,7 +175,7 @@ class PublicApiController extends Controller
         if (!empty($data['plan'])) $leadTitle .= ' — Plan: ' . $data['plan'];
         if (!empty($data['company'])) $leadTitle .= ' (' . $data['company'] . ')';
 
-        Lead::create([
+        $lead = Lead::create([
             'workspace_id'   => 1,
             'title'          => $leadTitle,
             'contact_id'     => $contact->id,
@@ -184,6 +184,43 @@ class PublicApiController extends Controller
             'inquiry_type'   => $inquiryType,
             'interested_plan' => $data['plan'] ?? null,
         ]);
+
+        // Send Telegram Bot notification to Admins
+        try {
+            $inquiryUrl = url('/crm/inquiries');
+            if (!empty($data['project_name']) || str_contains(strtolower($data['message']), 'project') || str_contains($data['message'], 'مشروع')) {
+                \App\Modules\Telegram\Services\TelegramService::notifyAdmins('project_inquiry_received', [
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'phone' => $data['phone'] ?: ($data['whatsapp_number'] ?: 'غير محدد'),
+                    'company' => $data['company'] ?: 'غير محدد',
+                    'project_name' => $data['project_name'] ?? 'مشروع مخصص',
+                    'message' => $data['message'],
+                    'inquiry_url' => $inquiryUrl,
+                ]);
+            } else {
+                \App\Modules\Telegram\Services\TelegramService::notifyAdmins('contact_form_submitted', [
+                    'name' => $data['name'],
+                    'company' => $data['company'] ?: 'غير محدد',
+                    'email' => $data['email'],
+                    'phone' => $data['phone'] ?: 'غير محدد',
+                    'whatsapp' => $data['whatsapp_number'] ?: 'غير محدد',
+                    'inquiry_type' => $typeLabel,
+                    'plan' => $data['plan'] ?: 'غير محدد',
+                    'message' => $data['message'],
+                    'inquiry_url' => $inquiryUrl,
+                ]);
+            }
+
+            \App\Services\SystemNotificationService::notifySuperAdmins(
+                "New Website Inquiry: {$data['name']}",
+                "{$typeLabel} from {$data['email']}: " . \Illuminate\Support\Str::limit($data['message'], 100),
+                'leads',
+                $inquiryUrl
+            );
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Error sending contact inquiry notification: ' . $e->getMessage());
+        }
 
         return response()->json(['success' => true, 'message' => "Thanks! We'll reply within a business hour."]);
     }
@@ -217,6 +254,23 @@ class PublicApiController extends Controller
             'pipeline_stage' => 'new',
             'lead_source' => 'website',
         ]);
+
+        try {
+            \App\Modules\Telegram\Services\TelegramService::notifyAdmins('demo_request_received', [
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'timestamp' => now()->format('Y-m-d H:i:s'),
+            ]);
+
+            \App\Services\SystemNotificationService::notifySuperAdmins(
+                "New Demo Request: {$data['name']}",
+                "Demo request submitted by {$data['email']}.",
+                'leads',
+                url('/crm/leads')
+            );
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Error sending demo request notification: ' . $e->getMessage());
+        }
 
         return response()->json(['success' => true, 'message' => 'Demo request received -- our team will email you to pick a time.']);
     }

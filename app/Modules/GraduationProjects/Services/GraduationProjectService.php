@@ -89,7 +89,40 @@ class GraduationProjectService
                 "New Graduation Project: {$project->team_name}",
                 "Submission {$project->reference_id} from {$project->university} awaits review.",
                 'graduation_projects',
-                "/admin/graduation-projects/{$project->id}"
+                "/admin/graduation-projects/{$project->id}",
+                [
+                    'template_key' => 'graduation_project_registered',
+                    'reference_id' => $project->reference_id,
+                    'team_name' => $project->team_name,
+                    'university' => $project->university,
+                    'college' => $project->college,
+                    'team_size' => (string) $project->team_size,
+                    'project_type' => is_object($project->project_type) ? $project->project_type->value : (string) $project->project_type,
+                    'service_type' => is_object($project->service_type) ? $project->service_type->value : (string) $project->service_type,
+                    'primary_contact_name' => $project->primary_contact_name,
+                    'primary_contact_phone' => $project->primary_contact_phone,
+                    'primary_contact_email' => $project->primary_contact_email,
+                    'description' => $project->description ?: 'لا يوجد وصف إضافي',
+                    'project_url' => url("/admin/graduation-projects/{$project->id}"),
+                ]
+            );
+
+            \App\Modules\Telegram\Services\TelegramService::notifyAdmins(
+                'graduation_project_registered',
+                [
+                    'reference_id' => $project->reference_id,
+                    'team_name' => $project->team_name,
+                    'university' => $project->university,
+                    'college' => $project->college,
+                    'team_size' => (string) $project->team_size,
+                    'project_type' => is_object($project->project_type) ? $project->project_type->value : (string) $project->project_type,
+                    'service_type' => is_object($project->service_type) ? $project->service_type->value : (string) $project->service_type,
+                    'primary_contact_name' => $project->primary_contact_name,
+                    'primary_contact_phone' => $project->primary_contact_phone,
+                    'primary_contact_email' => $project->primary_contact_email,
+                    'description' => $project->description ?: 'لا يوجد وصف إضافي',
+                    'project_url' => url("/admin/graduation-projects/{$project->id}"),
+                ]
             );
 
             return $project->load('members');
