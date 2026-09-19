@@ -45,9 +45,13 @@ class AuthController extends Controller
                 'Failed Login Attempt',
                 'security',
                 "User Account #{$user->id}",
-                "Failed authentication attempt with invalid password.",
-                $user->id,
-                $user->name
+                'Failed authentication attempt with invalid password.',
+                'Auth',
+                'login',
+                null,
+                null,
+                null,
+                null
             );
 
             return response()->json([
@@ -109,9 +113,13 @@ class AuthController extends Controller
             'Successful Login',
             'auth',
             "User Account #{$user->id}",
-            "User authenticated successfully via standard credentials.",
+            'User authenticated successfully via standard credentials.',
+            'Auth',
+            'login',
+            null,
             $user->id,
-            $user->name
+            $user->name,
+            $user->role
         );
 
         // Give full role-based permissions or token

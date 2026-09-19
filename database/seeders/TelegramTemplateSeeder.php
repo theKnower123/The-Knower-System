@@ -96,6 +96,38 @@ class TelegramTemplateSeeder extends Seeder
                 'body_ar' => "✅ *تمت الموافقة على سجل الدوام*\n\nمرحباً {{user_name}}،\n\nتمت الموافقة على سجل ساعات العمل للفترة *{{period}}* (الإجمالي: *{{hours}} ساعة*) من قبل *{{approver_name}}*.",
                 'available_variables' => ['user_name', 'period', 'hours', 'approver_name'],
             ],
+            [
+                'key' => 'login_success',
+                'label' => 'تسجيل دخول ناجح (Successful Login)',
+                'category' => 'user',
+                'body_en' => '',
+                'body_ar' => "✅ *تم تسجيل الدخول بنجاح*\n\nمرحباً {{user_name}}،\n\nتم تسجيل الدخول إلى حسابك في *The Knower OS* بنجاح.\n\n🌐 عنوان IP: `{{ip_address}}`\n⏱️ الوقت: *{{timestamp}}*\n\nإذا لم تكن أنت من قام بهذا الدخول، غيّر كلمة المرور فوراً وتواصل مع الدعم.",
+                'available_variables' => ['user_name', 'ip_address', 'timestamp'],
+            ],
+            [
+                'key' => 'login_failed',
+                'label' => 'محاولة دخول فاشلة (Failed Login)',
+                'category' => 'user',
+                'body_en' => '',
+                'body_ar' => "⚠️ *محاولة تسجيل دخول فاشلة*\n\nمرحباً {{user_name}}،\n\nرُصدت محاولة دخول فاشلة على حسابك في *The Knower OS*.\n\n🌐 عنوان IP: `{{ip_address}}`\n⏱️ الوقت: *{{timestamp}}*\n\nإذا لم تكن أنت، ننصح بتغيير كلمة المرور فوراً.",
+                'available_variables' => ['user_name', 'ip_address', 'timestamp'],
+            ],
+            [
+                'key' => 'password_changed',
+                'label' => 'تغيير كلمة المرور (Password Changed)',
+                'category' => 'user',
+                'body_en' => '',
+                'body_ar' => "🔐 *تم تغيير كلمة المرور*\n\nمرحباً {{user_name}}،\n\nتم تحديث كلمة مرور حسابك في *The Knower OS* بنجاح.\n\n⏱️ الوقت: *{{timestamp}}*\n\nإذا لم تقم بهذا التغيير، تواصل مع مدير النظام فوراً.",
+                'available_variables' => ['user_name', 'timestamp'],
+            ],
+            [
+                'key' => 'activity_confirmation',
+                'label' => 'تأكيد إجراء على النظام (Activity Confirmation)',
+                'category' => 'user',
+                'body_en' => '',
+                'body_ar' => "📌 *تأكيد إجراء*\n\nمرحباً {{user_name}}،\n\nتم تنفيذ الإجراء التالي بنجاح:\n*{{action}}*\n\nالهدف: {{target_entity}}\n⏱️ الوقت: *{{timestamp}}*",
+                'available_variables' => ['user_name', 'action', 'target_entity', 'timestamp'],
+            ],
 
             // ==========================================
             // --- 2. Admin & Management Messages ---

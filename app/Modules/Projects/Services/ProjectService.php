@@ -31,13 +31,23 @@ class ProjectService
             "create"
         );
 
+        $project->load(['client', 'creator']);
+
+        \App\Modules\Telegram\Services\TelegramService::notifyAdmins('project_created', [
+            'project_name' => $project->name,
+            'client_name' => $project->client?->name ?? '—',
+            'budget' => $project->budget !== null ? (string) $project->budget : '—',
+            'created_by' => $project->creator?->name ?? (auth()->user()?->name ?? 'System'),
+        ]);
+
         if (!empty($users)) {
             \App\Services\SystemNotificationService::notify(
                 $users,
                 "Assigned to New Project: {$project->name}",
                 "You have been assigned to project '{$project->name}'.",
                 "projects",
-                "/projects/{$project->id}"
+                "/projects/{$project->id}",
+                ['template_key' => 'project_assigned', 'project_name' => $project->name]
             );
         }
 

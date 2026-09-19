@@ -8,6 +8,19 @@ use Illuminate\Support\Facades\Request;
 
 class UserActivityLogger
 {
+    /** Personal security events — notify the account owner only, never admins. */
+    private const PERSONAL_SECURITY_ACTIONS = [
+        'Successful Login',
+        'Failed Login Attempt',
+        'Changed Account Password',
+    ];
+
+    private const PERSONAL_SECURITY_TEMPLATE_MAP = [
+        'Successful Login' => 'login_success',
+        'Failed Login Attempt' => 'login_failed',
+        'Changed Account Password' => 'password_changed',
+    ];
+
     /**
      * Log a high-value, meaningful audit activity.
      *
@@ -42,6 +55,8 @@ class UserActivityLogger
             $causer = $causerUserId ?? ($currentUser ? $currentUser->id : null);
             $actorName = $causerName ?? ($currentUser ? $currentUser->name : 'System Administrator');
             $actorRole = $causerRole ?? ($currentUser ? ($currentUser->role ?? 'user') : 'system');
+            $resolvedActionType = $actionType ?? 'general';
+            $resolvedModule = $module ?? 'Auth';
 
             $logEntry = UserActivityLog::create([
                 'user_id'       => $userId,
@@ -50,8 +65,8 @@ class UserActivityLogger
                 'causer_role'   => $actorRole,
                 'action'        => $action,
                 'category'      => $category,
-                'module'        => $module ?? 'Auth',
-                'action_type'   => $actionType ?? 'general',
+                'module'        => $resolvedModule,
+                'action_type'   => $resolvedActionType,
                 'target_entity' => $targetEntity,
                 'description'   => $description,
                 'properties'    => $properties,
@@ -59,9 +74,8 @@ class UserActivityLogger
                 'user_agent'    => Request::userAgent(),
             ]);
 
-            // Automatically dispatch notification to affected user or Super Admins
-            $notificationCategory = strtolower($module ?? $category);
-            $actionUrl = match(strtolower($module ?? '')) {
+            $notificationCategory = strtolower($resolvedModule ?: $category);
+            $actionUrl = match (strtolower($resolvedModule)) {
                 'crm', 'clients' => '/crm/clients',
                 'leads' => '/crm/leads',
                 'projects' => '/projects',
@@ -70,24 +84,79 @@ class UserActivityLogger
                 default => '/notifications',
             };
 
-            // Notify target user if different from actor
-            if ($userId && $userId != $causer) {
+            $message = $description ?: "{$actorName} performed {$action}" . ($targetEntity ? " on {$targetEntity}" : '') . '.';
+            $isPersonalSecurity = self::isPersonalSecurityEvent($action, $resolvedActionType);
+            $isSystemMutation = self::isSystemMutation($resolvedActionType, $resolvedModule);
+            $isAdminWorthyCategory = in_array(strtolower($category), ['admin', 'freeze', 'delete'], true);
+
+            // Personal security (login / password): account owner only — never admins
+            if ($isPersonalSecurity && $userId) {
+                $templateKey = self::PERSONAL_SECURITY_TEMPLATE_MAP[$action] ?? 'system_alert';
                 SystemNotificationService::notify(
-                    (int)$userId,
+                    (int) $userId,
                     $action,
-                    $description ?: "{$actorName} performed {$action} on {$targetEntity}.",
+                    $message,
+                    'security',
+                    $actionUrl,
+                    [
+                        'template_key' => $templateKey,
+                        'title' => $action,
+                        'message' => $message,
+                        'timestamp' => now()->format('H:i:s d-m-Y'),
+                        'ip_address' => Request::ip(),
+                    ]
+                );
+
+                return $logEntry;
+            }
+
+            // Target user notified when someone else acted on their account/entity
+            if ($userId && (int) $userId !== (int) $causer) {
+                SystemNotificationService::notify(
+                    (int) $userId,
+                    $action,
+                    $message,
                     $notificationCategory,
                     $actionUrl
                 );
             }
 
-            // Also notify super admins for high-value admin/security actions
-            if (in_array(strtolower($category), ['security', 'admin', 'freeze', 'delete', 'auth'])) {
+            // System create/edit/delete: confirm to the actor
+            if ($isSystemMutation && $causer) {
+                SystemNotificationService::notify(
+                    (int) $causer,
+                    $action,
+                    $message,
+                    $notificationCategory,
+                    $actionUrl,
+                    [
+                        'template_key' => 'activity_confirmation',
+                        'title' => $action,
+                        'message' => $message,
+                        'action' => $action,
+                        'target_entity' => $targetEntity ?? '',
+                        'timestamp' => now()->format('H:i:s d-m-Y'),
+                    ]
+                );
+            }
+
+            // Admins: system mutations + admin/freeze/delete categories (NOT personal auth/security).
+            // Skip create for Projects/Clients — those use dedicated notifyAdmins templates.
+            $skipDedicatedCreate = in_array(strtolower($resolvedActionType), ['create'], true)
+                && in_array(strtolower($resolvedModule), ['projects', 'clients'], true);
+
+            if (($isAdminWorthyCategory || $isSystemMutation) && !$skipDedicatedCreate) {
                 SystemNotificationService::notifySuperAdmins(
-                    "Security Event: {$action}",
+                    $action,
                     "{$actorName} ({$actorRole}): " . ($description ?: $action),
-                    'security',
-                    '/notifications'
+                    $isAdminWorthyCategory ? 'security' : $notificationCategory,
+                    $actionUrl,
+                    [
+                        'template_key' => 'system_alert',
+                        'title' => $action,
+                        'message' => "{$actorName} ({$actorRole}): " . ($description ?: $action),
+                        'timestamp' => now()->format('H:i:s d-m-Y'),
+                    ]
                 );
             }
 
@@ -97,5 +166,30 @@ class UserActivityLogger
             \Log::error('UserActivityLogger Exception: ' . $e->getMessage());
             return null;
         }
+    }
+
+    private static function isPersonalSecurityEvent(string $action, string $actionType): bool
+    {
+        if (in_array($action, self::PERSONAL_SECURITY_ACTIONS, true)) {
+            return true;
+        }
+
+        return strtolower($actionType) === 'login';
+    }
+
+    private static function isSystemMutation(string $actionType, string $module): bool
+    {
+        if (!in_array(strtolower($actionType), ['create', 'edit', 'delete'], true)) {
+            return false;
+        }
+
+        $moduleLower = strtolower($module);
+
+        // Profile/Auth password edits are personal, not system mutations for admin blast
+        if (in_array($moduleLower, ['profile', 'auth', ''], true)) {
+            return false;
+        }
+
+        return true;
     }
 }

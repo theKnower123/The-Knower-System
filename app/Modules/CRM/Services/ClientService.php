@@ -42,6 +42,13 @@ class ClientService
                 "create"
             );
 
+            \App\Modules\Telegram\Services\TelegramService::notifyAdmins('client_registered', [
+                'client_name' => $client->name,
+                'company_name' => $client->position ?? '—',
+                'client_email' => $client->email ?? '—',
+                'client_phone' => $client->phone ?? '—',
+            ]);
+
             return $client->fresh();
         });
     }
