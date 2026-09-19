@@ -22,7 +22,7 @@ export default function ResetPasswordPage({
   is_used = false,
   seconds_remaining = 300,
 }: Props) {
-  const [email, setEmail] = useState(initialEmail || "");
+  const email = initialEmail || "";
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
@@ -135,10 +135,14 @@ export default function ResetPasswordPage({
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
+                  readOnly
+                  tabIndex={-1}
+                  className="bg-muted/50 text-muted-foreground cursor-not-allowed select-all"
+                  aria-readonly="true"
                 />
+                <p className="text-[11px] text-muted-foreground">
+                  This email is locked to your Telegram reset link and cannot be changed.
+                </p>
               </div>
 
               <div className="space-y-2">

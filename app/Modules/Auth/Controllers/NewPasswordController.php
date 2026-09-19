@@ -27,9 +27,12 @@ class NewPasswordController extends Controller
         $token = (string) $request->route('token');
         $email = (string) $request->query('email');
 
-        $reset = TelegramPasswordReset::where('token', $token)
-            ->where('email', $email)
-            ->first();
+        $reset = TelegramPasswordReset::where('token', $token)->first();
+
+        // Prefer email bound to the token so the UI never shows a mismatched address
+        if ($reset) {
+            $email = (string) $reset->email;
+        }
 
         $isExpired = false;
         $isUsed = false;
@@ -61,22 +64,19 @@ class NewPasswordController extends Controller
     {
         $request->validate([
             'token' => 'required|string',
-            'email' => 'required|email',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $email = strtolower(trim($request->email));
         $token = $request->token;
 
-        $reset = TelegramPasswordReset::where('token', $token)
-            ->where('email', $email)
-            ->first();
+        // Resolve account from the single-use token only — never trust a client-supplied email.
+        $reset = TelegramPasswordReset::where('token', $token)->first();
 
         // 1. Token invalid or not found
         if (!$reset) {
             TelegramService::logSecurityEvent(
                 'reset_expired',
-                $email,
+                $request->input('email'),
                 null,
                 'rejected',
                 ['reason' => 'Invalid reset token']
@@ -86,6 +86,8 @@ class NewPasswordController extends Controller
                 'email' => ['This password reset link is invalid.'],
             ]);
         }
+
+        $email = strtolower(trim((string) $reset->email));
 
         // 2. Token already used
         if (!is_null($reset->used_at)) {
